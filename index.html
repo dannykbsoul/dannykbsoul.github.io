@@ -216,7 +216,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-02-20 17:36:08 / Modified: 21:03:08" itemprop="dateCreated datePublished" datetime="2020-02-20T17:36:08+08:00">2020-02-20</time>
+              <time title="Created: 2020-02-20 17:36:08 / Modified: 22:58:12" itemprop="dateCreated datePublished" datetime="2020-02-20T17:36:08+08:00">2020-02-20</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,26 +255,17 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>最近最少使用算法（LRU）是大部分操作系统为最大化页面命中率而广泛采用的一种页面置换算法。该算法的思路是，发生缺页中断时，选择未使用时间最长的页面置换出去。从程序运行的原理来看，最近最少使用算法是比较接近理想的一种页面置换算法，这种算法既充分利用了内存中页面调用的历史信息，又正确反映了程序的局部问题。</p>
-<h2 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h2><p>###<a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">146. LRU Cache</a></p>
-<p>Design and implement a data structure for <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a>. It should support the following operations: <code>get</code> and <code>put</code>.</p>
-<p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.<br><code>put(key, value)</code> - Set or insert the value if the key is not already present. When the cache reached its capacity, it should invalidate the least recently used item before inserting a new item.</p>
-<p>The cache is initialized with a <strong>positive</strong> capacity.</p>
-<p><strong>Follow up:</strong><br>Could you do both operations in <strong>O(1)</strong> time complexity?</p>
-<p><strong>Example:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">LRUCache cache &#x3D; new LRUCache( 2 &#x2F;* capacity *&#x2F; );</span><br><span class="line"></span><br><span class="line">cache.put(1, 1);</span><br><span class="line">cache.put(2, 2);</span><br><span class="line">cache.get(1);       &#x2F;&#x2F; returns 1</span><br><span class="line">cache.put(3, 3);    &#x2F;&#x2F; evicts key 2</span><br><span class="line">cache.get(2);       &#x2F;&#x2F; returns -1 (not found)</span><br><span class="line">cache.put(4, 4);    &#x2F;&#x2F; evicts key 1</span><br><span class="line">cache.get(1);       &#x2F;&#x2F; returns -1 (not found)</span><br><span class="line">cache.get(3);       &#x2F;&#x2F; returns 3</span><br><span class="line">cache.get(4);       &#x2F;&#x2F; returns 4</span><br></pre></td></tr></table></figure>
-
-
-
-<p><strong>思路</strong>：</p>
-<ul>
-<li>哈希表</li>
-<li>双向链表</li>
-</ul>
-<p>哈希表和双向链表结合可以使得存取的时间复杂度都为O(1)</p>
-<p>哈希表查找快，但是数据⽆固定顺序；链表有顺序之分，插⼊删除快，但是查找慢。</p>
-<p><strong>code</strong>：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">capacity</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> LRUCache = <span class="function"><span class="keyword">function</span>(<span class="params">capacity</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.capacity=capacity;</span><br><span class="line">    <span class="keyword">this</span>.count=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">this</span>.head=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.tail=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">this</span>.hashtable=&#123;&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">key</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LRUCache.prototype.get = <span class="function"><span class="keyword">function</span>(<span class="params">key</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">this</span>.hashtable[key])&#123;</span><br><span class="line">        <span class="keyword">let</span> node=<span class="keyword">this</span>.hashtable[key];</span><br><span class="line">        <span class="keyword">if</span>(node===<span class="keyword">this</span>.head) <span class="keyword">return</span> <span class="keyword">this</span>.head.value;</span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span>(node===<span class="keyword">this</span>.tail)&#123;</span><br><span class="line">            <span class="keyword">this</span>.tail=<span class="keyword">this</span>.tail.prev;</span><br><span class="line">            <span class="keyword">this</span>.head.prev=node;</span><br><span class="line">            node.next=<span class="keyword">this</span>.head;</span><br><span class="line">            <span class="keyword">this</span>.head=node;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.head.value;</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            node.prev.next=node.next;</span><br><span class="line">            node.next.prev=node.prev;</span><br><span class="line">            <span class="keyword">this</span>.head.prev=node;</span><br><span class="line">            node.next=<span class="keyword">this</span>.head;</span><br><span class="line">            <span class="keyword">this</span>.head=node;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">this</span>.head.value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> </span>key </span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">value</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;void&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">LRUCache.prototype.put = <span class="function"><span class="keyword">function</span>(<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">this</span>.hashtable[key])&#123;</span><br><span class="line">        <span class="keyword">this</span>.hashtable[key].value=value;</span><br><span class="line">        <span class="keyword">this</span>.get(key);</span><br><span class="line">    &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="comment">//哈希表指向双向链表中的节点</span></span><br><span class="line">        <span class="keyword">this</span>.hashtable[key]=&#123;key,value,<span class="attr">pre</span>:<span class="literal">null</span>,<span class="attr">next</span>:<span class="literal">null</span>&#125;;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">this</span>.head)&#123;</span><br><span class="line">            <span class="keyword">this</span>.head.prev=<span class="keyword">this</span>.hashtable[key];</span><br><span class="line">            <span class="keyword">this</span>.hashtable[key].next=<span class="keyword">this</span>.head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">this</span>.head=<span class="keyword">this</span>.hashtable[key];</span><br><span class="line">        <span class="keyword">if</span>(!<span class="keyword">this</span>.tail) <span class="keyword">this</span>.tail=<span class="keyword">this</span>.hashtable[key];</span><br><span class="line">        <span class="keyword">if</span>(++<span class="keyword">this</span>.count&gt;<span class="keyword">this</span>.capacity)&#123;</span><br><span class="line">            <span class="keyword">let</span> key=<span class="keyword">this</span>.tail.key;</span><br><span class="line">            <span class="keyword">this</span>.tail=<span class="keyword">this</span>.tail.prev;</span><br><span class="line">            <span class="keyword">this</span>.hashtable[key]=<span class="literal">null</span>;</span><br><span class="line">            <span class="keyword">this</span>.count--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment"> * Your LRUCache object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * var obj = new LRUCache(capacity)</span></span><br><span class="line"><span class="comment"> * var param_1 = obj.get(key)</span></span><br><span class="line"><span class="comment"> * obj.put(key,value)</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+          <p>最近最少使用算法（LRU）是大部分操作系统为最大化页面命中率而广泛采用的一种页面置换算法。该算法的思路是，发生缺页中断时，选择未使用时间最长的页面置换出去。从程序运行的原理来看，最近最少使用算法是比较接近理想的一种页面置换算法，这种算法既充分利用了内存中页面调用的历史信息，又正确反映了程序的局部问题。下面将采用双向链表+哈希表实现。</p>
+<h3 id="146-LRU-Cache"><a href="#146-LRU-Cache" class="headerlink" title="146. LRU Cache"></a><a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">146. LRU Cache</a></h3><p>Design and implement a data structure for <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a>. It should support the following operations: <code>get</code> and <code>put</code>.</p>
+<p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/20/LRU%E7%AE%97%E6%B3%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
     <div>
@@ -370,6 +361,12 @@
         <span class="site-state-item-count">1</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
   </nav>
 </div>
   <div class="links-of-author motion-element">
@@ -378,6 +375,12 @@
       </span>
       <span class="links-of-author-item">
         <a href="mailto:346925954@qq.com" title="E-Mail → mailto:346925954@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://twitter.com/zjsouljoy" title="Twitter → https:&#x2F;&#x2F;twitter.com&#x2F;zjsouljoy" rel="noopener" target="_blank"><i class="fa fa-fw fa-twitter"></i>Twitter</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://youtube.com/zhou%20jun" title="YouTube → https:&#x2F;&#x2F;youtube.com&#x2F;zhou jun" rel="noopener" target="_blank"><i class="fa fa-fw fa-youtube"></i>YouTube</a>
       </span>
   </div>
 
@@ -460,6 +463,8 @@
   </div>
 
   
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
   <script src="/lib/anime.min.js"></script>
   <script src="/lib/velocity/velocity.min.js"></script>
   <script src="/lib/velocity/velocity.ui.min.js"></script>
