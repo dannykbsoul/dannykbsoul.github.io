@@ -3,7 +3,7 @@
   <entry>
     <title>LRU算法</title>
     <url>/2020/02/20/LRU%E7%AE%97%E6%B3%95/</url>
-    <content><![CDATA[<p>最近最少使用算法（LRU）是大部分操作系统为最大化页面命中率而广泛采用的一种页面置换算法。该算法的思路是，发生缺页中断时，选择未使用时间最长的页面置换出去。从程序运行的原理来看，最近最少使用算法是比较接近理想的一种页面置换算法，这种算法既充分利用了内存中页面调用的历史信息，又正确反映了程序的局部问题。下面将采用双向链表+哈希表实现。</p>
+    <content><![CDATA[<p>最近最少使用算法（LRU）是大部分操作系统为最大化页面命中率而广泛采用的一种页面置换算法。该算法的思路是，发生缺页中断时，选择未使用时间最长的页面置换出去。从程序运行的原理来看，最近最少使用算法是比较接近理想的一种页面置换算法，这种算法既充分利用了内存中页面调用的历史信息，又正确反映了程序的局部问题。下面将采用==双向链表==+==哈希表==实现。</p>
 <h3 id="146-LRU-Cache"><a href="#146-LRU-Cache" class="headerlink" title="146. LRU Cache"></a><a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">146. LRU Cache</a></h3><p>Design and implement a data structure for <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a>. It should support the following operations: <code>get</code> and <code>put</code>.</p>
 <p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.</p>
 <a id="more"></a>
