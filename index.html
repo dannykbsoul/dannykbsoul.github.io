@@ -216,7 +216,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-02-21 09:31:51 / Modified: 12:14:28" itemprop="dateCreated datePublished" datetime="2020-02-21T09:31:51+08:00">2020-02-21</time>
+              <time title="Created: 2020-02-21 09:31:51 / Modified: 21:20:14" itemprop="dateCreated datePublished" datetime="2020-02-21T09:31:51+08:00">2020-02-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,50 +256,14 @@
 
       
           <p>Union-Find算法也就是常说的并查集算法，主要用来解决图论中<code>动态连通性</code>问题。</p>
-<p>连通具有以下几个性质：</p>
-<ol>
-<li>⾃反性：节点 p 和 p 是连通的。</li>
-<li>对称性：如果节点 p 和 q 连通，那么 q 和 p 也连通。</li>
-<li>传递性：如果节点 p 和 q 连通， q 和 r 连通，那么 p 和 r 也连通。</li>
-</ol>
-<p><img src="/.com//2.jpg" alt="2"></p>
-<p>如上图所示，如果要将p、q连通，则可以把p的根结点连到q的根结点上，但是也会出现一个<code>问题</code>：如果每次都是随意的将一个节点的根结点连到另一个节点的根结点上，那么在查找节点的时候会导致O(n)的时间复杂度，而不是O(logn)。</p>
-<p>对于⼀般的树可能出现极端不平衡的情况，使得树⼏乎退化成链表，树的⾼度最坏情况下可能变成N。为了解决此问题，我们其实是希望，⼩⼀些的树接到⼤⼀些的树下⾯，这样就能避免头重脚轻，更平衡⼀些。可以引用变量来计算每次需要合并的俩个子树的节点数，这样每次个数小的合并到个数大的根结点上，最终可以让整个数达到平衡树，时间复杂度可以降到O(logn)。</p>
-<p><code>路径压缩</code>可以进一步的压缩树的高度，使数高保持为常数，如下图所示：</p>
-<p><img src="/.com//3.jpg" alt="2"></p>
-<h3 id="990-Satisfiability-of-Equality-Equations"><a href="#990-Satisfiability-of-Equality-Equations" class="headerlink" title="990. Satisfiability of Equality Equations"></a><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/" target="_blank" rel="noopener">990. Satisfiability of Equality Equations</a></h3><p>​    Given an array equations of strings that represent relationships between variables, each string <code>equations[i]</code> has length <code>4</code> and takes one of two different forms: <code>&quot;a==b&quot;</code> or <code>&quot;a!=b&quot;</code>.  Here, <code>a</code> and <code>b</code> are lowercase letters (not necessarily different) that represent one-letter variable names.</p>
-<p>Return <code>true</code> if and only if it is possible to assign integers to variable names so as to satisfy all the given equations.</p>
-<p><strong>Example 1:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;a&#x3D;&#x3D;b&quot;,&quot;b!&#x3D;a&quot;]</span><br><span class="line">Output: false</span><br><span class="line">Explanation: If we assign say, a &#x3D; 1 and b &#x3D; 1, then the first equation is satisfied, but not the second.  There is no way to assign the variables to satisfy both equations.</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example 2:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;b&#x3D;&#x3D;a&quot;,&quot;a&#x3D;&#x3D;b&quot;]</span><br><span class="line">Output: true</span><br><span class="line">Explanation: We could assign a &#x3D; 1 and b &#x3D; 1 to satisfy both equations.</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example 3:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;a&#x3D;&#x3D;b&quot;,&quot;b&#x3D;&#x3D;c&quot;,&quot;a&#x3D;&#x3D;c&quot;]</span><br><span class="line">Output: true</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example 4:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;a&#x3D;&#x3D;b&quot;,&quot;b!&#x3D;c&quot;,&quot;c&#x3D;&#x3D;a&quot;]</span><br><span class="line">Output: false</span><br></pre></td></tr></table></figure>
-
-<p><strong>Example 5:</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: [&quot;c&#x3D;&#x3D;c&quot;,&quot;b&#x3D;&#x3D;d&quot;,&quot;x!&#x3D;z&quot;]</span><br><span class="line">Output: true</span><br></pre></td></tr></table></figure>
-
-<p><strong>Note:</strong></p>
-<ol>
-<li><code>1 &lt;= equations.length &lt;= 500</code></li>
-<li><code>equations[i].length == 4</code></li>
-<li><code>equations[i][0]</code> and <code>equations[i][3]</code> are lowercase letters</li>
-<li><code>equations[i][1]</code> is either <code>&#39;=&#39;</code> or <code>&#39;!&#39;</code></li>
-<li><code>equations[i][2]</code> is <code>&#39;=&#39;</code></li>
-</ol>
-<p><strong>思路</strong>：</p>
-<p>Union-Find</p>
-<p><strong>code</strong>：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string[]&#125;</span> <span class="variable">equations</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;boolean&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> equationsPossible = <span class="function"><span class="keyword">function</span>(<span class="params">equations</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> string=<span class="string">'abcdefghijklmnopqrstuvwxyz'</span>,</span><br><span class="line">          parent=<span class="built_in">Array</span>(<span class="number">26</span>),<span class="comment">//父节点</span></span><br><span class="line">          size=<span class="built_in">Array</span>(<span class="number">26</span>), <span class="comment">//各个树的"重量"</span></span><br><span class="line">          count=<span class="number">26</span>; <span class="comment">//连通分量个数</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;parent.length;i++) parent[i]=i;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">union</span>(<span class="params">p,q</span>)</span>&#123; <span class="comment">//合并</span></span><br><span class="line">        <span class="keyword">let</span> rootP=find(p),</span><br><span class="line">            rootQ=find(q);</span><br><span class="line">        <span class="keyword">if</span>(rootP===rootQ) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(size[rootP]&lt;size[rootQ])&#123;</span><br><span class="line">            parent[rootP]=rootQ;</span><br><span class="line">            size[rootQ]+=size[rootP];</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            parent[rootQ]=rootP;</span><br><span class="line">            size[rootP]+=size[rootQ];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// count--;</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">connected</span>(<span class="params">p,q</span>)</span>&#123; <span class="comment">//是否属于一个连通分量</span></span><br><span class="line">        <span class="keyword">let</span> rootP=find(p),</span><br><span class="line">            rootQ=find(q);</span><br><span class="line">        <span class="keyword">if</span>(rootP===rootQ) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">find</span>(<span class="params">x</span>)</span>&#123; <span class="comment">//路径压缩</span></span><br><span class="line">        <span class="keyword">while</span>(x!==parent[x])&#123;</span><br><span class="line">            parent[x]=parent[parent[x]];</span><br><span class="line">            x=parent[x];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> x;</span><br><span class="line">    &#125;</span><br><span class="line">    equations.forEach(<span class="function"><span class="params">str</span>=&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">let</span> c1=str.charAt(<span class="number">0</span>),</span><br><span class="line">            c2=str.charAt(<span class="number">3</span>),</span><br><span class="line">            isEqual=str.charAt(<span class="number">1</span>)===<span class="string">'='</span>?<span class="literal">true</span>:<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">let</span> c1Index=string.indexOf(c1),</span><br><span class="line">            c2Index=string.indexOf(c2);</span><br><span class="line">        <span class="keyword">if</span>(isEqual)&#123;</span><br><span class="line">            union(c1Index,c2Index);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;equations.length;i++)&#123;</span><br><span class="line">        <span class="keyword">let</span> str=equations[i];</span><br><span class="line">        <span class="keyword">let</span> c1=str.charAt(<span class="number">0</span>),</span><br><span class="line">            c2=str.charAt(<span class="number">3</span>),</span><br><span class="line">            isEqual=str.charAt(<span class="number">1</span>)===<span class="string">'='</span>?<span class="literal">true</span>:<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">let</span> c1Index=string.indexOf(c1),</span><br><span class="line">            c2Index=string.indexOf(c2);</span><br><span class="line">        <span class="keyword">if</span>(!isEqual&amp;&amp;connected(c1Index,c2Index))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><strong>总结</strong>：</p>
-<p>使⽤ Union-Find 算法，主要是如何把原问题转化成图的动态连通性问题。对于算式合法性问题，可以直接利⽤等价关系，对于棋盘包围问题，则是利⽤⼀个虚拟节点，营造出动态连通特性。</p>
-
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/02/21/Union-Find%E7%AE%97%E6%B3%95/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
     <div>
@@ -343,10 +307,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-02-20 17:36:08 / Modified: 23:05:52" itemprop="dateCreated datePublished" datetime="2020-02-20T17:36:08+08:00">2020-02-20</time>
+              <time title="Created: 2020-02-20 17:36:08" itemprop="dateCreated datePublished" datetime="2020-02-20T17:36:08+08:00">2020-02-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-21 21:20:08" itemprop="dateModified" datetime="2020-02-21T21:20:08+08:00">2020-02-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -385,8 +355,6 @@
 
       
           <p>最近最少使用算法（LRU）是大部分操作系统为最大化页面命中率而广泛采用的一种页面置换算法。该算法的思路是，发生缺页中断时，选择未使用时间最长的页面置换出去。从程序运行的原理来看，最近最少使用算法是比较接近理想的一种页面置换算法，这种算法既充分利用了内存中页面调用的历史信息，又正确反映了程序的局部问题。下面将采用双向链表+哈希表实现。</p>
-<h3 id="146-LRU-Cache"><a href="#146-LRU-Cache" class="headerlink" title="146. LRU Cache"></a><a href="https://leetcode.com/problems/lru-cache/" target="_blank" rel="noopener">146. LRU Cache</a></h3><p>Design and implement a data structure for <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#LRU" target="_blank" rel="noopener">Least Recently Used (LRU) cache</a>. It should support the following operations: <code>get</code> and <code>put</code>.</p>
-<p><code>get(key)</code> - Get the value (will always be positive) of the key if the key exists in the cache, otherwise return -1.</p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2020/02/20/LRU%E7%AE%97%E6%B3%95/#more" rel="contents">
