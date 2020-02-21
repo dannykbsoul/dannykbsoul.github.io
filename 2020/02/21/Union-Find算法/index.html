@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://yoursite.com/.com//2.jpg">
 <meta property="og:image" content="http://yoursite.com/.com//3.jpg">
 <meta property="article:published_time" content="2020-02-21T01:31:51.000Z">
-<meta property="article:modified_time" content="2020-02-21T13:20:14.438Z">
+<meta property="article:modified_time" content="2020-02-21T13:29:59.356Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/.com//2.jpg">
@@ -220,7 +220,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2020-02-21 09:31:51 / Modified: 21:20:14" itemprop="dateCreated datePublished" datetime="2020-02-21T09:31:51+08:00">2020-02-21</time>
+              <time title="Created: 2020-02-21 09:31:51 / Modified: 21:29:59" itemprop="dateCreated datePublished" datetime="2020-02-21T09:31:51+08:00">2020-02-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -268,11 +268,11 @@
 <li>对称性：如果节点 p 和 q 连通，那么 q 和 p 也连通。</li>
 <li>传递性：如果节点 p 和 q 连通， q 和 r 连通，那么 p 和 r 也连通。</li>
 </ol>
-<p><img src="/.com//2.jpg" alt="2"></p>
+<p><img src="/.com//2.jpg" alt></p>
 <p>如上图所示，如果要将p、q连通，则可以把p的根结点连到q的根结点上，但是也会出现一个<code>问题</code>：如果每次都是随意的将一个节点的根结点连到另一个节点的根结点上，那么在查找节点的时候会导致O(n)的时间复杂度，而不是O(logn)。</p>
 <p>对于⼀般的树可能出现极端不平衡的情况，使得树⼏乎退化成链表，树的⾼度最坏情况下可能变成N。为了解决此问题，我们其实是希望，⼩⼀些的树接到⼤⼀些的树下⾯，这样就能避免头重脚轻，更平衡⼀些。可以引用变量来计算每次需要合并的俩个子树的节点数，这样每次个数小的合并到个数大的根结点上，最终可以让整个数达到平衡树，时间复杂度可以降到O(logn)。</p>
 <p><code>路径压缩</code>可以进一步的压缩树的高度，使数高保持为常数，如下图所示：</p>
-<p><img src="/.com//3.jpg" alt="2"></p>
+<p><img src="/.com//3.jpg" alt></p>
 <h3 id="990-Satisfiability-of-Equality-Equations"><a href="#990-Satisfiability-of-Equality-Equations" class="headerlink" title="990. Satisfiability of Equality Equations"></a><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/" target="_blank" rel="noopener">990. Satisfiability of Equality Equations</a></h3><p>​    Given an array equations of strings that represent relationships between variables, each string <code>equations[i]</code> has length <code>4</code> and takes one of two different forms: <code>&quot;a==b&quot;</code> or <code>&quot;a!=b&quot;</code>.  Here, <code>a</code> and <code>b</code> are lowercase letters (not necessarily different) that represent one-letter variable names.</p>
 <p>Return <code>true</code> if and only if it is possible to assign integers to variable names so as to satisfy all the given equations.</p>
 <p><strong>Example 1:</strong></p>
