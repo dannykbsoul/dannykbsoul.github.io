@@ -1,6 +1,157 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>TS入门</title>
+    <url>/2020/02/22/TS%E5%85%A5%E9%97%A8/</url>
+    <content><![CDATA[<p><strong>定义</strong></p>
+<p>​    TypeScript is a <code>typed</code>(静态类型，不同于JS的动态类型) superset of JavaScript that <code>compiles to plain JavaScript</code>(TS不能直接运行，需要先编译成JS).Any browser. Any host. Any OS. Open source.</p>
+<a id="more"></a>
+
+<p><strong>好处</strong></p>
+<ol>
+<li>开发过程中就会发现错误，比如下面的代码JS中显示没问题，TS中就会提示你有潜在的问题，JS只有在编译之后才发现问题</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(data.x ** <span class="number">2</span> + data.y ** <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line">demo(&#123;<span class="attr">x</span>:<span class="number">3</span>,<span class="attr">y</span>:<span class="string">'4'</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">demo</span>(<span class="params">data: &#123; x: <span class="built_in">number</span>; y: <span class="built_in">number</span> &#125;</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(data.x ** <span class="number">2</span> + data.y ** <span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line">demo(&#123;x:<span class="number">3</span>,y:<span class="string">'4'</span>&#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="2">
+<li>代码提示</li>
+<li>可读性更好</li>
+</ol>
+<p><strong>开发环境</strong>：</p>
+<p><code>ts-node</code>可以直接运行TS文件，ts-node xxx.ts，避免先tsc xxx.ts，再node xxx.js。</p>
+<p><strong>静态类型深度理解</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> count: <span class="built_in">number</span> = <span class="number">2020</span>;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>当count具备number的静态类型之后，count会具备number这个类型的所有属性与方法。</p>
+</blockquote>
+<h2 id="1-基础语法"><a href="#1-基础语法" class="headerlink" title="1.基础语法"></a>1.基础语法</h2><h3 id="1-1基础类型与对象类型"><a href="#1-1基础类型与对象类型" class="headerlink" title="1.1基础类型与对象类型"></a>1.1基础类型与对象类型</h3><p><strong>基础类型</strong></p>
+<blockquote>
+<p>number、boolean、string、null、undefined、symbol、void</p>
+</blockquote>
+<p><strong>对象类型</strong></p>
+<blockquote>
+<p>对象类型{}、数组类型[]、类类型、函数类型</p>
+</blockquote>
+<h3 id="1-2类型注解和类型推断"><a href="#1-2类型注解和类型推断" class="headerlink" title="1.2类型注解和类型推断"></a>1.2类型注解和类型推断</h3><p>type annotation</p>
+<blockquote>
+<p>类型注解。我们来告诉TS变量什么类型</p>
+</blockquote>
+<p>type inference</p>
+<blockquote>
+<p>类型推断。TS会自动的去分析变量的类型，如果TS无法分析变量类型，我们就需要使用类型注解。</p>
+</blockquote>
+<p>对于<code>解构赋值</code>的类型注解</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">add</span>(<span class="params">&#123; first, second &#125;: &#123; first: <span class="built_in">number</span>; second: <span class="built_in">number</span> &#125;</span>): <span class="title">number</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> first + second;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> total = add(&#123; first: <span class="number">1</span>, second: <span class="number">2</span> &#125;);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>赋值和变量的定义在一行的话，类型推断可以有效果。否则的话，类型推断无法推断出来。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> count;</span><br><span class="line">count = <span class="number">123</span>;</span><br><span class="line">-----------------</span><br><span class="line"><span class="keyword">let</span> count = <span class="number">123</span>;</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> fun1 = (str: <span class="built_in">string</span>): <span class="function"><span class="params">number</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">parseInt</span>(str, <span class="number">10</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//上面一种方式如果类型推断能推断出函数的返回值，那么number可以省略。</span></span><br><span class="line"><span class="comment">//但下面一种方式number省略的话，语法就不对了。</span></span><br><span class="line"><span class="keyword">const</span> fun2: <span class="function">(<span class="params">str: <span class="built_in">string</span></span>) =&gt;</span> <span class="built_in">number</span> = <span class="function"><span class="params">str</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">parseInt</span>(str, <span class="number">10</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-3数组与元组"><a href="#1-3数组与元组" class="headerlink" title="1.3数组与元组"></a>1.3数组与元组</h3><p><strong>数组</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> list: <span class="built_in">number</span>[] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> arr: (<span class="built_in">number</span>|<span class="built_in">string</span>)[] = [<span class="number">1</span>, <span class="string">'2'</span>, <span class="number">3</span>];</span><br><span class="line"><span class="keyword">const</span> undefinedArr: <span class="literal">undefined</span>[] = [<span class="literal">undefined</span>];</span><br><span class="line"><span class="keyword">const</span> objectArr: &#123;name: <span class="built_in">string</span>&#125;[] = [&#123;name: <span class="string">'zj'</span>&#125;]</span><br><span class="line"><span class="comment">//类型别名</span></span><br><span class="line"><span class="keyword">type</span> User = &#123;name: <span class="built_in">string</span>,age: <span class="built_in">number</span>&#125;;</span><br><span class="line"><span class="keyword">const</span> obj1Arr: User[] = [&#123;name: <span class="string">'zj'</span>, age: <span class="number">1</span>&#125;];</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Teacher &#123;</span><br><span class="line">    name: <span class="built_in">string</span>;</span><br><span class="line">    age: <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> obj2Arr: Teacher[] = [</span><br><span class="line">    &#123;</span><br><span class="line">        name: <span class="string">'zj'</span>,</span><br><span class="line">        age: <span class="number">1</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">new</span> Teacher()</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> list: <span class="built_in">Array</span>&lt;<span class="built_in">number</span>&gt; = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>元组</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Declare a tuple type</span></span><br><span class="line"><span class="keyword">let</span> x: [<span class="built_in">string</span>, <span class="built_in">number</span>];</span><br><span class="line"><span class="comment">// Initialize it</span></span><br><span class="line">x = [<span class="string">'hello'</span>, <span class="number">10</span>]; <span class="comment">// OK</span></span><br><span class="line"><span class="comment">// Initialize it incorrectly</span></span><br><span class="line">x = [<span class="number">10</span>, <span class="string">'hello'</span>]; <span class="comment">// Error</span></span><br><span class="line"><span class="comment">//csv execl导出的文件常用元组</span></span><br><span class="line"><span class="keyword">const</span> list: [<span class="built_in">number</span>, <span class="built_in">number</span>, <span class="built_in">string</span>][] = [</span><br><span class="line">    [<span class="number">1</span>, <span class="number">2</span>, <span class="string">'a'</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">3</span>, <span class="string">'b'</span>]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-4接口"><a href="#1-4接口" class="headerlink" title="1.4接口"></a>1.4接口</h3><p><strong>接口定义属性、方法</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  <span class="comment">//readonly name: string; //只读</span></span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">  age?: <span class="built_in">number</span>; <span class="comment">//可选</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//类型别名也能起到interface的效果，区别是类型别名后面可以是一个基础类型，比如</span></span><br><span class="line"><span class="comment">//type Person1 = string;</span></span><br><span class="line"><span class="keyword">type</span> Person1 = &#123;</span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> getPersonName = <span class="function">(<span class="params">person: Person</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(person.name);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> setPersonName = <span class="function">(<span class="params">person: Person, name: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">  person.name = name;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> person = &#123;</span><br><span class="line">	name: <span class="string">'zj'</span>,</span><br><span class="line">    sex: <span class="string">'male'</span></span><br><span class="line">&#125;;</span><br><span class="line">getPersonName(person);</span><br><span class="line"><span class="comment">//上面不会报错，即使你接口中没有声明sex，但是你声明必须有的name属性满足</span></span><br><span class="line">getPersonName(&#123;</span><br><span class="line">	name: <span class="string">'zj'</span>,</span><br><span class="line">    sex: <span class="string">'male'</span></span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//报错，直接以字面量的形式传递给一个变量的时候，会进行强校验，sex是未声明的</span></span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  <span class="comment">//readonly name: string; //只读</span></span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">  age?: <span class="built_in">number</span>; <span class="comment">//可选</span></span><br><span class="line">  [propName: <span class="built_in">string</span>]: <span class="built_in">any</span>; <span class="comment">//除了必传的name，可以有其他属性，只要属性名是string类型就ok～</span></span><br><span class="line">  say(): <span class="built_in">string</span>; <span class="comment">//函数，返回值类型string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>接口定义函数</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> SayHi &#123;</span><br><span class="line">  (word: <span class="built_in">string</span>): <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> say: SayHi = <span class="function">(<span class="params">word: <span class="built_in">string</span></span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> word;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>类实现接口</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> Person &#123;</span><br><span class="line">  name: <span class="built_in">string</span>;</span><br><span class="line">  age?: <span class="built_in">number</span>;</span><br><span class="line">  say(): <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> User <span class="keyword">implements</span> Person &#123;</span><br><span class="line">  name: <span class="string">'zj'</span>;</span><br><span class="line">  say() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'hello'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>接口继承接口</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">interface</span> Teacher <span class="keyword">extends</span> Person &#123;</span><br><span class="line">  teach(): <span class="built_in">string</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="1-5类"><a href="#1-5类" class="headerlink" title="1.5类"></a>1.5类</h3><figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">  name: <span class="built_in">string</span> = <span class="string">'zhou'</span>;</span><br><span class="line">  getName() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Teacher <span class="keyword">extends</span> Person &#123;</span><br><span class="line">  getTeacherName() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'jun'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  getName() &#123;</span><br><span class="line">    <span class="comment">//重写父类</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.getName() + <span class="keyword">this</span>.getTeacherName();</span><br><span class="line">    <span class="comment">//如果父类的方法被覆盖，但是还想调用父类的方法，可以用super。</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person();</span><br><span class="line"><span class="keyword">const</span> teacher = <span class="keyword">new</span> Teacher();</span><br><span class="line"><span class="built_in">console</span>.log(teacher.getName());</span><br><span class="line"><span class="built_in">console</span>.log(teacher.getTeacherName());</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>修饰符</strong></p>
+<ol>
+<li><p>public</p>
+<p> 允许在类的内外调用</p>
+</li>
+<li><p>private</p>
+<p> 允许在类内调用</p>
+</li>
+<li><p>protected</p>
+<p> 允许在类内及继承的子类调用</p>
+</li>
+<li><p>readonly</p>
+</li>
+</ol>
+<p><strong>构造器</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="comment">//传统写法</span></span><br><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">  <span class="keyword">public</span> name: <span class="built_in">string</span> = <span class="string">'zhou'</span>;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params">name: <span class="built_in">string</span></span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(<span class="string">'jun'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(person.name);</span><br><span class="line">-----------------------------------------</span><br><span class="line"><span class="comment">//简化写法</span></span><br><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">public</span> name: <span class="built_in">string</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(<span class="string">'jun'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(person.name);</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">public</span> name: <span class="built_in">string</span></span>) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">class</span> Teacher <span class="keyword">extends</span> Person &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">public</span> age: <span class="built_in">number</span></span>) &#123;</span><br><span class="line">    <span class="keyword">super</span>(<span class="string">'zhou'</span>); <span class="comment">//执行父类的构造函数</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> teacher = <span class="keyword">new</span> Teacher(<span class="number">28</span>);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>get和set</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Person &#123;</span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> _name: <span class="built_in">string</span></span>) &#123;&#125;</span><br><span class="line">  <span class="keyword">get</span> name() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>._name + <span class="string">' jun'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">set</span> name(name: <span class="built_in">string</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>._name = name;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> Person(<span class="string">'zhou'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(person.name);</span><br><span class="line">person.name = <span class="string">'hello'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(person.name);</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>静态属性</strong></p>
+<p>挂载在类的本身上，而不是类的实例上。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Grid &#123;</span><br><span class="line">    <span class="keyword">static</span> origin = &#123;x: <span class="number">0</span>, y: <span class="number">0</span>&#125;;</span><br><span class="line">    calculateDistanceFromOrigin(point: &#123;x: <span class="built_in">number</span>; y: <span class="built_in">number</span>;&#125;) &#123;</span><br><span class="line">        <span class="keyword">let</span> xDist = (point.x - Grid.origin.x);</span><br><span class="line">        <span class="keyword">let</span> yDist = (point.y - Grid.origin.y);</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Math</span>.sqrt(xDist * xDist + yDist * yDist) / <span class="keyword">this</span>.scale;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">constructor</span> (<span class="params"><span class="keyword">public</span> scale: <span class="built_in">number</span></span>) &#123; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> grid1 = <span class="keyword">new</span> Grid(<span class="number">1.0</span>);  <span class="comment">// 1x scale</span></span><br><span class="line"><span class="keyword">let</span> grid2 = <span class="keyword">new</span> Grid(<span class="number">5.0</span>);  <span class="comment">// 5x scale</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(grid1.calculateDistanceFromOrigin(&#123;x: <span class="number">10</span>, y: <span class="number">10</span>&#125;));</span><br><span class="line"><span class="built_in">console</span>.log(grid2.calculateDistanceFromOrigin(&#123;x: <span class="number">10</span>, y: <span class="number">10</span>&#125;));</span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>单例模式</strong></p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> Single &#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> instance: Single; <span class="comment">//why static? 此时并没有实例被创建，所以要直接挂载在类上</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">constructor</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line">  <span class="keyword">static</span> getInstance() &#123;</span><br><span class="line">    <span class="keyword">if</span> (!<span class="keyword">this</span>.instance) Single.instance = <span class="keyword">new</span> Single();</span><br><span class="line">    <span class="keyword">return</span> Single.instance;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> demo1 = Single.getInstance();</span><br><span class="line"><span class="keyword">const</span> demo2 = Single.getInstance();</span><br><span class="line"><span class="built_in">console</span>.log(demo1 === demo2);<span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>抽象类</strong></p>
+<p>抽象类做为其它派生类的基类使用。 它们一般不会直接被实例化。 不同于接口，抽象类可以包含成员的实现细节。 <code>abstract</code>关键字是用于定义抽象类和在抽象类内部定义抽象方法。</p>
+<p>抽象类中的抽象方法不包含具体实现并且必须在派生类中实现。 抽象方法的语法与接口方法相似。 两者都是定义方法签名但不包含方法体。 然而，抽象方法必须包含<code>abstract</code>关键字并且可以包含访问修饰符。</p>
+<figure class="highlight ts"><table><tr><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> Geom &#123;</span><br><span class="line">  width: <span class="built_in">number</span> = <span class="number">0</span>;</span><br><span class="line">  getType() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'Gemo'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">abstract</span> getArea(): <span class="built_in">number</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> Circle <span class="keyword">extends</span> Geom &#123;</span><br><span class="line">  getArea() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">123</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+]]></content>
+      <categories>
+        <category>TypeScript</category>
+      </categories>
+      <tags>
+        <tag>TypeScript</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Union Find算法</title>
     <url>/2020/02/21/Union-Find%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>Union-Find算法也就是常说的并查集算法，主要用来解决图论中<code>动态连通性</code>问题。</p>
@@ -12,11 +163,11 @@
 <li>对称性：如果节点 p 和 q 连通，那么 q 和 p 也连通。</li>
 <li>传递性：如果节点 p 和 q 连通， q 和 r 连通，那么 p 和 r 也连通。</li>
 </ol>
-<p><img src="/.com//2.jpg" alt></p>
+<p><img src="/2020/02/21/Union-Find%E7%AE%97%E6%B3%95/2.jpg" alt></p>
 <p>如上图所示，如果要将p、q连通，则可以把p的根结点连到q的根结点上，但是也会出现一个<code>问题</code>：如果每次都是随意的将一个节点的根结点连到另一个节点的根结点上，那么在查找节点的时候会导致O(n)的时间复杂度，而不是O(logn)。</p>
 <p>对于⼀般的树可能出现极端不平衡的情况，使得树⼏乎退化成链表，树的⾼度最坏情况下可能变成N。为了解决此问题，我们其实是希望，⼩⼀些的树接到⼤⼀些的树下⾯，这样就能避免头重脚轻，更平衡⼀些。可以引用变量来计算每次需要合并的俩个子树的节点数，这样每次个数小的合并到个数大的根结点上，最终可以让整个数达到平衡树，时间复杂度可以降到O(logn)。</p>
 <p><code>路径压缩</code>可以进一步的压缩树的高度，使数高保持为常数，如下图所示：</p>
-<p><img src="/.com//3.jpg" alt></p>
+<p><img src="/2020/02/21/Union-Find%E7%AE%97%E6%B3%95/3.jpg" alt></p>
 <h3 id="990-Satisfiability-of-Equality-Equations"><a href="#990-Satisfiability-of-Equality-Equations" class="headerlink" title="990. Satisfiability of Equality Equations"></a><a href="https://leetcode.com/problems/satisfiability-of-equality-equations/" target="_blank" rel="noopener">990. Satisfiability of Equality Equations</a></h3><p>​    Given an array equations of strings that represent relationships between variables, each string <code>equations[i]</code> has length <code>4</code> and takes one of two different forms: <code>&quot;a==b&quot;</code> or <code>&quot;a!=b&quot;</code>.  Here, <code>a</code> and <code>b</code> are lowercase letters (not necessarily different) that represent one-letter variable names.</p>
 <p>Return <code>true</code> if and only if it is possible to assign integers to variable names so as to satisfy all the given equations.</p>
 <p><strong>Example 1:</strong></p>
