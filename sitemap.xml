@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2020/02/22/TS%E5%85%A5%E9%97%A8/</loc>
+    <loc>http://yoursite.com/2020/02/24/Backtracking%E7%AE%97%E6%B3%95/</loc>
     
-    <lastmod>2020-02-23T13:37:06.432Z</lastmod>
+    <lastmod>2020-02-24T10:25:55.159Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/24/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/</loc>
+    
+    <lastmod>2020-02-24T10:21:50.049Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2020/02/23/TS%E5%AE%9E%E6%88%98/</loc>
     
-    <lastmod>2020-02-23T09:26:59.746Z</lastmod>
+    <lastmod>2020-02-24T10:19:17.753Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/22/TS%E5%85%A5%E9%97%A8/</loc>
+    
+    <lastmod>2020-02-24T06:55:38.719Z</lastmod>
     
   </url>
   
