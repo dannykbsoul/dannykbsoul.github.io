@@ -158,7 +158,7 @@ body {
   background: #eee;
   color: #555;
   font-family: 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
-  font-size: 1em;
+  font-size: 0.8em;
   line-height: 2;
 }
 @media (max-width: 991px) {
@@ -262,7 +262,7 @@ kbd {
 table {
   border-collapse: collapse;
   border-spacing: 0;
-  font-size: 0.875em;
+  font-size: 1em;
   margin: 0 0 20px 0;
   width: 100%;
 }
@@ -298,7 +298,7 @@ td {
   border-radius: 2px;
   color: #555;
   display: inline-block;
-  font-size: 0.875em;
+  font-size: 1em;
   line-height: 2;
   padding: 0 20px;
   text-decoration: none;
@@ -436,7 +436,7 @@ code {
 .highlight figcaption {
   background: #eee;
   color: #586e75;
-  font-size: 0.875em;
+  font-size: 1em;
   line-height: 1.2;
   padding: 0.5em;
 }
@@ -486,7 +486,7 @@ pre {
 pre code {
   background: none;
   color: #586e75;
-  font-size: 0.875em;
+  font-size: 1em;
   padding: 0;
   text-shadow: none;
 }
@@ -1272,7 +1272,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #baffde;
+  background: #b46aa4;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1307,7 +1307,7 @@ pre .javascript .function {
   margin-top: 10px;
 }
 .links-of-blogroll-title {
-  font-size: 0.875em;
+  font-size: 1em;
   font-weight: 600;
   margin-top: 0;
 }
@@ -1359,7 +1359,7 @@ pre .javascript .function {
   color: #555;
   cursor: pointer;
   display: inline-block;
-  font-size: 0.875em;
+  font-size: 1em;
 }
 .sidebar-nav li.sidebar-nav-overview {
   margin-left: 10px;
@@ -1404,7 +1404,7 @@ pre .javascript .function {
   background: #fc6423;
 }
 .post-toc {
-  font-size: 0.875em;
+  font-size: 1em;
 }
 .post-toc ol {
   list-style: none;
@@ -1486,7 +1486,7 @@ pre .javascript .function {
 }
 .footer {
   color: #999;
-  font-size: 0.875em;
+  font-size: 1em;
   padding: 20px 0;
 }
 .footer.footer-fixed {
@@ -1621,13 +1621,13 @@ pre .javascript .function {
   }
 }
 .post-body span.exturl .fa {
-  font-size: 0.875em;
+  font-size: 1em;
   margin-left: 4px;
 }
 .post-body .image-caption,
 .post-body .figure .caption {
   color: #999;
-  font-size: 0.875em;
+  font-size: 1em;
   font-weight: bold;
   line-height: 1;
   margin: -20px auto 15px;
@@ -1764,7 +1764,7 @@ pre .javascript .function {
   width: 4px;
 }
 .posts-collapse .fa-external-link {
-  font-size: 0.875em;
+  font-size: 1em;
   margin-left: 5px;
 }
 .post-eof {
@@ -1927,7 +1927,7 @@ pre .javascript .function {
   visibility: visible;
 }
 .posts-expand .post-title-link .fa {
-  font-size: 0.875em;
+  font-size: 1em;
   margin-left: 5px;
 }
 .posts-expand .post-meta {
@@ -1938,7 +1938,7 @@ pre .javascript .function {
   text-align: center;
 }
 .posts-expand .post-meta .post-description {
-  font-size: 0.875em;
+  font-size: 1em;
   margin-top: 2px;
 }
 .posts-expand .post-meta time {
@@ -1978,7 +1978,7 @@ pre .javascript .function {
 .post-nav-item a {
   border-bottom: none;
   display: block;
-  font-size: 0.875em;
+  font-size: 1em;
   line-height: 1.6;
   position: relative;
 }
@@ -2053,7 +2053,7 @@ pre .javascript .function {
 }
 .social-like {
   display: flex;
-  font-size: 0.875em;
+  font-size: 1em;
   justify-content: center;
   text-align: center;
 }
