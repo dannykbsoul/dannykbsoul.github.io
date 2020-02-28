@@ -30,7 +30,7 @@
 <meta property="og:description" content="​    缘起：前段时间，看dom diff算法那块的时候，看到了列表对比那块用到了edit distance算法，例如p, ul, div 的顺序换成了 div, p, ul。这个该怎么对比？如果按照同层级进行顺序对比的话，它们都会被替换掉。如 p 和div的tagName不同，p会被div所替代。最终，三个节点都会被替换，这样DOM开销就非常大。而实际上是不需要替换节点，而只需要经过节点移动就">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-26T14:17:06.000Z">
-<meta property="article:modified_time" content="2020-02-26T15:14:38.880Z">
+<meta property="article:modified_time" content="2020-02-27T14:59:06.616Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -215,10 +215,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-02-26 22:17:06 / Modified: 23:14:38" itemprop="dateCreated datePublished" datetime="2020-02-26T22:17:06+08:00">2020-02-26</time>
+              <time title="Created: 2020-02-26 22:17:06" itemprop="dateCreated datePublished" datetime="2020-02-26T22:17:06+08:00">2020-02-26</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-27 22:59:06" itemprop="dateModified" datetime="2020-02-27T22:59:06+08:00">2020-02-27</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -247,6 +253,8 @@
       
         <p>​    缘起：前段时间，看dom diff算法那块的时候，看到了列表对比那块用到了edit distance算法，例如<code>p, ul, div</code> 的顺序换成了 <code>div, p, ul</code>。这个该怎么对比？如果按照同层级进行顺序对比的话，它们都会被替换掉。如 <code>p</code> 和<code>div</code>的<code>tagName</code>不同，<code>p</code>会被<code>div</code>所替代。最终，三个节点都会被替换，这样<code>DOM</code>开销就非常大。而实际上是不需要替换节点，而只需要经过节点移动就可以达到，我们只需知道怎么进行移动。</p>
 <p>​    将这个问题抽象出来其实就是字符串的最小编辑距离问题（<code>Edition Distance</code>），最常见的解决方法是 <code>Levenshtein Distance</code> , <code>Levenshtein Distance</code> 是一个度量两个字符序列之间差异的字符串度量标准，两个单词之间的 <code>Levenshtein Distance</code> 是将一个单词转换为另一个单词所需的单字符编辑（插入、删除或替换）的最小数量。<code>Levenshtein Distance</code> 是1965年由苏联数学家 Vladimir Levenshtein 发明的。<code>Levenshtein Distance</code> 也被称为编辑距离（<code>Edit Distance</code>），通过<strong>动态规划</strong>求解，时间复杂度为 <code>O(M*N)</code>。</p>
+<a id="more"></a>
+
 <h2 id="72-Edit-Distance"><a href="#72-Edit-Distance" class="headerlink" title="72. Edit Distance"></a>72. Edit Distance</h2><p>Given two words <em>word1</em> and <em>word2</em>, find the minimum number of operations required to convert <em>word1</em> to <em>word2</em>.</p>
 <p>You have the following 3 operations permitted on a word:</p>
 <ol>
@@ -437,13 +445,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">73k</span>
+    <span title="Symbols count total">90k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">1:06</span>
+    <span title="Reading time total">1:22</span>
 </div>
 
 <!--
