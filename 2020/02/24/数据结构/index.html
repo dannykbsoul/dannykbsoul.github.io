@@ -30,7 +30,7 @@
 <meta property="og:description" content="数据结构总结">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-24T10:32:59.000Z">
-<meta property="article:modified_time" content="2020-02-27T14:59:23.584Z">
+<meta property="article:modified_time" content="2020-02-29T08:51:05.712Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-27 22:59:23" itemprop="dateModified" datetime="2020-02-27T22:59:23+08:00">2020-02-27</time>
+                <time title="Modified: 2020-02-29 16:51:05" itemprop="dateModified" datetime="2020-02-29T16:51:05+08:00">2020-02-29</time>
               </span>
 
           <br>
@@ -232,14 +232,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.8k</span>
+              <span>5.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
+              <span>5 mins.</span>
             </span>
 
         </div>
@@ -254,7 +254,23 @@
         <p>数据结构总结</p>
 <a id="more"></a>
 
-<h2 id="1-二叉树"><a href="#1-二叉树" class="headerlink" title="1.二叉树"></a>1.二叉树</h2><h3 id="1-1-遍历"><a href="#1-1-遍历" class="headerlink" title="1.1 遍历"></a>1.1 遍历</h3><p><strong>递归</strong></p>
+<h2 id="1-链表"><a href="#1-链表" class="headerlink" title="1.链表"></a>1.链表</h2><h3 id="226-Reverse-Linked-List"><a href="#226-Reverse-Linked-List" class="headerlink" title="226. Reverse Linked List"></a>226. Reverse Linked List</h3><p>Reverse a singly linked list.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL</span><br><span class="line">Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</span><br></pre></td></tr></table></figure>
+
+<p><strong>Follow up:</strong></p>
+<p>A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
+<p><strong>iteratively</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">let</span> prev=<span class="literal">null</span>,</span><br><span class="line">        cur=head;</span><br><span class="line">    <span class="keyword">while</span>(cur) &#123;</span><br><span class="line">        <span class="keyword">let</span> next=cur.next;</span><br><span class="line">        cur.next=prev;</span><br><span class="line">        prev=cur;</span><br><span class="line">        cur=next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> prev;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>recursively</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123; </span><br><span class="line">    <span class="keyword">if</span>(!head||!head.next) <span class="keyword">return</span> head; <span class="comment">//如果是空节点或者是最后一个节点 就返回自身 不需要翻转</span></span><br><span class="line">    <span class="keyword">let</span> last=reverseList(head.next); <span class="comment">//返回的是翻转后链表的头节点</span></span><br><span class="line">    head.next.next=head; <span class="comment">//将当前节点和翻转后的链表作拼接</span></span><br><span class="line">    head.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> last; <span class="comment">//返回翻转后的头节点</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="2-二叉树"><a href="#2-二叉树" class="headerlink" title="2.二叉树"></a>2.二叉树</h2><h3 id="2-1-遍历"><a href="#2-1-遍历" class="headerlink" title="2.1 遍历"></a>2.1 遍历</h3><p><strong>递归</strong></p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">traverse</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 前序遍历</span></span><br><span class="line">	traverse(root.left)</span><br><span class="line">	<span class="comment">// 中序遍历</span></span><br><span class="line">	traverse(root.right)</span><br><span class="line">	<span class="comment">// 后序遍历</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>非递归</strong></p>
@@ -298,7 +314,7 @@
 
 
 
-<h3 id="1-2-建树"><a href="#1-2-建树" class="headerlink" title="1.2 建树"></a>1.2 建树</h3><p>前序+中序</p>
+<h3 id="2-2-建树"><a href="#2-2-建树" class="headerlink" title="2.2 建树"></a>2.2 建树</h3><p>前序+中序</p>
 <h4 id="105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal"><a href="#105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal" class="headerlink" title="105. Construct Binary Tree from Preorder and Inorder Traversal"></a>105. Construct Binary Tree from Preorder and Inorder Traversal</h4><p>Given preorder and inorder traversal of a tree, construct the binary tree.</p>
 <p><strong>Note:</strong><br>You may assume that duplicates do not exist in the tree.</p>
 <p>For example, given</p>
@@ -407,7 +423,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-二叉树"><span class="nav-text">1.二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-遍历"><span class="nav-text">1.1 遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#144-Binary-Tree-Preorder-Traversal"><span class="nav-text">144. Binary Tree Preorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#94-Binary-Tree-Inorder-Traversal"><span class="nav-text">94. Binary Tree Inorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#145-Binary-Tree-Postorder-Traversal"><span class="nav-text">145. Binary Tree Postorder Traversal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-建树"><span class="nav-text">1.2 建树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal"><span class="nav-text">105. Construct Binary Tree from Preorder and Inorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#106-Construct-Binary-Tree-from-Inorder-and-Postorder-Traversal"><span class="nav-text">106. Construct Binary Tree from Inorder and Postorder Traversal</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-链表"><span class="nav-text">1.链表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#226-Reverse-Linked-List"><span class="nav-text">226. Reverse Linked List</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-二叉树"><span class="nav-text">2.二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-遍历"><span class="nav-text">2.1 遍历</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#144-Binary-Tree-Preorder-Traversal"><span class="nav-text">144. Binary Tree Preorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#94-Binary-Tree-Inorder-Traversal"><span class="nav-text">94. Binary Tree Inorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#145-Binary-Tree-Postorder-Traversal"><span class="nav-text">145. Binary Tree Postorder Traversal</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-建树"><span class="nav-text">2.2 建树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal"><span class="nav-text">105. Construct Binary Tree from Preorder and Inorder Traversal</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#106-Construct-Binary-Tree-from-Inorder-and-Postorder-Traversal"><span class="nav-text">106. Construct Binary Tree from Inorder and Postorder Traversal</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -487,13 +503,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">109k</span>
+    <span title="Symbols count total">130k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">1:39</span>
+    <span title="Reading time total">1:58</span>
 </div>
 
 <!--

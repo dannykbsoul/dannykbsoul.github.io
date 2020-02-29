@@ -3,15 +3,258 @@
   <entry>
     <title>JS基础总结</title>
     <url>/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<h1 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h1><h2 id="1-属性类型"><a href="#1-属性类型" class="headerlink" title="1.属性类型"></a>1.属性类型</h2><h3 id="数据属性"><a href="#数据属性" class="headerlink" title="数据属性"></a>数据属性</h3><ul>
+    <content><![CDATA[<h1 id="变量类型和类型转换"><a href="#变量类型和类型转换" class="headerlink" title="变量类型和类型转换"></a>变量类型和类型转换</h1><h2 id="JS-变量类型"><a href="#JS-变量类型" class="headerlink" title="JS 变量类型"></a>JS 变量类型</h2><p>JS中有 6 种原始值，分别是：</p>
+<ol>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>undefined</li>
+<li>symbol</li>
+<li>null</li>
+</ol>
+<p>引用类型：</p>
+<ol>
+<li>对象</li>
+<li>数组</li>
+<li>函数</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="JS中使用typeof能得到哪些类型？"><a href="#JS中使用typeof能得到哪些类型？" class="headerlink" title="JS中使用typeof能得到哪些类型？"></a>JS中使用typeof能得到哪些类型？</h2><p>其中一个奇怪的 null，虽然是基本变量，但是因为设计的时候<code>null</code>是全0，而对象是<code>000</code>开头，所以有这个误判。</p>
+<ol>
+<li>boolean</li>
+<li>number</li>
+<li>string</li>
+<li>undefined</li>
+<li>symbol</li>
+<li><strong>object</strong></li>
+<li><strong>function</strong></li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt" target="_blank" rel="noopener">bigint</a></li>
+</ol>
+<h2 id="instanceof-能正确判断对象的原理是什么？"><a href="#instanceof-能正确判断对象的原理是什么？" class="headerlink" title="instanceof 能正确判断对象的原理是什么？"></a>instanceof 能正确判断对象的原理是什么？</h2><p>判断一个对象与构造函数是否在一个原型链上</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="keyword">const</span> p1 = <span class="keyword">new</span> Person()</span><br><span class="line">p1 <span class="keyword">instanceof</span> Person <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'hello world'</span></span><br><span class="line">str <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str1 = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'hello world'</span>)</span><br><span class="line">str1 <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>对于原始类型来说，你想直接通过 <code>instanceof</code> 来判断类型是不行的，当然我们还是有办法让 <code>instanceof</code> 判断原始类型的</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class PrimitiveString &#123;</span><br><span class="line">  static [Symbol.hasInstance](x) &#123;</span><br><span class="line">    return typeof x &#x3D;&#x3D;&#x3D; &#39;string&#39;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log(&#39;hello world&#39; instanceof PrimitiveString) &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+
+<p>你可能不知道 <code>Symbol.hasInstance</code> 是什么东西，其实就是一个能让我们自定义 <code>instanceof</code> 行为的东西，以上代码等同于 <code>typeof &#39;hello world&#39; === &#39;string&#39;</code>，所以结果自然是 <code>true</code> 了。这其实也侧面反映了一个问题， <code>instanceof</code> 也不是百分之百可信的。</p>
+<h3 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h3><blockquote>
+<p>能检测出object、undefined、string、number、boolean、function,但对于object下的细分不能够识别</p>
+</blockquote>
+<h3 id="Object-prototype-toString"><a href="#Object-prototype-toString" class="headerlink" title="Object.prototype.toString"></a>Object.prototype.toString</h3><blockquote>
+<p>When the toString method is called, the following steps are taken:</p>
+</blockquote>
+<blockquote>
+<ol>
+<li>If the <strong>this</strong> value is <strong>undefined</strong>, return “<strong>[object Undefined]</strong>“.</li>
+<li>If the <strong>this</strong> value is <strong>null</strong>, return “<strong>[object Null]</strong>“.</li>
+<li>Let <em>O</em> be the result of calling ToObject passing the <strong>this</strong> value as the argument.</li>
+<li>Let <em>class</em> be the value of the [[Class]] internal property of <em>O</em>.</li>
+<li>Return the String value that is the result of concatenating the three Strings “<strong>[object</strong> “, <em>class</em>, and “<strong>]</strong>“.</li>
+</ol>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 以下是11种：</span></span><br><span class="line"><span class="keyword">var</span> number = <span class="number">1</span>;          <span class="comment">// [object Number]</span></span><br><span class="line"><span class="keyword">var</span> string = <span class="string">'123'</span>;      <span class="comment">// [object String]</span></span><br><span class="line"><span class="keyword">var</span> boolean = <span class="literal">true</span>;      <span class="comment">// [object Boolean]</span></span><br><span class="line"><span class="keyword">var</span> und = <span class="literal">undefined</span>;     <span class="comment">// [object Undefined]</span></span><br><span class="line"><span class="keyword">var</span> nul = <span class="literal">null</span>;          <span class="comment">// [object Null]</span></span><br><span class="line"><span class="keyword">var</span> obj = &#123;<span class="attr">a</span>: <span class="number">1</span>&#125;         <span class="comment">// [object Object]</span></span><br><span class="line"><span class="keyword">var</span> array = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];   <span class="comment">// [object Array]</span></span><br><span class="line"><span class="keyword">var</span> date = <span class="keyword">new</span> <span class="built_in">Date</span>();   <span class="comment">// [object Date]</span></span><br><span class="line"><span class="keyword">var</span> error = <span class="keyword">new</span> <span class="built_in">Error</span>(); <span class="comment">// [object Error]</span></span><br><span class="line"><span class="keyword">var</span> reg = <span class="regexp">/a/g</span>;          <span class="comment">// [object RegExp]</span></span><br><span class="line"><span class="keyword">var</span> func = <span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>)</span>&#123;&#125;; <span class="comment">// [object Function]</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkType</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="built_in">arguments</span>.length; i++) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">arguments</span>[i]))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">checkType(number, string, boolean, und, nul, obj, array, date, error, reg, func)</span><br></pre></td></tr></table></figure>
+
+<p>除了以上 11 种之外，还有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">Math</span>)); <span class="comment">// [object Math]</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">JSON</span>)); <span class="comment">// [object JSON]</span></span><br></pre></td></tr></table></figure>
+
+<p>除了以上 13 种之外，还有：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">a</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">Object</span>.prototype.toString.call(<span class="built_in">arguments</span>)); <span class="comment">// [object Arguments]</span></span><br><span class="line">&#125;</span><br><span class="line">a();</span><br></pre></td></tr></table></figure>
+
+<p>所以我们可以识别至少 14 种类型，当然我们也可以算出来，[[class]] 属性至少有 12 个。</p>
+<p><img src="/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/6.png" alt></p>
+<h2 id="实现一个类型判断函数"><a href="#实现一个类型判断函数" class="headerlink" title="实现一个类型判断函数"></a>实现一个类型判断函数</h2><ol>
+<li>判断null</li>
+<li>判断基本类型</li>
+<li>使用Object.prototype.toString.call(target)来判断<strong>引用类型</strong></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getType</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">    <span class="comment">//先处理最特殊的null</span></span><br><span class="line">    <span class="keyword">if</span>(target === <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'null'</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//判断是不是基本类型</span></span><br><span class="line">    <span class="keyword">const</span> typeOfT = <span class="keyword">typeof</span> target</span><br><span class="line">    <span class="keyword">if</span>(typeOfT !== <span class="string">'object'</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> typeOfT</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//肯定是引用类型</span></span><br><span class="line">    <span class="keyword">const</span> template = &#123;</span><br><span class="line">        <span class="string">"[object Object]"</span>: <span class="string">"object"</span>,</span><br><span class="line">        <span class="string">"[object Array]"</span>: <span class="string">"array"</span>,</span><br><span class="line">        <span class="comment">//一些包装类型</span></span><br><span class="line">        <span class="string">"[object String]"</span>: <span class="string">"object - string"</span>,</span><br><span class="line">        <span class="string">"[object Number]"</span>: <span class="string">"object - number"</span>,</span><br><span class="line">        <span class="string">"[object Boolean]"</span>: <span class="string">"object - boolean"</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> typeStr = <span class="built_in">Object</span>.prototype.toString.call(target)</span><br><span class="line">    <span class="keyword">return</span> template[typeStr];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="转Boolean"><a href="#转Boolean" class="headerlink" title="转Boolean"></a>转Boolean</h2><p>以下都为假值，其他所有值都转为 true，包括所有对象（空对象，空数组也转为真）。</p>
+<ul>
+<li>false</li>
+<li>undfined</li>
+<li>null</li>
+<li>‘’</li>
+<li>NaN</li>
+<li>0</li>
+<li>-0</li>
+</ul>
+<h2 id="对象转基本类型"><a href="#对象转基本类型" class="headerlink" title="对象转基本类型"></a>对象转基本类型</h2><p>对象在转换类型的时候，会调用内置的 <code>[[ToPrimitive]]</code> 函数，对于该函数来说，算法逻辑一般来说如下：</p>
+<ul>
+<li>如果已经是原始类型了，那就不需要转换了</li>
+<li>如果需要转字符串类型就调用 <code>x.toString()</code>，转换为基础类型的话就返回转换的值。不是字符串类型的话就先调用 <code>valueOf</code>，结果不是基础类型的话再调用 <code>toString</code></li>
+<li>调用 <code>x.valueOf()</code>，如果转换为基础类型，就返回转换的值</li>
+<li>如果都没有返回原始类型，就会报错</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;</span><br><span class="line">  valueOf() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">  &#125;,</span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'1'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="number">1</span> + a           <span class="comment">// 1</span></span><br><span class="line"><span class="string">'1'</span>.concat(a)   <span class="comment">//"11"</span></span><br></pre></td></tr></table></figure>
+
+<p>也可以重写 <code>Symbol.toPrimitive</code> ，该方法在转基本类型时调用<strong>优先级最高</strong>。 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol/toPrimitive" target="_blank" rel="noopener">Symbol.toPrimitive</a> 指将被调用的指定函数值的属性转换为相对应的原始值。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> object1 = &#123;</span><br><span class="line">  [<span class="built_in">Symbol</span>.toPrimitive](hint) &#123;</span><br><span class="line">    <span class="keyword">if</span> (hint == <span class="string">'number'</span>) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="number">42</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(+object1);</span><br><span class="line"><span class="comment">// expected output: 42</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  valueOf() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  [<span class="built_in">Symbol</span>.toPrimitive]() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="number">1</span> + a <span class="comment">// =&gt; 3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><ul>
+<li>运算中其中一方为字符串，那么就会把另一方也转换为字符串</li>
+<li>如果一方不是字符串或者数字，那么会将它转换为数字或者字符串</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span> + <span class="string">'1'</span> <span class="comment">// '11'</span></span><br><span class="line"><span class="literal">true</span> + <span class="literal">true</span> <span class="comment">// 2</span></span><br><span class="line"><span class="number">4</span> + [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] <span class="comment">// "41,2,3"</span></span><br></pre></td></tr></table></figure>
+
+<p>还需要注意这个表达式<code>&#39;a&#39; + + &#39;b&#39;</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">'a'</span> + + <span class="string">'b'</span> <span class="comment">// -&gt; "aNaN"</span></span><br></pre></td></tr></table></figure>
+
+<p>因为 + ‘b’ 等于 NaN，所以结果为 “aNaN”，你可能也会在一些代码中看到过 + ‘1’ 的形式来快速获取 number 类型。</p>
+<p>那么对于除了加法的运算符来说，只要其中一方是数字，那么另一方就会被转为数字</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">4</span> * <span class="string">'3'</span> <span class="comment">// 12</span></span><br><span class="line"><span class="number">4</span> * [] <span class="comment">// 0</span></span><br><span class="line"><span class="number">4</span> * [<span class="number">1</span>, <span class="number">2</span>] <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="比较运算符"><a href="#比较运算符" class="headerlink" title="比较运算符"></a>比较运算符</h2><ol>
+<li>如果是对象，就通过 <code>toPrimitive</code> 转换对象</li>
+<li>如果是字符串，就通过 <code>unicode</code> 字符索引来比较</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  valueOf() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">  &#125;,</span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">a &gt; <span class="number">-1</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>在以上代码中，因为 <code>a</code> 是对象，所以会通过 <code>valueOf</code> 转换为原始类型再比较值。</p>
+<h2 id="100-问题"><a href="#100-问题" class="headerlink" title="100 + 问题"></a><code>100 +</code> 问题</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="string">'100'</span> + <span class="number">100</span>   <span class="comment">// "100100"</span></span><br><span class="line"></span><br><span class="line"><span class="number">100</span> + <span class="string">'100'</span>   <span class="comment">// "100100"</span></span><br><span class="line"></span><br><span class="line"><span class="number">100</span> + <span class="literal">true</span>    <span class="comment">// 101</span></span><br><span class="line"></span><br><span class="line"><span class="number">100</span> + <span class="literal">false</span>   <span class="comment">// 100</span></span><br><span class="line"></span><br><span class="line"><span class="number">100</span> + <span class="literal">undefined</span> <span class="comment">//NaN</span></span><br><span class="line"></span><br><span class="line"><span class="number">100</span> + <span class="literal">null</span>    <span class="comment">// 100</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="“a-common-string”为什么会有length属性"><a href="#“a-common-string”为什么会有length属性" class="headerlink" title="“a common string”为什么会有length属性"></a>“a common string”为什么会有length属性</h2><p>通过字面量的方式创建：var a = ‘string’;，这时它就是基本类型值；通过构造函数的方式创建：var a = new String(‘string’);这时它是对象类型。</p>
+<p>基本类型是没有属性和方法的，但仍然可以使用对象才有的属性方法。这时因为在对基本类型使用属性方法的时候，后台会隐式的创建这个基本类型的对象，之后再销毁这个对象</p>
+<h2 id="console-log-new-Boolean-false-输出什么-易混淆"><a href="#console-log-new-Boolean-false-输出什么-易混淆" class="headerlink" title="console.log(!!(new Boolean(false))输出什么 [易混淆]"></a>console.log(!!(new Boolean(false))输出什么 [易混淆]</h2><p>true   布尔的包装对象 Boolean 的对象实例，对象只有在 null 与 undefined 时，才会认定为布尔的 false 值，布尔包装对象本身是个对象，对象-&gt;布尔 都是 true，所以 new Boolean(false)其实是布尔的 true，看下面这段代码:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span>(<span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>))&#123;</span><br><span class="line">    alert(<span class="string">'true!!'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只有使用了 valueOf 后才是真正的转换布尔值，与上面包装对象与原始资料转换说明的相同:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">!!(<span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>))  <span class="comment">//true</span></span><br><span class="line">(<span class="keyword">new</span> <span class="built_in">Boolean</span>(<span class="literal">false</span>)).valueOf() <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="vs"><a href="#vs" class="headerlink" title="== vs ==="></a>== vs ===</h2><h3 id="操作符"><a href="#操作符" class="headerlink" title="== 操作符"></a>== 操作符</h3><ol>
+<li>首先会判断两者类型是否相同。相同的话就是比大小了</li>
+<li>类型不相同的话，那么就会进行类型转换</li>
+<li>会先判断是否在对比 null 和 undefined，是的话就会返回 true</li>
+<li>判断两者类型是否为 string 和 number，是的话就会将字符串转换为 number</li>
+<li>判断其中一方是否为 boolean，是的话就会把 boolean 转为 number 再进行判断</li>
+<li>判断其中一方是否为 object 且另一方为 string、number 或者 symbol，是的话就会把 object 转为原始类型再进行判断</li>
+<li>两边都是对象的话，那么只要不是同一对象的不同引用，都为false</li>
+</ol>
+<p>只要出现NaN，就一定是false，因为就连NaN自己都不等于NaN 对于NaN，判断的方法是使用全局函数 <code>isNaN()</code></p>
+<p><img src="/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/7.png" alt></p>
+<h3 id="操作符-1"><a href="#操作符-1" class="headerlink" title="=== 操作符"></a>=== 操作符</h3><p>不转类型，直接判断类型和值是否相同。 但是 NaN === NaN 还是false</p>
+<h3 id="等于true还是false"><a href="#等于true还是false" class="headerlink" title="{} 等于true还是false"></a>{} 等于true还是false</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">a == <span class="literal">true</span> <span class="comment">// -&gt; ?</span></span><br><span class="line">a == <span class="literal">false</span> <span class="comment">// -&gt; ?</span></span><br></pre></td></tr></table></figure>
+
+<p>答案是两个都为false 因为a.toString() -&gt; ‘[object Object]’ -&gt; NaN</p>
+<p>但是一般情况下对象的toString方法都被重写了，所以在判断类型的时候都会调用Object.prototype.toString.call()</p>
+<h3 id="1-与-Number-1-有什么区别"><a href="#1-与-Number-1-有什么区别" class="headerlink" title="1 与 Number(1)有什么区别"></a>1 与 Number(1)有什么区别</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="built_in">Number</span>(<span class="number">1</span>) <span class="comment">// 1</span></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">1</span>)  <span class="comment">// Number &#123;[[PrimitiveValue]]: 1&#125;</span></span><br><span class="line"><span class="keyword">typeof</span> (a) <span class="comment">// number</span></span><br><span class="line"><span class="keyword">typeof</span> (b) <span class="comment">// object</span></span><br><span class="line">a == b <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>var a = 1 是一个常量，而 Number(1)是一个函数</li>
+<li>new Number(1)返回的是一个对象</li>
+<li>a==b 为 true 是因为所以在求值过程中，总是会强制转为原始数据类型而非对象，例如下面的代码:</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typeof</span> <span class="number">123</span> <span class="comment">// "number"</span></span><br><span class="line"><span class="keyword">typeof</span> <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>) <span class="comment">// "object"</span></span><br><span class="line"><span class="number">123</span> <span class="keyword">instanceof</span> <span class="built_in">Number</span> <span class="comment">// false</span></span><br><span class="line">(<span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>)) <span class="keyword">instanceof</span> <span class="built_in">Number</span> <span class="comment">// true</span></span><br><span class="line"><span class="number">123</span> === <span class="keyword">new</span> <span class="built_in">Number</span>(<span class="number">123</span>) <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id><a href="#" class="headerlink" title="[]==![]"></a>[]==![]</h3><ol>
+<li>根据运算符优先级 ，！ 的优先级是大于 == 的，所以先会执行 ![]，！可将变量转换成boolean类型，null、undefined、NaN以及空字符串(‘’)取反都为true，其余都为false。所以 ! [] 运算后的结果就是 false，也就是 [] == ! [] 相当于 [] == false</li>
+<li>根据上面提到的规则（如果有一个操作数是布尔值，则在比较相等性之前先将其转换为数值——false转换为0，而true转换为1），则需要把 false 转成 0，也就是 [] == ! [] 相当于 [] == false 相当于 [] == 0</li>
+<li>根据上面提到的规则（如果一个操作数是对象，另一个操作数不是，则调用对象的valueOf()方法，用得到的基本类型值按照前面的规则进行比较，如果对象没有valueOf()方法，则调用 toString()）而对于空数组，[].toString() -&gt;  ‘’ (返回的是空字符串)也就是  [] == 0 相当于 ‘’ == 0</li>
+<li>根据上面提到的规则（如果一个操作数是字符串，另一个操作数是数值，在比较相等性之前先将字符串转换为数值）Number(‘’) -&gt; 返回的是 0，相当于 0 == 0 自然就返回 true了</li>
+</ol>
+<p>总结一下：</p>
+<p>[] == ! []   -&gt;   [] == false  -&gt;  [] == 0  -&gt;   ‘’ == 0   -&gt;  0 == 0   -&gt;  true </p>
+<p>那么对于 {} == !{} 也是同理的</p>
+<p>关键在于  {}.toString() -&gt;   ‘[object Object]’ -&gt; NaN(返回的是NaN)</p>
+<p>根据上面的规则（如果有一个操作数是NaN，则相等操作符返回 false）</p>
+<p>总结一下：</p>
+<p>{} == ! {}   -&gt;   {} == false  -&gt;  {} == 0  -&gt;   NaN == 0    -&gt;  false</p>
+<h3 id="输出以下代码运行结果"><a href="#输出以下代码运行结果" class="headerlink" title="输出以下代码运行结果"></a>输出以下代码运行结果</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1 + &quot;1&quot;</span><br><span class="line"></span><br><span class="line">2 * &quot;2&quot;</span><br><span class="line"></span><br><span class="line">[1, 2] + [2, 1]</span><br><span class="line"></span><br><span class="line">&quot;a&quot; + + &quot;b&quot;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>1 + “1”<ul>
+<li>加性操作符：如果只有一个操作数是字符串，则将另一个操作数转换为字符串，然后再将两个字符串拼接起来</li>
+<li>所以值为：“11”</li>
+</ul>
+</li>
+<li>2 * “2”<ul>
+<li>乘性操作符：如果有一个操作数不是数值，则在后台调用 Number()将其转换为数值</li>
+</ul>
+</li>
+<li>[1, 2] + [2, 1]<ul>
+<li>Javascript中所有对象基本都是先调用valueOf方法，如果不是数值，再调用toString方法。</li>
+<li>所以两个数组对象的toString方法相加，值为：”1,22,1”</li>
+</ul>
+</li>
+<li>“a” + + “b”<ul>
+<li>后边的“+”将作为一元操作符，如果操作数是字符串，将调用Number方法将该操作数转为数值，如果操作数无法转为数值，则为NaN。</li>
+<li>所以值为：”aNaN”</li>
+</ul>
+</li>
+</ul>
+<h2 id="如何判断一个数据是不是Array"><a href="#如何判断一个数据是不是Array" class="headerlink" title="如何判断一个数据是不是Array"></a>如何判断一个数据是不是Array</h2><ul>
+<li><pre><code>Array.isArray(obj)
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    - ECMAScript 5种的函数，当使用ie8的时候就会出现问题。</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
+obj instanceof Array
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    - 当用来检测在不同的window或iframe里构造的数组时会失败。这是因为每一个iframe都有它自己的执行环境，彼此之间并不共享原型链，所以此时的判断一个对象是否为数组就会失败。此时我们有一个更好的方式去判断一个对象是否为数组。</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
+Object.prototype.toString.call(obj) == &apos;[object Array]&apos;
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    - 这个方法比较靠谱</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
+obj.constructor === Array
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    - constructor属性返回对创建此对象的函数的引用</span><br><span class="line"></span><br><span class="line">## Object.prototype.toString</span><br><span class="line"></span><br><span class="line">如果是原始类型，他会将原始类型包装为引用类型，然后调用对应方法</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;JS</span><br><span class="line">function dd()&#123;&#125;</span><br><span class="line">var toString &#x3D; Object.prototype.toString;</span><br><span class="line">toString.call(dd);          &#x2F;&#x2F;[object Function]</span><br><span class="line">toString.call(new Object);  &#x2F;&#x2F;[object Object]</span><br><span class="line">toString.call(new Array);   &#x2F;&#x2F;[object Array]</span><br><span class="line">toString.call(new Date);    &#x2F;&#x2F;[object Date]</span><br><span class="line">toString.call(new String);  &#x2F;&#x2F;[object String]</span><br><span class="line">toString.call(Math);        &#x2F;&#x2F;[object Math]</span><br><span class="line">toString.call(undefined);   &#x2F;&#x2F;[object Undefined]</span><br><span class="line">toString.call(null);        &#x2F;&#x2F;[object Null]</span><br><span class="line">toString.call(123)          &#x2F;&#x2F;[object Number]</span><br><span class="line">toString.call(&#39;abc&#39;)        &#x2F;&#x2F;[object String]</span><br></pre></td></tr></table></figure>
+</code></pre></li>
+</ul>
+<h2 id="obj-toString-和Object-prototype-toString-call-obj"><a href="#obj-toString-和Object-prototype-toString-call-obj" class="headerlink" title="obj.toString() 和Object.prototype.toString.call(obj)"></a>obj.toString() 和Object.prototype.toString.call(obj)</h2><p>同样是检测对象obj调用toString方法，obj.toString()的结果和Object.prototype.toString.call(obj)的结果不一样，这是为什么？</p>
+<p>这是因为toString为Object的原型方法，而Array ，function等类型作为Object的实例，都重写了toString方法。不同的对象类型调用toString方法时，根据原型链的知识，调用的是对应的重写之后的toString方法（function类型返回内容为函数体的字符串，Array类型返回元素组成的字符串…..），而不会去调用Object上原型toString方法（返回对象的具体类型），所以采用obj.toString()不能得到其对象类型，只能将obj转换为字符串类型；因此，在想要得到对象的具体类型时，应该调用Object上原型toString方法。</p>
+<h2 id="对象引用问题-1"><a href="#对象引用问题-1" class="headerlink" title="对象引用问题 - 1"></a>对象引用问题 - 1</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;<span class="attr">n</span>: <span class="number">1</span>&#125;;</span><br><span class="line"><span class="keyword">var</span> b = a;</span><br><span class="line">a.x = a = &#123;<span class="attr">n</span>: <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(a.x) 	<span class="comment">// --&gt; undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(b.x)  <span class="comment">// --&gt; &#123;n: 2&#125;</span></span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>优先级</strong>。<code>.</code>的优先级高于<code>=</code>，所以先执行a.x，堆内存中的{n: 1}就会变成{n: 1, x: undefined}，改变之后相应的b.x也变化了，因为指向的是同一个对象。</li>
+<li><strong>赋值操作是从右到左</strong>，所以先执行a = {n: 2}，a的引用就被改变了，然后这个返回值又赋值给了a.x，需要注意的是这时候a.x是第一步中的{n: 1, x: undefined}那个对象，其实就是b.x，相当于b.x = {n: 2}</li>
+</ol>
+<h2 id="对象引用问题-2"><a href="#对象引用问题-2" class="headerlink" title="对象引用问题 - 2"></a>对象引用问题 - 2</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">changeObjProperty</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">  o.siteUrl = <span class="string">"http://www.baidu.com"</span></span><br><span class="line">  o = <span class="keyword">new</span> <span class="built_in">Object</span>()</span><br><span class="line">  o.siteUrl = <span class="string">"http://www.google.com"</span></span><br><span class="line">&#125; </span><br><span class="line"><span class="keyword">let</span> webSite = <span class="keyword">new</span> <span class="built_in">Object</span>();</span><br><span class="line">changeObjProperty(webSite);</span><br><span class="line"><span class="built_in">console</span>.log(webSite.siteUrl);</span><br></pre></td></tr></table></figure>
+
+<p>答案： “<a href="http://www.baidu.com/" target="_blank" rel="noopener">http://www.baidu.com</a>“ 原因： o = new Object() 这句代码切断了原本对 o 的引用</p>
+<h2 id="‘1’-‘2’-‘3’-map-parseInt-答案是多少？"><a href="#‘1’-‘2’-‘3’-map-parseInt-答案是多少？" class="headerlink" title="[‘1’, ‘2’, ‘3’].map(parseInt) 答案是多少？"></a>[‘1’, ‘2’, ‘3’].map(parseInt) 答案是多少？</h2><p>答案 [1, NaN, NaN]</p>
+<p>map会给函数传递3个参数： (elem, index, array)，当相与：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="string">'1'</span>, <span class="string">'2'</span>, <span class="string">'3'</span>].map(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">parseInt</span>(item, index)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>parseInt接收两个参数(string, radix)，其中radix代表进制。省略 radix 或 radix = 0，则数字将以十进制解析</p>
+<p>因此，map 遍历 [“1”, “2”, “3”]，相应 parseInt 接收参数如下</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">parseInt</span>(<span class="string">'1'</span>, <span class="number">0</span>);  <span class="comment">// 1</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">'2'</span>, <span class="number">1</span>);  <span class="comment">// NaN</span></span><br><span class="line"><span class="built_in">parseInt</span>(<span class="string">'3'</span>, <span class="number">2</span>);  <span class="comment">// NaN</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="考-Symbol"><a href="#考-Symbol" class="headerlink" title="考 Symbol"></a>考 Symbol</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// example 1</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=<span class="string">'123'</span>, c=<span class="number">123</span>;  </span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line">a[c]=<span class="string">'c'</span>;  </span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br><span class="line"></span><br><span class="line">---------------------</span><br><span class="line"><span class="comment">// example 2</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=<span class="built_in">Symbol</span>(<span class="string">'123'</span>), c=<span class="built_in">Symbol</span>(<span class="string">'123'</span>);  </span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line">a[c]=<span class="string">'c'</span>;  </span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br><span class="line"></span><br><span class="line">---------------------</span><br><span class="line"><span class="comment">// example 3</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=&#123;<span class="attr">key</span>:<span class="string">'123'</span>&#125;, c=&#123;<span class="attr">key</span>:<span class="string">'456'</span>&#125;;  </span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line">a[c]=<span class="string">'c'</span>;  </span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br><span class="line"><span class="comment">// example 1</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=<span class="string">'123'</span>, c=<span class="number">123</span>;</span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// c 的键名会被转换成字符串'123'，这里会把 b 覆盖掉。</span></span><br><span class="line">a[c]=<span class="string">'c'</span>;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 c</span></span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br><span class="line"><span class="comment">// example 2</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=<span class="built_in">Symbol</span>(<span class="string">'123'</span>), c=<span class="built_in">Symbol</span>(<span class="string">'123'</span>);  </span><br><span class="line"></span><br><span class="line"><span class="comment">// b 是 Symbol 类型，不需要转换。</span></span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// c 是 Symbol 类型，不需要转换。任何一个 Symbol 类型的值都是不相等的，所以不会覆盖掉 b。</span></span><br><span class="line">a[c]=<span class="string">'c'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 b</span></span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br><span class="line"><span class="comment">// example 3</span></span><br><span class="line"><span class="keyword">var</span> a=&#123;&#125;, b=&#123;<span class="attr">key</span>:<span class="string">'123'</span>&#125;, c=&#123;<span class="attr">key</span>:<span class="string">'456'</span>&#125;;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// b 不是字符串也不是 Symbol 类型，需要转换成字符串。</span></span><br><span class="line"><span class="comment">// 对象类型会调用 toString 方法转换成字符串 [object Object]。</span></span><br><span class="line">a[b]=<span class="string">'b'</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// c 不是字符串也不是 Symbol 类型，需要转换成字符串。</span></span><br><span class="line"><span class="comment">// 对象类型会调用 toString 方法转换成字符串 [object Object]。这里会把 b 覆盖掉。</span></span><br><span class="line">a[c]=<span class="string">'c'</span>;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出 c</span></span><br><span class="line"><span class="built_in">console</span>.log(a[b]);</span><br></pre></td></tr></table></figure>
+
+
+
+<p>这个ToPrimitive可能不太好懂，我给你解释一下吧：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ToPrimitive(obj,preferredType)</span><br><span class="line"></span><br><span class="line">JS引擎内部转换为原始值ToPrimitive(obj,preferredType)函数接受两个参数，第一个obj为被转换的对象，第二个</span><br><span class="line">preferredType为希望转换成的类型（默认为空，接受的值为Number或String）</span><br><span class="line"></span><br><span class="line">在执行ToPrimitive(obj,preferredType)时如果第二个参数为空并且obj为Date的事例时，此时preferredType会</span><br><span class="line">被设置为String，其他情况下preferredType都会被设置为Number如果preferredType为Number，ToPrimitive执</span><br><span class="line">行过程如</span><br><span class="line">下：</span><br><span class="line">1. 如果obj为原始值，直接返回；</span><br><span class="line">2. 否则调用 obj.valueOf()，如果执行结果是原始值，返回之；</span><br><span class="line">3. 否则调用 obj.toString()，如果执行结果是原始值，返回之；</span><br><span class="line">4. 否则抛异常。</span><br><span class="line"></span><br><span class="line">如果preferredType为String，将上面的第2步和第3步调换，即：</span><br><span class="line">1. 如果obj为原始值，直接返回；</span><br><span class="line">2. 否则调用 obj.toString()，如果执行结果是原始值，返回之；</span><br><span class="line">3. 否则调用 obj.valueOf()，如果执行结果是原始值，返回之；</span><br><span class="line">4. 否则抛异常。</span><br></pre></td></tr></table></figure>
+
+<p>首先我们要明白 <strong>obj.valueOf()</strong> 和 <strong>obj.toString()</strong> 还有原始值分别是什么意思,这是弄懂上面描述的前提之一:</p>
+<p><strong>toString用来返回对象的字符串表示。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var obj &#x3D; &#123;&#125;;</span><br><span class="line">console.log(obj.toString());&#x2F;&#x2F;[object Object]</span><br><span class="line"></span><br><span class="line">var arr2 &#x3D; [];</span><br><span class="line">console.log(arr2.toString());&#x2F;&#x2F;&quot;&quot;空字符串</span><br><span class="line">  </span><br><span class="line">var date &#x3D; new Date();</span><br><span class="line">console.log(date.toString());&#x2F;&#x2F;Sun Feb 28 2016 13:40:36 GMT+0800 (中国标准时间)</span><br></pre></td></tr></table></figure>
+
+<p><strong>valueOf方法返回对象的原始值，可能是字符串、数值或bool值等，看具体的对象。</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var obj &#x3D; &#123;</span><br><span class="line">  name: &quot;obj&quot;</span><br><span class="line">&#125;;</span><br><span class="line">console.log(obj.valueOf());&#x2F;&#x2F;Object &#123;name: &quot;obj&quot;&#125;</span><br><span class="line"></span><br><span class="line">var arr1 &#x3D; [1];</span><br><span class="line">console.log(arr1.valueOf());&#x2F;&#x2F;[1]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">var date &#x3D; new Date();</span><br><span class="line">console.log(date.valueOf());&#x2F;&#x2F;1456638436303</span><br><span class="line">如代码所示，三个不同的对象实例调用valueOf返回不同的数据</span><br></pre></td></tr></table></figure>
+
+<p><strong>原始值指的是[‘Null’,’Undefined’,’String’,’Boolean’,’Number’,’Symbol’]6种基本数据类型之一</strong></p>
+<p>最后分解一下其中的过程：<br>+new Date():</p>
+<blockquote>
+<ol>
+<li>运算符new的优先级高于一元运算符+，所以过程可以分解为：<br> var time=new Date()；<br>  +time</li>
+</ol>
+</blockquote>
+<blockquote>
+<p>2.根据上面提到的规则相当于：ToNumber(time)</p>
+</blockquote>
+<blockquote>
+<p>3.time是个日期对象，根据ToNumber的转换规则，所以相当于：ToNumber(ToPrimitive(time))</p>
+</blockquote>
+<blockquote>
+<p>4.根据ToPrimitive的转换规则：ToNumber(time.valueOf())，time.valueOf()就是 <strong>原始值</strong> 得到的是个时间戳，假设time.valueOf()=1503479124652</p>
+</blockquote>
+<blockquote>
+<p>5.所以ToNumber(1503479124652)返回值是1503479124652这个数字。</p>
+</blockquote>
+<h1 id="对象"><a href="#对象" class="headerlink" title="对象"></a>对象</h1><h2 id="1-属性类型"><a href="#1-属性类型" class="headerlink" title="1.属性类型"></a>1.属性类型</h2><h3 id="数据属性"><a href="#数据属性" class="headerlink" title="数据属性"></a>数据属性</h3><ul>
 <li>Configurable：能否通过delete删除属性从而重新定义属性</li>
 <li>Enumerable：表示能否通过for-in循环返回属性</li>
 <li>Writable：表示能否修改属性的值</li>
 <li>Value：属性的数据值，默认为undefined</li>
 </ul>
 <p>在调用Object.defineProperty()时，如果不指定，configurable、enumerable和writable特性的默认值都是false。</p>
-<a id="more"></a>
-
 <blockquote>
 <p>IE8是第一个实现Object.defineProperty()方法的浏览器版本，但是问题多，如只能创建访问器属性，所以最好不要在IE8中使用这个方法。</p>
 </blockquote>
@@ -25,6 +268,11 @@
 
 <p>上述例子中_year、edition是数据属性，year是访问器属性。</p>
 <p>可以通过<code>Object.getOwnPropertyDescriptor(object,属性名)</code>读取属性的特性</p>
+<p><code>Object.hasOwnProperty()</code>可以检测一个属性是存在于实例中还是原型中。</p>
+<p><code>in</code>操作符会在通过对象能够访问给定属性时返回true，无论该属性存在于实例中还是原型中。</p>
+<p><code>for-in</code>返回的是所有能够通过对象访问的、可枚举的属性</p>
+<p><code>Object.keys()</code>返回对象上所有可枚举的实例属性。</p>
+<p><code>Object.getOwnPropertyNames()</code>返回对象上所有的实例属性，无论可枚举不可枚举。</p>
 <h1 id="创建对象"><a href="#创建对象" class="headerlink" title="创建对象"></a>创建对象</h1><h2 id="1-工厂模式"><a href="#1-工厂模式" class="headerlink" title="1. 工厂模式"></a>1. 工厂模式</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">createPerson</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> o = <span class="keyword">new</span> <span class="built_in">Object</span>();</span><br><span class="line">    o.name = name;</span><br><span class="line">    o.getName = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> o;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person1 = createPerson(<span class="string">'kevin'</span>);</span><br></pre></td></tr></table></figure>
 
 <p>缺点：对象无法识别，因为所有的实例都指向一个原型</p>
@@ -67,7 +315,7 @@
 <p>我们回顾下 new 的实现步骤：</p>
 <ol>
 <li>首先新建一个对象</li>
-<li>然后将对象的原型指向 Person.prototype</li>
+<li>然后将对象的原型指向 Person.prototype指向的对象</li>
 <li>然后 Person.apply(obj)</li>
 <li>返回这个对象</li>
 </ol>
@@ -322,7 +570,7 @@
 <p>为了避免这种情况，才采用了间接调用</p>
 <p>引用《JavaScript高级程序设计》中对寄生组合式继承的夸赞就是：</p>
 <p>这种方式的高效率体现它只调用了一次 Parent 构造函数，并且因此避免了在 Parent.prototype 上面创建不必要的、多余的属性。与此同时，原型链还能保持不变；因此，还能够正常使用 instanceof 和 isPrototypeOf。开发人员普遍认为寄生组合式继承是引用类型最理想的继承范式。</p>
-<h2 id="ES5-ES6-的继承除了写法以外还有什么区别？"><a href="#ES5-ES6-的继承除了写法以外还有什么区别？" class="headerlink" title="ES5/ES6 的继承除了写法以外还有什么区别？"></a>ES5/ES6 的继承除了写法以外还有什么区别？</h2><ul>
+<h3 id="ES5-ES6-的继承除了写法以外还有什么区别？"><a href="#ES5-ES6-的继承除了写法以外还有什么区别？" class="headerlink" title="ES5/ES6 的继承除了写法以外还有什么区别？"></a>ES5/ES6 的继承除了写法以外还有什么区别？</h3><ul>
 <li>class 声明会提升，但不会初始化赋值。Foo 进入暂时性死区，类似于 let、const 声明变量。</li>
 <li>class 声明内部会启用严格模式。</li>
 <li>class 的所有方法（包括静态方法和实例方法）都是不可枚举的。</li>
@@ -330,7 +578,7 @@
 <li>必须使用 new 调用 class。</li>
 <li>class 内部无法重写类名。</li>
 </ul>
-<h2 id="js中new和object-create区别"><a href="#js中new和object-create区别" class="headerlink" title="js中new和object.create区别"></a>js中new和object.create区别</h2><h2 id="下面的代码会输出什么？"><a href="#下面的代码会输出什么？" class="headerlink" title="下面的代码会输出什么？"></a>下面的代码会输出什么？</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name = name || <span class="string">'Tom'</span></span><br><span class="line">  <span class="keyword">this</span>.msg = <span class="string">"use 'this.' set in function"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">B</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">B.prototype = A;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> B();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(b.name);</span><br><span class="line"><span class="built_in">console</span>.log(b.msg);</span><br></pre></td></tr></table></figure>
+<h3 id="js中new和object-create区别"><a href="#js中new和object-create区别" class="headerlink" title="js中new和object.create区别"></a>js中new和object.create区别</h3><h3 id="下面的代码会输出什么？"><a href="#下面的代码会输出什么？" class="headerlink" title="下面的代码会输出什么？"></a>下面的代码会输出什么？</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">A</span>(<span class="params">name</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.name = name || <span class="string">'Tom'</span></span><br><span class="line">  <span class="keyword">this</span>.msg = <span class="string">"use 'this.' set in function"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">B</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">B.prototype = A;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> b = <span class="keyword">new</span> B();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(b.name);</span><br><span class="line"><span class="built_in">console</span>.log(b.msg);</span><br></pre></td></tr></table></figure>
 
 <p>答案是：</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">A</span><br><span class="line"><span class="literal">undefined</span></span><br></pre></td></tr></table></figure>
@@ -342,7 +590,43 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line">B.prototype = <span class="keyword">new</span> A();</span><br></pre></td></tr></table></figure>
 
 <p>修改后的输出：</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Tom</span><br><span class="line">VM731:12 use &#39;this.&#39; set in function</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Tom</span><br><span class="line">VM731:12 use &#39;this.&#39; set in function</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="this"><a href="#this" class="headerlink" title="this"></a>this</h1><h2 id="this的指向有哪几种情况"><a href="#this的指向有哪几种情况" class="headerlink" title="this的指向有哪几种情况"></a>this的指向有哪几种情况</h2><blockquote>
+<p>this代表函数调用相关联的对象，通常也称之为执行上下文</p>
+</blockquote>
+<ol>
+<li>作为函数直接调用，非严格模式下，this指向window，严格模式下，this指向undefined</li>
+<li>作为某对象的方法调用，this通常指向调用的对象</li>
+<li>使用apply、call、bind 可以绑定this的指向</li>
+<li>在构造函数中，this指向新创建的对象</li>
+<li>箭头函数没有单独的this值，this在箭头函数创建时确定，它与声明所在的上下文相同</li>
+</ol>
+<h2 id="如果对一个函数进行多次-bind，那么上下文会是什么呢？"><a href="#如果对一个函数进行多次-bind，那么上下文会是什么呢？" class="headerlink" title="如果对一个函数进行多次 bind，那么上下文会是什么呢？"></a>如果对一个函数进行多次 bind，那么上下文会是什么呢？</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;&#125;</span><br><span class="line"><span class="keyword">let</span> fn = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="built_in">console</span>.log(<span class="keyword">this</span>) &#125;</span><br><span class="line">fn.bind().bind(a)() <span class="comment">// =&gt; ?</span></span><br></pre></td></tr></table></figure>
+
+<p>不管我们给函数 bind 几次，fn 中的 this 永远由第一次 bind 决定，所以结果永远是 window。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// fn.bind().bind(a) 等于</span></span><br><span class="line"><span class="keyword">let</span> fn2 = <span class="function"><span class="keyword">function</span> <span class="title">fn1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> fn.apply()</span><br><span class="line">  &#125;.apply(a)</span><br><span class="line">&#125;</span><br><span class="line">fn2()</span><br></pre></td></tr></table></figure>
+
+<h2 id="多个this规则出现时，this最终指向哪里？"><a href="#多个this规则出现时，this最终指向哪里？" class="headerlink" title="多个this规则出现时，this最终指向哪里？"></a>多个this规则出现时，this最终指向哪里？</h2><p>首先，new 的方式优先级最高，接下来是 bind 这些函数，然后是 obj.foo() 这种调用方式，最后是 foo 这种调用方式，同时，箭头函数的 this 一旦被绑定，就不会再被任何方式所改变。 </p>
+<p><img src="/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/8.jpg" alt></p>
+<h2 id="面试题"><a href="#面试题" class="headerlink" title="面试题"></a>面试题</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="number">1</span>);</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line">Foo.getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">2</span>);</span><br><span class="line">&#125;;</span><br><span class="line">Foo.prototype.getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">3</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">4</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//请写出以下输出结果：</span></span><br><span class="line">Foo.getName();      <span class="comment">//-&gt; 2    Foo对象上的getName() ，这里不会是3，因为只有Foo的实例对象才会是3，Foo上面是没有3的</span></span><br><span class="line">getName();          <span class="comment">//-&gt; 4    window上的getName，console.log(5)的那个函数提升后，在console.log(4)的那里被重新赋值</span></span><br><span class="line">Foo().getName();    <span class="comment">//-&gt; 1    在Foo函数中，getName是全局的getName，覆盖后输出 1</span></span><br><span class="line"><span class="keyword">new</span> Foo.getName();  <span class="comment">//-&gt; 2    Foo后面不带括号而直接 '.'，那么点的优先级会比new的高，所以把 Foo.getName 作为构造函数</span></span><br><span class="line"><span class="keyword">new</span> Foo().getName();<span class="comment">//-&gt; 3    此时是Foo的实例，原型上会有输出3这个方法</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>箭头函数里面的this是继承它作用域父级的this， 即声明箭头函数处的this</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> a = &#123;</span><br><span class="line">  b: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>) </span><br><span class="line">  &#125;,</span><br><span class="line">  c: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">a.b()   <span class="comment">// a</span></span><br><span class="line">a.c()   <span class="comment">// window</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> d = a.b</span><br><span class="line">d()     <span class="comment">// window</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var name1 &#x3D; 1;</span><br><span class="line"></span><br><span class="line">function test() &#123;</span><br><span class="line">	let name1 &#x3D; &#39;kin&#39;;</span><br><span class="line">	let a &#x3D; &#123;</span><br><span class="line">		name1: &#39;jack&#39;,</span><br><span class="line">		fn: () &#x3D;&gt; &#123;</span><br><span class="line">      var name1 &#x3D; &#39;black&#39;</span><br><span class="line">      console.log(this.name1)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">	return a;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">test().fn() &#x2F;&#x2F; ?</span><br></pre></td></tr></table></figure>
+
+<p>答案： 输出1</p>
+<p>因为fn处绑定的是箭头函数，箭头函数并不创建this，它只会从自己的作用域链的上一层继承this。这里它的上一层是test()，非严格模式下test中this值为window。</p>
+<ul>
+<li>如果在绑定fn的时候使用了function，那么答案会是 ‘jack’</li>
+<li>如果第一行的 var 改为了 let，那么答案会是 undefind， 因为let不会挂到window上</li>
+</ul>
+]]></content>
   </entry>
   <entry>
     <title>音乐小程序项目总结</title>
@@ -352,7 +636,66 @@
   <entry>
     <title>ES6总结</title>
     <url>/2020/02/26/ES6%E6%80%BB%E7%BB%93/</url>
-    <content><![CDATA[<a id="more"></a>]]></content>
+    <content><![CDATA[<h1 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h1><a id="more"></a>
+
+<p><strong>不同点</strong>：</p>
+<ul>
+<li><p>Class的内部定义的方法，都是不可枚举的(non-enumerable)，这一点和ES5中不一样。</p>
+</li>
+<li><p>ES6定义对象时，可以用表达式作为属性名 如[‘a’+’bc’]。</p>
+</li>
+<li><p>类的构造函数，不使用new无法调用，会报错。跟普通构造函数不一样，后者不用new也可以执行。</p>
+</li>
+<li><p>Class不存在变量提升(hoist)，这一点与ES5完全不同。</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> Foo(); <span class="comment">//ReferenceError</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这种规定的原因主要是与继承有关：必须保证子类在父类之后定义。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="keyword">let</span> Foo = <span class="class"><span class="keyword">class</span> </span>&#123;&#125;;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Bar</span> <span class="keyword">extends</span> <span class="title">Foo</span> </span>&#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如上：如果<code>class此时变量提升</code>，但是由于<code>let</code>是不会提升的，所以导致Bar继承Foo的时候，Foo还没有定义。</p>
+</blockquote>
+</li>
+</ul>
+<p>通过new生成对象实例时，自动调用constructor方法，constructor方法默认返回实例对象this，也可以指定返回另外一个对象，如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Object</span>.create(<span class="literal">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">new</span> Foo() <span class="keyword">instanceof</span> Foo <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>不推荐通过实例的<strong>proto</strong>属性为Class添加方法，因为修改的话，会影响所有实例。如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p1=<span class="keyword">new</span> Point(<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line"><span class="keyword">var</span> p2=<span class="keyword">new</span> Point(<span class="number">3</span>,<span class="number">2</span>);</span><br><span class="line">p1.__proto__.printName=<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;<span class="keyword">return</span> <span class="string">'Oops'</span>&#125;;</span><br><span class="line">p1.printName(); <span class="comment">//Oops</span></span><br><span class="line">p2.printName(); <span class="comment">//Oops</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="class表达式"><a href="#class表达式" class="headerlink" title="class表达式"></a>class表达式</h2><p>与函数一样，Class也可以使用表达式的形式定义。</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> MyClass = <span class="class"><span class="keyword">class</span> <span class="title">Me</span> </span>&#123;</span><br><span class="line">    getClassName() &#123;</span><br><span class="line">        <span class="keyword">return</span> Me.name;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>注意:</p>
+<p>MyClass才是<code>类名</code>，Me只在Class的内部代码可用，指代当前类，也可以省略。</p>
+</blockquote>
+<p>可以是立即执行的Class</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> person = <span class="keyword">new</span> <span class="class"><span class="keyword">class</span> <span class="title">Me</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    sayName() &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;(<span class="string">'zj'</span>);</span><br><span class="line">person.sayName(); <span class="comment">//zj</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="私有方法"><a href="#私有方法" class="headerlink" title="私有方法"></a>私有方法</h2><ol>
+<li>方法前面加<code>_</code>，_privateFunc() {}; 这种方法在类的外部还是可以调用，不安全。</li>
+<li>将私有方法模块移出模块。</li>
+<li>Symbol值的唯一性，将私有方法的名字命名为一个Symbol值。</li>
+</ol>
+<h2 id="name属性"><a href="#name属性" class="headerlink" title="name属性"></a>name属性</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;&#125;</span><br><span class="line">Point.name <span class="comment">//"Point"</span></span><br></pre></td></tr></table></figure>
+
+<p>name属性总是返回紧跟在<code>class</code>关键字后面的类名。</p>
+<h2 id="Class的继承"><a href="#Class的继承" class="headerlink" title="Class的继承"></a>Class的继承</h2><p>子类必须在<code>constructor</code>方法中调用<code>super</code>方法，否则新建实例会出错。这是因为子类没有自己的this对象，而是继承父类的this对象，然后对其进行加工。</p>
+<p>子类的构造函数中，只有调用super之后，才可以使用<code>this</code>关键字。</p>
+<p>俩条继承链：</p>
+<ol>
+<li>子类的<code>__proto__</code>属性，表示构造函数的继承，总是指向父类</li>
+<li>子类<code>prototype</code>属性的<code>__proto__</code>属性，表示方法的继承，总是指向父类的<code>prototype</code>属性。</li>
+</ol>
+]]></content>
   </entry>
   <entry>
     <title>Edition Distance</title>
@@ -395,6 +738,15 @@
     <content><![CDATA[<p>leetcode刷题汇总</p>
 <a id="more"></a>
 
+<h2 id="2-Add-Two-Numbers"><a href="#2-Add-Two-Numbers" class="headerlink" title="2. Add Two Numbers"></a>2. Add Two Numbers</h2><p>You are given two <strong>non-empty</strong> linked lists representing two non-negative integers. The digits are stored in <strong>reverse order</strong> and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: (2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 0 -&gt; 8</span><br><span class="line">Explanation: 342 + 465 &#x3D; 807.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l1</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l2</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> addTwoNumbers = <span class="function"><span class="keyword">function</span>(<span class="params">l1, l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>), </span><br><span class="line">        cur=dummy,</span><br><span class="line">        carry=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(l1||l2) &#123;</span><br><span class="line">        <span class="keyword">let</span> val1=l1?l1.val:<span class="number">0</span>,</span><br><span class="line">            val2=l2?l2.val:<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> val=val1+val2+carry;</span><br><span class="line">        <span class="keyword">let</span> node=<span class="keyword">new</span> ListNode(val%<span class="number">10</span>);</span><br><span class="line">        carry=<span class="built_in">Math</span>.floor(val/<span class="number">10</span>);</span><br><span class="line">        cur.next=node;</span><br><span class="line">        cur=node;</span><br><span class="line">        <span class="keyword">if</span>(l1) l1=l1.next;</span><br><span class="line">        <span class="keyword">if</span>(l2) l2=l2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(carry) &#123;</span><br><span class="line">        <span class="keyword">let</span> node=<span class="keyword">new</span> ListNode(carry);</span><br><span class="line">        cur.next=node;</span><br><span class="line">        cur=node;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="17-Letter-Combinations-of-a-Phone-Number"><a href="#17-Letter-Combinations-of-a-Phone-Number" class="headerlink" title="17. Letter Combinations of a Phone Number"></a>17. Letter Combinations of a Phone Number</h2><p>Given a string containing digits from <code>2-9</code> inclusive, return all possible letter combinations that the number could represent.</p>
 <p>A mapping of digit to letters (just like on the telephone buttons) is given below. Note that 1 does not map to any letters.</p>
 <p><img src="http://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Telephone-keypad2.svg/200px-Telephone-keypad2.svg.png" alt="img"></p>
@@ -403,6 +755,20 @@
 
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> <span class="variable">digits</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;string[]&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> letterCombinations = <span class="function"><span class="keyword">function</span>(<span class="params">digits</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> map=&#123;</span><br><span class="line">        <span class="string">'2'</span>:<span class="string">"abc"</span>,</span><br><span class="line">        <span class="string">'3'</span>:<span class="string">"def"</span>,</span><br><span class="line">        <span class="string">'4'</span>:<span class="string">"ghi"</span>,</span><br><span class="line">        <span class="string">'5'</span>:<span class="string">"jkl"</span>,</span><br><span class="line">        <span class="string">'6'</span>:<span class="string">"mno"</span>,</span><br><span class="line">        <span class="string">'7'</span>:<span class="string">"prqs"</span>,</span><br><span class="line">        <span class="string">'8'</span>:<span class="string">"tuv"</span>,</span><br><span class="line">        <span class="string">'9'</span>:<span class="string">"wxyz"</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    backtrack(<span class="string">''</span>,digits)</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">temp,digits</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!digits)&#123;</span><br><span class="line">            <span class="keyword">if</span>(!temp) <span class="keyword">return</span>; <span class="comment">//digits=""时</span></span><br><span class="line">            <span class="keyword">return</span> res.push(temp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;map[digits[<span class="number">0</span>]].length;i++) &#123;</span><br><span class="line">            backtrack(temp+map[digits[<span class="number">0</span>]][i],digits.slice(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="19-Remove-Nth-Node-From-End-of-List"><a href="#19-Remove-Nth-Node-From-End-of-List" class="headerlink" title="19. Remove Nth Node From End of List"></a>19. Remove Nth Node From End of List</h2><p>Given a linked list, remove the <em>n</em>-th node from the end of list and return its head.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Given linked list: 1-&gt;2-&gt;3-&gt;4-&gt;5, and n &#x3D; 2.</span><br><span class="line"></span><br><span class="line">After removing the second node from the end, the linked list becomes 1-&gt;2-&gt;3-&gt;5.</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong></p>
+<p>Given <em>n</em> will always be valid.</p>
+<p><strong>Follow up:</strong></p>
+<p>Could you do this in one pass?</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">n</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> removeNthFromEnd = <span class="function"><span class="keyword">function</span>(<span class="params">head, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=&#123;<span class="attr">val</span>:<span class="number">0</span>,<span class="attr">next</span>:head&#125;,</span><br><span class="line">        fast=dummy,</span><br><span class="line">        slow=dummy;</span><br><span class="line">    <span class="keyword">while</span>(n--) &#123;</span><br><span class="line">        fast=fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(fast.next) &#123;</span><br><span class="line">        slow=slow.next;</span><br><span class="line">        fast=fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    slow.next=slow.next.next;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
 
 <h2 id="22-Generate-Parentheses"><a href="#22-Generate-Parentheses" class="headerlink" title="22. Generate Parentheses"></a>22. Generate Parentheses</h2><p>Given <em>n</em> pairs of parentheses, write a function to generate all combinations of well-formed parentheses.</p>
 <p>For example, given <em>n</em> = 3, a solution set is:</p>
@@ -512,6 +878,13 @@
 
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number[]&#125;</span> <span class="variable">nums</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number[][]&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> subsetsWithDup = <span class="function"><span class="keyword">function</span>(<span class="params">nums</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res=[];</span><br><span class="line">  backtrack(res,[],nums.sort(<span class="function">(<span class="params">a,b</span>)=&gt;</span>a-b),<span class="number">0</span>);</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">res,tempArr,nums,start</span>) </span>&#123;</span><br><span class="line">    res.push([...tempArr]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=start;i&lt;nums.length;i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(i&gt;start&amp;&amp;nums[i]===nums[i<span class="number">-1</span>]) <span class="keyword">continue</span>;</span><br><span class="line">        tempArr.push(nums[i]);</span><br><span class="line">        backtrack(res,tempArr,nums,i+<span class="number">1</span>);</span><br><span class="line">        tempArr.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="92-Reverse-Linked-List-II"><a href="#92-Reverse-Linked-List-II" class="headerlink" title="92. Reverse Linked List II"></a>92. Reverse Linked List II</h2><p>Reverse a linked list from position <em>m</em> to <em>n</em>. Do it in one-pass.</p>
+<p><strong>Note:</strong> 1 ≤ <em>m</em> ≤ <em>n</em> ≤ length of list.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, m &#x3D; 2, n &#x3D; 4</span><br><span class="line">Output: 1-&gt;4-&gt;3-&gt;2-&gt;5-&gt;NULL</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">m</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">n</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseBetween = <span class="function"><span class="keyword">function</span>(<span class="params">head, m, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> prev=<span class="keyword">new</span> ListNode(<span class="number">0</span>);</span><br><span class="line">    prev.next=head;</span><br><span class="line">    <span class="keyword">let</span> dummy=prev; <span class="comment">//虚拟节点 用于返回结果</span></span><br><span class="line">    <span class="keyword">while</span>(--m) &#123; <span class="comment">//找到需要翻转节点的前一个</span></span><br><span class="line">        prev=prev.next;</span><br><span class="line">        n--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> len=n-m+<span class="number">1</span>; <span class="comment">//需要翻转的节点数</span></span><br><span class="line">    <span class="keyword">let</span> n1=prev, </span><br><span class="line">        n2=prev.next, <span class="comment">//n1、n2是用来翻转的临时节点</span></span><br><span class="line">        n3=prev.next;<span class="comment">//prev、n3一个是翻转节点的前一个节点 一个是翻转节点的第一个</span></span><br><span class="line">    <span class="keyword">while</span>(--len) &#123;</span><br><span class="line">        <span class="keyword">let</span> n4=n2.next;</span><br><span class="line">        n2.next=n1;</span><br><span class="line">        n1=n2;</span><br><span class="line">        n2=n4;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//此时n1是翻转节点的最后一个、n2是翻转节点的最后一个的下一个节点</span></span><br><span class="line">    prev.next=n1;</span><br><span class="line">    n3.next=n2;<span class="comment">//这俩步是拼接</span></span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h2 id="93-Restore-IP-Addresses"><a href="#93-Restore-IP-Addresses" class="headerlink" title="93. Restore IP Addresses"></a>93. Restore IP Addresses</h2><p>Given a string containing only digits, restore it by returning all possible valid IP address combinations.</p>
 <p><strong>Example:</strong></p>
@@ -781,6 +1154,16 @@
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * function TreeNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.left = this.right = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;TreeNode&#125;</span> <span class="variable">root</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">sum</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> pathSum = <span class="function"><span class="keyword">function</span>(<span class="params">root, sum</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> res=<span class="number">0</span>;</span><br><span class="line">    res+=pathSum(root.left,sum)+pathSum(root.right,sum)+pathSumStartWith(root,sum);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">pathSumStartWith</span>(<span class="params">root,sum</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> res=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(root.val===sum) res++;</span><br><span class="line">    res+=pathSumStartWith(root.left,sum-root.val)+pathSumStartWith(root.right,sum-root.val);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h2 id="445-Add-Two-Numbers-II"><a href="#445-Add-Two-Numbers-II" class="headerlink" title="445. Add Two Numbers II"></a>445. Add Two Numbers II</h2><p>You are given two <strong>non-empty</strong> linked lists representing two non-negative integers. The most significant digit comes first and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.</p>
+<p>You may assume the two numbers do not contain any leading zero, except the number 0 itself.</p>
+<p><strong>Follow up:</strong><br>What if you cannot modify the input lists? In other words, reversing the lists is not allowed.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: (7 -&gt; 2 -&gt; 4 -&gt; 3) + (5 -&gt; 6 -&gt; 4)</span><br><span class="line">Output: 7 -&gt; 8 -&gt; 0 -&gt; 7</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l1</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l2</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> addTwoNumbers = <span class="function"><span class="keyword">function</span>(<span class="params">l1, l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> stack1=[],</span><br><span class="line">          stack2=[],</span><br><span class="line">          stack=[];</span><br><span class="line">    <span class="keyword">let</span> carry=<span class="number">0</span>,</span><br><span class="line">        dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>),</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(l1) &#123;</span><br><span class="line">        stack1.push(l1.val);</span><br><span class="line">        l1=l1.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(l2) &#123;</span><br><span class="line">        stack2.push(l2.val);</span><br><span class="line">        l2=l2.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(stack1.length||stack2.length) &#123;</span><br><span class="line">        <span class="keyword">let</span> val1=stack1.length?stack1.pop():<span class="number">0</span>,</span><br><span class="line">            val2=stack2.length?stack2.pop():<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> val=val1+val2+carry;</span><br><span class="line">        stack.push(val%<span class="number">10</span>);</span><br><span class="line">        carry=<span class="built_in">Math</span>.floor(val/<span class="number">10</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(carry) stack.push(carry);</span><br><span class="line">    <span class="keyword">while</span>(stack.length) &#123;</span><br><span class="line">        <span class="keyword">let</span> node=<span class="keyword">new</span> ListNode(stack.pop());</span><br><span class="line">        cur.next=node;</span><br><span class="line">        cur=node;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="501-Find-Mode-in-Binary-Search-Tree"><a href="#501-Find-Mode-in-Binary-Search-Tree" class="headerlink" title="501. Find Mode in Binary Search Tree"></a>501. Find Mode in Binary Search Tree</h2><p>Given a binary search tree (BST) with duplicates, find all the <a href="https://en.wikipedia.org/wiki/Mode_(statistics)" target="_blank" rel="noopener">mode(s)</a> (the most frequently occurred element) in the given BST.</p>
 <p>Assume a BST is defined as follows:</p>
 <ul>
@@ -928,7 +1311,23 @@
     <content><![CDATA[<p>数据结构总结</p>
 <a id="more"></a>
 
-<h2 id="1-二叉树"><a href="#1-二叉树" class="headerlink" title="1.二叉树"></a>1.二叉树</h2><h3 id="1-1-遍历"><a href="#1-1-遍历" class="headerlink" title="1.1 遍历"></a>1.1 遍历</h3><p><strong>递归</strong></p>
+<h2 id="1-链表"><a href="#1-链表" class="headerlink" title="1.链表"></a>1.链表</h2><h3 id="226-Reverse-Linked-List"><a href="#226-Reverse-Linked-List" class="headerlink" title="226. Reverse Linked List"></a>226. Reverse Linked List</h3><p>Reverse a singly linked list.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL</span><br><span class="line">Output: 5-&gt;4-&gt;3-&gt;2-&gt;1-&gt;NULL</span><br></pre></td></tr></table></figure>
+
+<p><strong>Follow up:</strong></p>
+<p>A linked list can be reversed either iteratively or recursively. Could you implement both?</p>
+<p><strong>iteratively</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;    </span><br><span class="line">    <span class="keyword">let</span> prev=<span class="literal">null</span>,</span><br><span class="line">        cur=head;</span><br><span class="line">    <span class="keyword">while</span>(cur) &#123;</span><br><span class="line">        <span class="keyword">let</span> next=cur.next;</span><br><span class="line">        cur.next=prev;</span><br><span class="line">        prev=cur;</span><br><span class="line">        cur=next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> prev;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>recursively</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123; </span><br><span class="line">    <span class="keyword">if</span>(!head||!head.next) <span class="keyword">return</span> head; <span class="comment">//如果是空节点或者是最后一个节点 就返回自身 不需要翻转</span></span><br><span class="line">    <span class="keyword">let</span> last=reverseList(head.next); <span class="comment">//返回的是翻转后链表的头节点</span></span><br><span class="line">    head.next.next=head; <span class="comment">//将当前节点和翻转后的链表作拼接</span></span><br><span class="line">    head.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> last; <span class="comment">//返回翻转后的头节点</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="2-二叉树"><a href="#2-二叉树" class="headerlink" title="2.二叉树"></a>2.二叉树</h2><h3 id="2-1-遍历"><a href="#2-1-遍历" class="headerlink" title="2.1 遍历"></a>2.1 遍历</h3><p><strong>递归</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">traverse</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// 前序遍历</span></span><br><span class="line">	traverse(root.left)</span><br><span class="line">	<span class="comment">// 中序遍历</span></span><br><span class="line">	traverse(root.right)</span><br><span class="line">	<span class="comment">// 后序遍历</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p><strong>非递归</strong></p>
@@ -972,7 +1371,7 @@
 
 
 
-<h3 id="1-2-建树"><a href="#1-2-建树" class="headerlink" title="1.2 建树"></a>1.2 建树</h3><p>前序+中序</p>
+<h3 id="2-2-建树"><a href="#2-2-建树" class="headerlink" title="2.2 建树"></a>2.2 建树</h3><p>前序+中序</p>
 <h4 id="105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal"><a href="#105-Construct-Binary-Tree-from-Preorder-and-Inorder-Traversal" class="headerlink" title="105. Construct Binary Tree from Preorder and Inorder Traversal"></a>105. Construct Binary Tree from Preorder and Inorder Traversal</h4><p>Given preorder and inorder traversal of a tree, construct the binary tree.</p>
 <p><strong>Note:</strong><br>You may assume that duplicates do not exist in the tree.</p>
 <p>For example, given</p>
