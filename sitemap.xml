@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2020-02-29T03:30:12.182Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/26/ES6%E6%80%BB%E7%BB%93/</loc>
+    
+    <lastmod>2020-02-28T08:52:56.763Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2020/02/26/leetcode/</loc>
     
     <lastmod>2020-02-28T08:20:54.551Z</lastmod>
@@ -40,13 +54,6 @@
     <loc>http://yoursite.com/2020/02/26/%E9%9F%B3%E4%B9%90%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/</loc>
     
     <lastmod>2020-02-26T14:50:48.019Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2020/02/26/ES6%E6%80%BB%E7%BB%93/</loc>
-    
-    <lastmod>2020-02-26T14:44:14.751Z</lastmod>
     
   </url>
   
