@@ -626,6 +626,765 @@ obj.constructor === Array
 <li>如果在绑定fn的时候使用了function，那么答案会是 ‘jack’</li>
 <li>如果第一行的 var 改为了 let，那么答案会是 undefind， 因为let不会挂到window上</li>
 </ul>
+<h1 id="作用域和作用域链"><a href="#作用域和作用域链" class="headerlink" title="作用域和作用域链"></a>作用域和作用域链</h1><h2 id="一、作用域"><a href="#一、作用域" class="headerlink" title="一、作用域"></a>一、作用域</h2><p>作用域是指程序源代码中定义变量的区域。</p>
+<p>作用域规定了如何查找变量，也就是确定当前执行代码对变量的访问权限。</p>
+<p>JavaScript 采用词法作用域(lexical scoping)，也就是静态作用域。</p>
+<h2 id="二、静态作用域与动态作用域"><a href="#二、静态作用域与动态作用域" class="headerlink" title="二、静态作用域与动态作用域"></a>二、静态作用域与动态作用域</h2><p>因为 JavaScript 采用的是词法作用域，函数的作用域在函数定义的时候就决定了。</p>
+<p>而与词法作用域相对的是动态作用域，函数的作用域是在函数调用的时候才决定的。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> value = <span class="number">2</span>;</span><br><span class="line">    foo();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bar();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 结果是 ???</span></span><br><span class="line"><span class="comment">//1</span></span><br></pre></td></tr></table></figure>
+
+<p>接下来看俩段代码:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">"global scope"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> scope = <span class="string">"local scope"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> scope;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f();</span><br><span class="line">&#125;</span><br><span class="line">checkscope();</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">"global scope"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> scope = <span class="string">"local scope"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> scope;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br><span class="line">checkscope()();</span><br></pre></td></tr></table></figure>
+
+<p>结果都是<code>local scope</code></p>
+<p>JavaScript 函数的执行用到了作用域链，这个作用域链是在函数定义的时候创建的。嵌套的函数 f() 定义在这个作用域链里，其中的变量 scope 一定是局部变量，不管何时何地执行函数 f()，这种绑定在执行 f() 时依然有效。</p>
+<blockquote>
+<p>Like most modern programming languages, JavaScript uses <code>lexical scoping</code>. This means that <code>functions are executed using the variable scope that was in effect when they were defined</code>, not the variable scope that is in effect when they are invoked. In order to implement lexical scoping, the internal state of a JavaScript function object must in- clude not only the code of the function but also a reference to the current scope chain. (Before reading the rest of this section, you may want to review the material on variable scope and the scope chain in §3.10 and §3.10.3.) This combination of a function object and a scope (a set of variable bindings) in which the function’s variables are resolved is called a closure in the computer science literature. (This is an old term that refers to the fact that the function’s variables have bindings in the scope chain and that therefore the function is “closed over” its variables.)</p>
+</blockquote>
+<blockquote>
+<p>Technically, all JavaScript functions are closures: they are objects, and they have a scope chain associated with them. Most functions are invoked using the same scope chain that was in effect when the function was defined, and it doesn’t really matter that there is a closure involved. Closures become interesting when they are invoked under a different scope chain than the one that was in effect when they were defined. This happens most commonly when a nested function object is returned from the function within which it was defined. There are a number of powerful programming techniques that involve this kind of nested function closures, and their use has become relatively common in JavaScript programming. Closures may seem confusing when you first en- counter them, but it is important that you understand them well enough to use them comfortably.</p>
+</blockquote>
+<blockquote>
+<p>JavaScript, The Definite Guide</p>
+</blockquote>
+<p>核心就是: <code>函数的作用域在函数定义的时候就决定了</code></p>
+<p>翻译成中文的话也许是这样：</p>
+<p>和大多数的现代化编程语言一样，<code>JavaScript</code>是采用词法作用域的，这就意味着函数的执行依赖于函数定义的时候所产生（而不是函数调用的时候产生的）的变量作用域。为了去实现这种词法作域，<code>JavaScript</code>函数对象的内部状态不仅包含函数逻辑的代码，除此之外还包含当前作用域链的引用。函数对象可以通过这个作用域链相互关联起来，如此，函数体内部的变量都可以保存在函数的作用域内，这在计算机的文献中被称之为闭包。</p>
+<p>从技术的角度去将，所有的<code>JavaScript</code>函数都是闭包：他们都是对象，他们都有一个关联到他们的作用域链。绝大多数函数在调用的时候使用的作用域链和他们在定义的时候的作用域链是相同的，但是这并不影响闭包。当调用函数的时候闭包所指向的作用域链和定义函数时的作用域链不是同一个作用域链的时候，闭包become interesting。这种interesting的事情往往发生在这样的情况下： 当一个函数嵌套了另外的一个函数，外部的函数将内部嵌套的这个函数作为对象返回。一大批强大的编程技术都利用了这类嵌套的函数闭包，当然，<code>javascript</code>也是这样。可能你第一次碰见闭包觉得比较难以理解，但是去明白闭包然后去非常自如的使用它是非常重要的。</p>
+<p>通俗点说，在程序语言范畴内的闭包是指函数把其的变量作用域也包含在这个函数的作用域内，形成一个所谓的“闭包”，这样的话外部的函数就无法去访问内部变量。所以按照第二段所说的，严格意义上所有的函数都是闭包。</p>
+<p>需要注意的是：我们常常所说的闭包指的是让外部函数访问到内部的变量，也就是说，按照一般的做法，是使内部函数返回一个函数，然后操作其中的变量。这样做的话一是可以读取函数内部的变量，二是可以让这些变量的值始终保存在内存中。</p>
+<p><code>JavaScript</code>利用闭包的这个特性，就意味着当前的作用域总是能够访问外部作用域中的变量。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">10</span>;</span><br><span class="line"><span class="keyword">var</span> o = &#123;</span><br><span class="line">     a:<span class="number">11</span>,</span><br><span class="line">     b:&#123;</span><br><span class="line">         fn:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">              <span class="built_in">console</span>.log(a);</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line">o.b.fn();</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>结果是 10 ，因为变量 a 并不能读取到对象 o 的属性 a ，如果 console.log(o.a)，就会打印 11，函数 fn 的作用域链为 [AO, Global.VO]，而 Global.VO 中包括了变量 a 和变量 o。</p>
+</blockquote>
+<h2 id="三、执行上下文栈"><a href="#三、执行上下文栈" class="headerlink" title="三、执行上下文栈"></a>三、执行上下文栈</h2><p>JavaScript 的可执行代码(executable code)的类型有哪些了？</p>
+<blockquote>
+<p>全局代码、函数代码、eval代码</p>
+</blockquote>
+<p>当执行到一个函数的时候，就会进行准备工作，这里的“准备工作”，让我们用个更专业一点的说法，就叫做”执行上下文(execution context)”。</p>
+<p>Javascript开始解释执行代码时,最先遇到的就是全局代码,用 globalContext 表示它，并且只有当整个应用程序结束的时候，ECStack 才会被清空，所以程序结束之前， ECStack 最底部永远有个 globalContext：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>此时遇到如下代码:</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun3</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'fun3'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    fun3();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">fun1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    fun2();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">fun1();</span><br></pre></td></tr></table></figure>
+
+<p>当执行一个函数的时候，就会创建一个执行上下文，并且压入执行上下文栈，当函数执行完毕的时候，就会将函数的执行上下文从栈中弹出。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 伪代码</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// fun1()</span></span><br><span class="line">ECStack.push(<span class="xml"><span class="tag">&lt;<span class="name">fun1</span>&gt;</span> functionContext);</span></span><br><span class="line"></span><br><span class="line"><span class="xml">// fun1中竟然调用了fun2，还要创建fun2的执行上下文</span></span><br><span class="line">ECStack.push(&lt;fun2&gt; functionContext);</span><br><span class="line"></span><br><span class="line">// 擦，fun2还调用了fun3！</span><br><span class="line">ECStack.push(&lt;fun3&gt; functionContext);</span><br><span class="line"></span><br><span class="line">// fun3执行完毕</span><br><span class="line">ECStack.pop();</span><br><span class="line"></span><br><span class="line">// fun2执行完毕</span><br><span class="line">ECStack.pop();</span><br><span class="line"></span><br><span class="line">// fun1执行完毕</span><br><span class="line">ECStack.pop();</span><br><span class="line"></span><br><span class="line">// javascript接着执行下面的代码，但是ECStack底层永远有个globalContext</span><br></pre></td></tr></table></figure>
+
+<p>对于每个执行上下文都有三个重要属性:</p>
+<ul>
+<li>变量对象(Variable object，VO)</li>
+<li>作用域链(Scope chain)</li>
+<li>this</li>
+</ul>
+<p><strong>一个执行上下文的生命周期可以分为两个阶段。</strong></p>
+<ol>
+<li>创建阶段</li>
+</ol>
+<blockquote>
+<p>在这个阶段中，执行上下文会分别创建变量对象，建立作用域链，以及确定this的指向。</p>
+</blockquote>
+<ol start="2">
+<li>代码执行阶段</li>
+</ol>
+<blockquote>
+<p>创建完成之后，就会开始执行代码，这个时候，会完成变量赋值，函数引用，以及执行其他代码。</p>
+</blockquote>
+<h3 id="1-变量对象"><a href="#1-变量对象" class="headerlink" title="1.变量对象"></a>1.变量对象</h3><p>变量对象的创建是在EC(执行上下文)的创建阶段</p>
+<p>变量对象是与执行上下文相关的数据作用域，存储了在上下文中定义的变量和函数声明。</p>
+<h4 id="执行过程"><a href="#执行过程" class="headerlink" title="执行过程"></a>执行过程</h4><p>执行上下文的代码会分成两个阶段进行处理：分析和执行，我们也可以叫做：</p>
+<ol>
+<li>进入执行上下文</li>
+<li>代码执行</li>
+</ol>
+<h5 id="进入执行上下文"><a href="#进入执行上下文" class="headerlink" title="进入执行上下文"></a>进入执行上下文</h5><p>当进入执行上下文时，这时候还没有执行代码，</p>
+<p>变量对象会包括：</p>
+<ol>
+<li>函数的所有形参 (如果是函数上下文)<ul>
+<li>由名称和对应值组成的一个变量对象的属性被创建</li>
+<li>没有实参，属性值设为 undefined</li>
+</ul>
+</li>
+<li>函数声明<ul>
+<li>由名称和对应值（函数对象(function-object)）组成一个变量对象的属性被创建</li>
+<li>如果变量对象已经存在相同名称的属性，则完全替换这个属性</li>
+</ul>
+</li>
+<li>变量声明<ul>
+<li>由名称和对应值（undefined）组成一个变量对象的属性被创建；</li>
+<li>如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性</li>
+</ul>
+</li>
+</ol>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> b = <span class="number">2</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line">  <span class="keyword">var</span> d = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">  b = <span class="number">3</span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在进入执行上下文后，这时候的 AO 是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">AO = &#123;</span><br><span class="line">    <span class="built_in">arguments</span>: &#123;</span><br><span class="line">        <span class="number">0</span>: <span class="number">1</span>,</span><br><span class="line">        length: <span class="number">1</span></span><br><span class="line">    &#125;,</span><br><span class="line">    a: <span class="number">1</span>,</span><br><span class="line">    b: <span class="literal">undefined</span>,</span><br><span class="line">    c: reference to <span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>)</span>&#123;&#125;,</span><br><span class="line">    d: <span class="literal">undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="代码执行"><a href="#代码执行" class="headerlink" title="代码执行"></a>代码执行</h5><p>在代码执行阶段，会顺序执行代码，根据代码，修改变量对象的值</p>
+<p>还是上面的例子，当代码执行完后，这时候的 AO 是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">AO = &#123;</span><br><span class="line">    <span class="built_in">arguments</span>: &#123;</span><br><span class="line">        <span class="number">0</span>: <span class="number">1</span>,</span><br><span class="line">        length: <span class="number">1</span></span><br><span class="line">    &#125;,</span><br><span class="line">    a: <span class="number">1</span>,</span><br><span class="line">    b: <span class="number">3</span>,</span><br><span class="line">    c: reference to <span class="function"><span class="keyword">function</span> <span class="title">c</span>(<span class="params"></span>)</span>&#123;&#125;,</span><br><span class="line">    d: reference to FunctionExpression <span class="string">"d"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>到这里变量对象的创建过程就介绍完了，让我们简洁的总结我们上述所说：</p>
+<ol>
+<li>全局上下文的变量对象初始化是全局对象</li>
+<li>函数上下文的变量对象初始化只包括 Arguments 对象</li>
+<li>在进入执行上下文时会给变量对象添加形参、函数声明、变量声明等初始的属性值</li>
+<li>在代码执行阶段，会再次修改变量对象的属性值</li>
+</ol>
+<p>在函数上下文中，我们用活动对象(activation object, AO)来表示变量对象。</p>
+<p><strong>AO = VO + function parameters + arguments</strong></p>
+<p>未进入执行阶段之前，变量对象(VO)中的属性都不能访问！但是进入执行阶段之后，变量对象(VO)转变为了活动对象(AO)，里面的属性都能被访问了，然后开始进行执行阶段的操作。</p>
+<p>它们其实都是同一个对象，只是处于执行上下文的不同生命周期。</p>
+<h4 id="思考题"><a href="#思考题" class="headerlink" title="思考题"></a>思考题</h4><p>1.第一题</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(); <span class="comment">// ???</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    a = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">&#125;</span><br><span class="line">bar(); <span class="comment">// ???</span></span><br></pre></td></tr></table></figure>
+
+<p>第一段会报错：<code>Uncaught ReferenceError: a is not defined</code>。</p>
+<p>第二段会打印：<code>1</code>。</p>
+<p>这是因为函数中的 “a” 并没有通过 var 关键字声明，所有不会被存放在 AO 中。</p>
+<p>第一段执行 console 的时候， AO 的值是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">AO = &#123;</span><br><span class="line">    <span class="built_in">arguments</span>: &#123;</span><br><span class="line">        length: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>没有 a 的值，然后就会到全局去找，全局也没有，所以会报错。</p>
+<p>当第二段执行 console 的时候，全局对象已经被赋予了 a 属性，这时候就可以从全局找到 a 的值，所以会打印 1。</p>
+<p>2.第二题</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(foo);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"foo"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+
+<p>会打印函数，而不是 undefined 。</p>
+<p>这是因为在进入执行上下文时，首先会处理函数声明，其次会处理变量声明，如果如果变量名称跟已经声明的形式参数或函数相同，则变量声明不会干扰已经存在的这类属性。</p>
+<p>3.第三题</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(foo);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"foo"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打印的1</p>
+<p>执行上下文的生命周期可以分为两个阶段(也就是这段代码从开始到结束经历的过程)。</p>
+<ul>
+<li><strong>创建阶段</strong><br>  在这个阶段中，执行上下文会分别创建变量对象，建立作用域链，以及确定this的指向</li>
+<li><strong>代码执行阶段</strong><br>  创建完成之后，就会开始执行代码，这个时候，会完成变量赋值，函数引用，以及执行其他代码。</li>
+</ul>
+<p><strong>这里我们先重点了解执行上下文中变量对象的创建。</strong></p>
+<p>变量对象的创建，依次经历了以下几个过程。</p>
+<ol>
+<li>建立arguments对象。检查当前上下文中的参数，建立该对象下的属性与属性值(全局环境下没有这步)。</li>
+<li>检查当前上下文的函数声明，也就是使用function关键字声明的函数。在变量对象中以函数名建立一个属性，属性值为指向该函数所在内存地址的引用。<strong>如果函数名的属性已经存在，那么该属性将会被新的引用所覆盖。</strong></li>
+<li>检查当前上下文中的变量声明，每找到一个变量声明，就在变量对象中以变量名建立一个属性，属性值为undefined。<strong>如果该变量名的属性已经存在，为了防止同名的函数被修改为undefined，则会直接跳过，原属性值不会被修改。</strong>(上面的例子就属于这种情况，foo函数名与变量foo同名)</li>
+</ol>
+<p><strong>在上面的规则中我们看出，function声明会比var声明优先级更高一点。</strong></p>
+<p>我们直接从全局执行上下文开始理解。全局作用域中运行时，全局执行上下文开始创建。为了便于理解，我们用如下的形式来表示。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">创建过程</span><br><span class="line">global:EC = &#123;</span><br><span class="line">    <span class="comment">// 变量对象</span></span><br><span class="line">    VO: &#123;&#125;,</span><br><span class="line">    scopeChain: &#123;&#125;,</span><br><span class="line">    <span class="keyword">this</span>: &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 因为暂时不详细解释作用域链和this，所以把变量对象专门提出来说明</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// VO 为 Variable Object的缩写，即变量对象</span></span><br><span class="line">VO = &#123;</span><br><span class="line">    foo: <span class="xml"><span class="tag">&lt;<span class="name">foo</span> <span class="attr">reference</span>&gt;</span>  // 表示foo的地址引用</span></span><br><span class="line"><span class="xml">   // foo: undefined</span></span><br><span class="line"><span class="xml">(如果该变量名的属性已经存在，为了防止同名的函数被修改为undefined，则会直接跳过，原属性值不会被修改。这个过程已被忽略)</span></span><br><span class="line"><span class="xml">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>未进入执行阶段之前，变量对象中的属性都不能访问！但是进入执行阶段之后，变量对象转变为了活动对象，里面的属性都能被访问了，然后开始进行执行阶段的操作。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 执行阶段</span></span><br><span class="line">VO -&gt;  AO   <span class="comment">// Active Object</span></span><br><span class="line">AO = &#123;</span><br><span class="line">    foo: <span class="number">1</span>(此时函数已被重新赋值)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因此，上面的代码，执行顺序就变成了这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"foo"</span>);</span><br><span class="line">&#125;;</span><br><span class="line"> foo = <span class="number">1</span>;</span><br><span class="line"><span class="built_in">console</span>.log(foo);</span><br></pre></td></tr></table></figure>
+
+<p>所以最后打印的是1.</p>
+<h3 id="2-作用域链"><a href="#2-作用域链" class="headerlink" title="2.作用域链"></a>2.作用域链</h3><p>当查找变量的时候，会先从当前上下文的变量对象中查找，如果没有找到，就会从父级(词法层面上的父级)执行上下文的变量对象中查找，一直找到全局上下文的变量对象，也就是全局对象。这样由多个执行上下文的变量对象构成的链表就叫做作用域链。</p>
+<h4 id="函数创建"><a href="#函数创建" class="headerlink" title="函数创建"></a>函数创建</h4><p>函数的作用域在函数定义的时候就决定了。</p>
+<p>这是因为函数有一个内部属性 [[scope]]，当函数创建的时候，就会保存所有父变量对象到其中，你可以理解 [[scope]] 就是所有父变量对象的层级链，但是注意：[[scope]] 并不代表完整的作用域链！</p>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>函数创建时，各自的[[scope]]为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">foo.[[scope]] = [</span><br><span class="line">  globalContext.VO</span><br><span class="line">];</span><br><span class="line"></span><br><span class="line">bar.[[scope]] = [</span><br><span class="line">    fooContext.AO,</span><br><span class="line">    globalContext.VO</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<h4 id="函数激活"><a href="#函数激活" class="headerlink" title="函数激活"></a>函数激活</h4><p>当函数激活时，进入函数上下文，创建 VO/AO 后，就会将活动对象添加到作用链的前端。</p>
+<p>这时候执行上下文的作用域链，我们命名为 Scope：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Scope = [AO].concat([[Scope]]);</span><br></pre></td></tr></table></figure>
+
+<p>至此，作用域链创建完毕。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">"global scope"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> scope2 = <span class="string">'local scope'</span>;</span><br><span class="line">    <span class="keyword">return</span> scope2;</span><br><span class="line">&#125;</span><br><span class="line">checkscope();</span><br></pre></td></tr></table></figure>
+
+<h4 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h4><p>执行过程如下：</p>
+<p>1.checkscope 函数被创建，保存作用域链到 内部属性[[scope]]</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkscope.[[scope]] &#x3D; [</span><br><span class="line">    globalContext.VO</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>2.执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ECStack &#x3D; [</span><br><span class="line">    checkscopeContext,</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>3.checkscope 函数并不立刻执行，开始做准备工作，第一步：复制函数[[scope]]属性创建作用域链</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkscopeContext &#x3D; &#123;</span><br><span class="line">    Scope: checkscope.[[scope]],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>4.第二步：用 arguments 创建活动对象，随后初始化活动对象，加入形参、函数声明、变量声明</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkscopeContext &#x3D; &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        arguments: &#123;</span><br><span class="line">            length: 0</span><br><span class="line">        &#125;,</span><br><span class="line">        scope2: undefined</span><br><span class="line">    &#125;，</span><br><span class="line">    Scope: checkscope.[[scope]],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5.第三步：将活动对象压入 checkscope 作用域链顶端</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkscopeContext &#x3D; &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        arguments: &#123;</span><br><span class="line">            length: 0</span><br><span class="line">        &#125;,</span><br><span class="line">        scope2: undefined</span><br><span class="line">    &#125;,</span><br><span class="line">    Scope: [AO, [[Scope]]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>6.准备工作做完，开始执行函数，随着函数的执行，修改 AO 的属性值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">checkscopeContext &#x3D; &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        arguments: &#123;</span><br><span class="line">            length: 0</span><br><span class="line">        &#125;,</span><br><span class="line">        scope2: &#39;local scope&#39;</span><br><span class="line">    &#125;,</span><br><span class="line">    Scope: [AO, [[Scope]]]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>7.查找到 scope2 的值，返回后函数执行完毕，函数上下文从执行上下文栈中弹出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ECStack &#x3D; [</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+
+
+<p>checkscope函数创建的时候，保存的是根据词法所生成的作用域链，checkscope执行的时候，会复制这个作用域链，作为自己作用域链的初始化，然后根据环境生成变量对象，然后将这个变量对象，添加到这个复制的作用域链，这才完整的构建了自己的作用域链。至于为什么会有两个作用域链，是因为在函数创建的时候并不能确定最终的作用域的样子，为什么会采用复制的方式而不是直接修改呢？应该是因为函数会被调用很多次吧。</p>
+<p>在源代码中当你定义（书写）一个函数的时候（并未调用），js引擎也能根据你函数书写的位置，函数嵌套的位置，给你生成一个[[scope]]，作为该函数的属性存在（这个属性属于函数的）。即使函数不调用，所以说==基于词法作用域（静态作用域）==。</p>
+<p>然后进入函数执行阶段，生成执行上下文，执行上下文你可以宏观的看成一个对象，（包含vo,scope,this），此时，执行上下文里的scope和之前属于函数的那个[[scope]]不是同一个，执行上下文里的scope，是在之前函数的[[scope]]的基础上，又新增一个当前的AO对象构成的。</p>
+<p>函数定义时候的[[scope]]和函数执行时候的scope，前者作为函数的属性，后者作为函数执行上下文的属性。</p>
+<h3 id="3-this"><a href="#3-this" class="headerlink" title="3.this"></a>3.this</h3><h4 id="Types"><a href="#Types" class="headerlink" title="Types"></a>Types</h4><p>首先是第 8 章 Types：</p>
+<blockquote>
+<p>Types are further subclassified into ECMAScript language types and specification types.</p>
+</blockquote>
+<blockquote>
+<p>An ECMAScript language type corresponds to values that are directly manipulated by an ECMAScript programmer using the ECMAScript language. The ECMAScript language types are Undefined, Null, Boolean, String, Number, and Object.</p>
+</blockquote>
+<blockquote>
+<p>A specification type corresponds to meta-values that are used within algorithms to describe the semantics of ECMAScript language constructs and ECMAScript language types. The specification types are Reference, List, Completion, Property Descriptor, Property Identifier, Lexical Environment, and Environment Record.</p>
+</blockquote>
+<p>我们简单的翻译一下：</p>
+<p>ECMAScript 的类型分为语言类型和规范类型。</p>
+<p>ECMAScript 语言类型是开发者直接使用 ECMAScript 可以操作的。其实就是我们常说的Undefined, Null, Boolean, String, Number, 和 Object。</p>
+<p>而规范类型相当于 meta-values，是用来用算法描述 ECMAScript 语言结构和 ECMAScript 语言类型的。规范类型包括：Reference, List, Completion, Property Descriptor, Property Identifier, Lexical Environment, 和 Environment Record。</p>
+<p>没懂？没关系，我们只要知道在 ECMAScript 规范中还有一种只存在于规范中的类型，它们的作用是用来描述语言底层行为逻辑。</p>
+<p>今天我们要讲的重点是便是其中的 Reference 类型。它与 this 的指向有着密切的关联。</p>
+<h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><p>那什么又是 Reference ？</p>
+<p>让我们看 8.7 章 The Reference Specification Type：</p>
+<blockquote>
+<p>The Reference type is used to explain the behaviour of such operators as delete, typeof, and the assignment operators.</p>
+</blockquote>
+<p>所以 Reference 类型就是用来解释诸如 delete、typeof 以及赋值等操作行为的。</p>
+<p>抄袭尤雨溪大大的话，就是：</p>
+<blockquote>
+<p>这里的 Reference 是一个 Specification Type，也就是 “只存在于规范里的抽象类型”。它们是为了更好地描述语言的底层行为逻辑才存在的，但并不存在于实际的 js 代码中。</p>
+</blockquote>
+<p>再看接下来的这段具体介绍 Reference 的内容：</p>
+<blockquote>
+<p>A Reference is a resolved name binding.</p>
+</blockquote>
+<blockquote>
+<p>A Reference consists of three components, the base value, the referenced name and the Boolean valued strict reference flag.</p>
+</blockquote>
+<blockquote>
+<p>The base value is either undefined, an Object, a Boolean, a String, a Number, or an environment record (10.2.1).</p>
+</blockquote>
+<blockquote>
+<p>A base value of undefined indicates that the reference could not be resolved to a binding. The referenced name is a String.</p>
+</blockquote>
+<p>这段讲述了 Reference 的构成，由三个组成部分，分别是：</p>
+<ul>
+<li>==base value==</li>
+<li>==referenced name==</li>
+<li>==strict reference==</li>
+</ul>
+<p>可是这些到底是什么呢？</p>
+<p>我们简单的理解的话：</p>
+<p>base value 就是属性所在的对象或者就是 EnvironmentRecord，它的值只可能是 undefined, an Object, a Boolean, a String, a Number, or an environment record 其中的一种。</p>
+<p>referenced name 就是属性的名称。</p>
+<p>举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var foo &#x3D; 1;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 对应的Reference是：</span><br><span class="line">var fooReference &#x3D; &#123;</span><br><span class="line">    base: EnvironmentRecord,</span><br><span class="line">    name: &#39;foo&#39;,</span><br><span class="line">    strict: false</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>再举个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var foo &#x3D; &#123;</span><br><span class="line">    bar: function () &#123;</span><br><span class="line">        return this;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line">foo.bar(); &#x2F;&#x2F; foo</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; bar对应的Reference是：</span><br><span class="line">var BarReference &#x3D; &#123;</span><br><span class="line">    base: foo,</span><br><span class="line">    propertyName: &#39;bar&#39;,</span><br><span class="line">    strict: false</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>而且规范中还提供了获取 Reference 组成部分的方法，比如 GetBase 和 IsPropertyReference。</p>
+<p>这两个方法很简单，简单看一看：</p>
+<p>1.GetBase</p>
+<blockquote>
+<p>GetBase(V). Returns the base value component of the reference V.</p>
+</blockquote>
+<p>返回 reference 的 base value。</p>
+<p>2.IsPropertyReference</p>
+<blockquote>
+<p>IsPropertyReference(V). Returns true if either the base value is an object or HasPrimitiveBase(V) is true; otherwise returns false.</p>
+</blockquote>
+<p>简单的理解：如果 base value 是一个对象，就返回true。</p>
+<h4 id="GetValue"><a href="#GetValue" class="headerlink" title="GetValue"></a>GetValue</h4><p>除此之外，紧接着在 8.7.1 章规范中就讲了一个用于从 Reference 类型获取对应值的方法： GetValue。</p>
+<p>简单模拟 GetValue 的使用：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var foo &#x3D; 1;</span><br><span class="line"></span><br><span class="line">var fooReference &#x3D; &#123;</span><br><span class="line">    base: EnvironmentRecord,</span><br><span class="line">    name: &#39;foo&#39;,</span><br><span class="line">    strict: false</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">GetValue(fooReference) &#x2F;&#x2F; 1;</span><br></pre></td></tr></table></figure>
+
+<p>GetValue 返回对象属性真正的值，但是要注意：</p>
+<p><strong>调用 GetValue，返回的将是具体的值，而不再是一个 Reference</strong></p>
+<p>这个很重要，这个很重要，这个很重要。</p>
+<h4 id="如何确定this的值"><a href="#如何确定this的值" class="headerlink" title="如何确定this的值"></a>如何确定this的值</h4><p>关于 Reference 讲了那么多，为什么要讲 Reference 呢？到底 Reference 跟本文的主题 this 有哪些关联呢？如果你能耐心看完之前的内容，以下开始进入高能阶段：</p>
+<p>看规范 11.2.3 Function Calls：</p>
+<p>这里讲了当函数调用的时候，如何确定 this 的取值。</p>
+<p>只看第一步、第六步、第七步：</p>
+<blockquote>
+<p>1.Let <em>ref</em> be the result of evaluating MemberExpression.</p>
+</blockquote>
+<blockquote>
+<p>6.If Type(<em>ref</em>) is Reference, then</p>
+</blockquote>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a.If IsPropertyReference(ref) is true, then</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">i.Let thisValue be GetBase(ref).</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">b.Else, the base of ref is an Environment Record</span><br></pre></td></tr></table></figure>
+</blockquote>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">i.Let thisValue be the result of calling the ImplicitThisValue concrete method of GetBase(ref).</span><br></pre></td></tr></table></figure>
+
+<p>7.Else, Type(<em>ref</em>) is not Reference.</p>
+</blockquote>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a. Let thisValue be undefined.</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>让我们描述一下：</p>
+<p>1.计算 MemberExpression 的结果赋值给 ref</p>
+<p>2.判断 ref 是不是一个 Reference 类型</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref) 是 true, 那么 this 的值为 GetBase(ref)</span><br><span class="line"></span><br><span class="line">2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)</span><br><span class="line"></span><br><span class="line">2.3 如果 ref 不是 Reference，那么 this 的值为 undefined</span><br></pre></td></tr></table></figure>
+
+<h4 id="具体分析"><a href="#具体分析" class="headerlink" title="具体分析"></a>具体分析</h4><p>让我们一步一步看：</p>
+<ol>
+<li>计算 MemberExpression 的结果赋值给 ref</li>
+</ol>
+<p>什么是 MemberExpression？看规范 11.2 Left-Hand-Side Expressions：</p>
+<p>MemberExpression :</p>
+<ul>
+<li>PrimaryExpression // 原始表达式 可以参见《JavaScript权威指南第四章》</li>
+<li>FunctionExpression // 函数定义表达式</li>
+<li>MemberExpression [ Expression ] // 属性访问表达式</li>
+<li>MemberExpression . IdentifierName // 属性访问表达式</li>
+<li>new MemberExpression Arguments // 对象创建表达式</li>
+</ul>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(); <span class="comment">// MemberExpression 是 foo</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo()(); <span class="comment">// MemberExpression 是 foo()</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">    bar: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo.bar(); <span class="comment">// MemberExpression 是 foo.bar</span></span><br></pre></td></tr></table></figure>
+
+<p>所以简单理解 MemberExpression 其实就是()左边的部分。</p>
+<p>2.判断 ref 是不是一个 Reference 类型。</p>
+<p>关键就在于看规范是如何处理各种 MemberExpression，返回的结果是不是一个Reference类型。</p>
+<p>举最后一个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">  value: <span class="number">2</span>,</span><br><span class="line">  bar: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//示例1</span></span><br><span class="line"><span class="built_in">console</span>.log(foo.bar());</span><br><span class="line"><span class="comment">//示例2</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar)());</span><br><span class="line"><span class="comment">//示例3</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar = foo.bar)());</span><br><span class="line"><span class="comment">//示例4</span></span><br><span class="line"><span class="built_in">console</span>.log((<span class="literal">false</span> || foo.bar)());</span><br><span class="line"><span class="comment">//示例5</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar, foo.bar)());</span><br></pre></td></tr></table></figure>
+
+<h5 id="foo-bar"><a href="#foo-bar" class="headerlink" title="foo.bar()"></a>foo.bar()</h5><p>在示例 1 中，MemberExpression 计算的结果是 foo.bar，那么 foo.bar 是不是一个 Reference 呢？</p>
+<p>查看规范 11.2.1 Property Accessors，这里展示了一个计算的过程，什么都不管了，就看最后一步：</p>
+<blockquote>
+<p>Return a value of type Reference whose base value is baseValue and whose referenced name is propertyNameString, and whose strict mode flag is strict.</p>
+</blockquote>
+<p>我们得知该表达式返回了一个 Reference 类型！</p>
+<p>根据之前的内容，我们知道该值为：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var Reference &#x3D; &#123;</span><br><span class="line">  base: foo,</span><br><span class="line">  name: &#39;bar&#39;,</span><br><span class="line">  strict: false</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>接下来按照 2.1 的判断流程走：</p>
+<blockquote>
+<p>2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref) 是 true, 那么 this 的值为 GetBase(ref)</p>
+</blockquote>
+<p>该值是 Reference 类型，那么 IsPropertyReference(ref) 的结果是多少呢？</p>
+<p>前面我们已经铺垫了 IsPropertyReference 方法，如果 base value 是一个对象，结果返回 true。</p>
+<p>base value 为 foo，是一个对象，所以 IsPropertyReference(ref) 结果为 true。</p>
+<p>这个时候我们就可以确定 this 的值了：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">this &#x3D; GetBase(ref)，</span><br></pre></td></tr></table></figure>
+
+<p>GetBase 也已经铺垫了，获得 base value 值，这个例子中就是foo，所以 this 的值就是 foo ，示例1的结果就是 2！</p>
+<p>唉呀妈呀，为了证明 this 指向foo，真是累死我了！但是知道了原理，剩下的就更快了。</p>
+<h5 id="foo-bar-foo-bar"><a href="#foo-bar-foo-bar" class="headerlink" title="(foo.bar = foo.bar)()"></a>(foo.bar = foo.bar)()</h5><p>看示例3，有赋值操作符，查看规范 11.13.1 Simple Assignment ( = ):</p>
+<p>计算的第三步：</p>
+<blockquote>
+<p>3.Let rval be GetValue(rref).</p>
+</blockquote>
+<p>因为使用了 GetValue，所以返回的值不是 Reference 类型，</p>
+<p>按照之前讲的判断逻辑：</p>
+<blockquote>
+<p>2.3 如果 ref 不是Reference，那么 this 的值为 undefined</p>
+</blockquote>
+<p>this 为 undefined，非严格模式下，this 的值为 undefined 的时候，其值会被隐式转换为全局对象。</p>
+<h5 id="false-foo-bar"><a href="#false-foo-bar" class="headerlink" title="(false || foo.bar)()"></a>(false || foo.bar)()</h5><p>看示例4，逻辑与算法，查看规范 11.11 Binary Logical Operators：</p>
+<p>计算第二步：</p>
+<blockquote>
+<p>2.Let lval be GetValue(lref).</p>
+</blockquote>
+<p>因为使用了 GetValue，所以返回的不是 Reference 类型，this 为 undefined</p>
+<h5 id="揭晓结果"><a href="#揭晓结果" class="headerlink" title="揭晓结果"></a>揭晓结果</h5><p>所以最后一个例子的结果是：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> value = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">  value: <span class="number">2</span>,</span><br><span class="line">  bar: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.value;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//示例1</span></span><br><span class="line"><span class="built_in">console</span>.log(foo.bar()); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">//示例2</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar)()); <span class="comment">// 2</span></span><br><span class="line"><span class="comment">//示例3</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar = foo.bar)()); <span class="comment">// 1</span></span><br><span class="line"><span class="comment">//示例4</span></span><br><span class="line"><span class="built_in">console</span>.log((<span class="literal">false</span> || foo.bar)()); <span class="comment">// 1</span></span><br><span class="line"><span class="comment">//示例5</span></span><br><span class="line"><span class="built_in">console</span>.log((foo.bar, foo.bar)()); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：以上是在非严格模式下的结果，严格模式下因为 this 返回 undefined，所以示例 3 会报错。</p>
+<h5 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h5><p>最最后，忘记了一个最最普通的情况：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+
+<p>MemberExpression 是 foo，解析标识符，查看规范 10.3.1 Identifier Resolution，会返回一个 Reference 类型的值：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> fooReference = &#123;</span><br><span class="line">    base: EnvironmentRecord,</span><br><span class="line">    name: <span class="string">'foo'</span>,</span><br><span class="line">    strict: <span class="literal">false</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>接下来进行判断：</p>
+<blockquote>
+<p>2.1 如果 ref 是 Reference，并且 IsPropertyReference(ref) 是 true, 那么 this 的值为 GetBase(ref)</p>
+</blockquote>
+<p>因为 base value 是 EnvironmentRecord，并不是一个 Object 类型，还记得前面讲过的 base value 的取值可能吗？ 只可能是 undefined, an Object, a Boolean, a String, a Number, 和 an environment record 中的一种。</p>
+<p>IsPropertyReference(ref) 的结果为 false，进入下个判断：</p>
+<blockquote>
+<p>2.2 如果 ref 是 Reference，并且 base value 值是 Environment Record, 那么this的值为 ImplicitThisValue(ref)</p>
+</blockquote>
+<p>base value 正是 Environment Record，所以会调用 ImplicitThisValue(ref)</p>
+<p>查看规范 10.2.1.1.6，ImplicitThisValue 方法的介绍：该函数始终返回 undefined。</p>
+<p>所以最后 this 的值就是 undefined。</p>
+<h4 id="例题"><a href="#例题" class="headerlink" title="例题"></a>例题</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1</span>);					</span><br><span class="line">        &#125;;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span></span><br><span class="line">&#125;</span><br><span class="line">			</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="number">5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Foo().getName();</span><br></pre></td></tr></table></figure>
+
+<p>Foo()函数返回的this指window对吧，然后Foo().getName()，不就是指window.getName()吗，所以执行结果应该是5呀？</p>
+<blockquote>
+<p>this 确实是指向 window ，但是这道题的陷阱在于 Foo 函数执行的时候，里面的 getName 函数覆盖了外层的 getName 函数</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="number">1</span>);					</span><br><span class="line">	&#125;;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Foo.prototype.getName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="number">3</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">getName</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="number">5</span>);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">new</span> Foo().getName()<span class="comment">//3</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>你会发现 成员访问 和 new (带参数列表)的优先级都为 19，相同等级下，遇到谁先执行谁，所以 new Foo().getName()相当于 (new Foo()).getName()</p>
+<p>接下来的就比较简单了, new 返回一个对象，这个对象的原型指向 Foo.prototype，然后访问这个对象上的getName方法，自然是调用写在原型上的这个方法啦，结果也就是 3。</p>
+</blockquote>
+<h2 id="四、执行上下文"><a href="#四、执行上下文" class="headerlink" title="四、执行上下文"></a>四、执行上下文</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">"global scope"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> scope = <span class="string">"local scope"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> scope;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f();</span><br><span class="line">&#125;</span><br><span class="line">checkscope();</span><br></pre></td></tr></table></figure>
+
+<p>执行过程如下：</p>
+<p>1.执行全局代码，创建全局执行上下文，全局上下文被压入执行上下文栈</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>2.全局上下文初始化</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">globalContext = &#123;</span><br><span class="line">    VO: [global],</span><br><span class="line">    Scope: [globalContext.VO],</span><br><span class="line">    <span class="keyword">this</span>: globalContext.VO</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.初始化的同时，checkscope 函数被创建，保存作用域链到函数的内部属性[[scope]]</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">checkscope.[[scope]] = [</span><br><span class="line">  globalContext.VO</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>3.执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 函数执行上下文被压入执行上下文栈</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    checkscopeContext,</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>4.checkscope 函数执行上下文初始化：</p>
+<ol>
+<li>复制函数 [[scope]] 属性创建作用域链，</li>
+<li>用 arguments 创建活动对象，</li>
+<li>初始化活动对象，即加入形参、函数声明、变量声明，</li>
+<li>将活动对象压入 checkscope 作用域链顶端。</li>
+</ol>
+<p>同时 f 函数被创建，保存作用域链到 f 函数的内部属性[[scope]]</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">checkscopeContext = &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        <span class="built_in">arguments</span>: &#123;</span><br><span class="line">            length: <span class="number">0</span></span><br><span class="line">        &#125;,</span><br><span class="line">        scope: <span class="literal">undefined</span>,</span><br><span class="line">        f: reference to <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    Scope: [AO, globalContext.VO],</span><br><span class="line">    <span class="keyword">this</span>: <span class="literal">undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>5.执行 f 函数，创建 f 函数执行上下文，f 函数执行上下文被压入执行上下文栈</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    fContext,</span><br><span class="line">    checkscopeContext,</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>6.f 函数执行上下文初始化, 以下跟第 4 步相同：</p>
+<ol>
+<li>复制函数 [[scope]] 属性创建作用域链</li>
+<li>用 arguments 创建活动对象</li>
+<li>初始化活动对象，即加入形参、函数声明、变量声明</li>
+<li>将活动对象压入 f 作用域链顶端</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fContext = &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        <span class="built_in">arguments</span>: &#123;</span><br><span class="line">            length: <span class="number">0</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    Scope: [AO, checkscopeContext.AO, globalContext.VO],</span><br><span class="line">    <span class="keyword">this</span>: <span class="literal">undefined</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>7.f 函数执行，沿着作用域链查找 scope 值，返回 scope 值</p>
+<p>8.f 函数执行完毕，f 函数上下文从执行上下文栈中弹出</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    checkscopeContext,</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+<p>9.checkscope 函数执行完毕，checkscope 执行上下文从执行上下文栈中弹出</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">ECStack = [</span><br><span class="line">    globalContext</span><br><span class="line">];</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<hr>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> t = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> n = <span class="number">99</span>;</span><br><span class="line">    <span class="keyword">var</span> t2 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    	n++</span><br><span class="line">    	<span class="built_in">console</span>.log(n)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> t2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a1 = t();</span><br><span class="line"><span class="keyword">var</span> a2 = t();</span><br><span class="line"></span><br><span class="line">a1(); <span class="comment">// 100</span></span><br><span class="line">a1(); <span class="comment">// 101</span></span><br><span class="line"></span><br><span class="line">a2(); <span class="comment">// 100</span></span><br><span class="line">a2(); <span class="comment">// 101</span></span><br></pre></td></tr></table></figure>
+
+<p>我们会发现，n 的值都是从 99 开始，执行 一次a1() 的时候，值会加一，再执行一次，值再加一，但是 n 在 a1() 和 a2() 并不是公用的。你可以理解为：==同一个函数形成的多个闭包的值都是相互独立的==。</p>
+<p>接下来看这道题目，关键在于 nAdd 函数</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> nAdd;</span><br><span class="line"><span class="keyword">var</span> t = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> n = <span class="number">99</span>;</span><br><span class="line">    nAdd = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    	 n++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> t2 = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    	<span class="built_in">console</span>.log(n)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> t2;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a1 = t();</span><br><span class="line"><span class="keyword">var</span> a2 = t();</span><br><span class="line"></span><br><span class="line">nAdd();</span><br><span class="line"></span><br><span class="line">a1(); <span class="comment">//99</span></span><br><span class="line">a2(); <span class="comment">//100</span></span><br></pre></td></tr></table></figure>
+
+<p>当执行 <code>var a1 = t()</code>的时候，变量 nAdd 被赋值为一个函数 ，这个函数是<code>function (){n++}</code>，我们命名这个匿名函数为 fn1 吧。接着执行 <code>var a = t()</code>的时候，变量 nAdd 又被重写了，这个函数跟以前的函数长得一模一样，也是<code>function (){n++}</code>，但是这已经是一个新的函数了，我们就命名为 fn2 吧。</p>
+<p>所以当执行 nAdd 函数，我们执行的是其实是 fn2，而不是 fn1，我们更改的是 a2 形成的闭包里的 n 的值，并没有更改 a1 形成的闭包里的 n 的值。所以 a1() 的结果为 99 ，a2()的结果为 100。</p>
+<hr>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setFirstName</span>(<span class="params">firstName</span>)</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">lastName</span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> firstName+<span class="string">" "</span>+lastName;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> setLastName = setFirstName(<span class="string">"kuitos"</span>);</span><br><span class="line"><span class="keyword">var</span> name = setLastName(<span class="string">"lau"</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 乍看之下这段代码没有任何问题，但是世界就是这样，大部分东西都禁不起考究(我认真起来连自己都害怕哈哈哈哈)。。</span></span><br><span class="line"><span class="comment">// 调用setFirstName函数时返回一个匿名函数，该匿名函数会持有setFirstName函数作用域的变量对象(里面包含arguments和firstName)，不管匿名函数是否会使用该变量对象里的信息，这个持有逻辑均不会改变。</span></span><br><span class="line"><span class="comment">// 也就是当setFirstName函数执行完之后其执行环境被销毁，但是他的变量对象会一直保存在内存中不被销毁(因为被匿名函数hold)。同样的，垃圾回收机制会因为变量对象被一直hold而不做回收处理。这个时候内存泄露就发生了。这时候我们需要做手动释放内存的处理。like this:</span></span><br><span class="line">setLastName = <span class="literal">null</span>;</span><br><span class="line"><span class="comment">// 由于匿名函数的引用被置为null，那么其hold的setFirstName的活动对象就能被安全回收了。</span></span><br><span class="line"><span class="comment">// 当然，现代浏览器引擎(以V8为首)都会尝试回收闭包所占用的内存，所以这一点我们也不必过多处理。</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="五、闭包"><a href="#五、闭包" class="headerlink" title="五、闭包"></a>五、闭包</h2><p>MDN对闭包的定义为:</p>
+<blockquote>
+<p>能够访问自由变量的函数</p>
+</blockquote>
+<p>那什么是自由变量呢?</p>
+<blockquote>
+<p>自由变量是指在函数中使用的，但既不是函数参数也不是函数的局部变量的变量。</p>
+</blockquote>
+<p>由此，我们可以看出闭包共有两部分组成：</p>
+<blockquote>
+<p>闭包 = 函数 + 函数能够访问的自由变量</p>
+</blockquote>
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+
+<p>foo 函数可以访问变量 a，但是 a 既不是 foo 函数的局部变量，也不是 foo 函数的参数，所以 a 就是自由变量。</p>
+<p>那么，函数 foo + foo 函数访问的自由变量 a 不就是构成了一个闭包嘛……</p>
+<p>还真是这样的！</p>
+<p>所以在《JavaScript权威指南》中就讲到：从技术的角度讲，所有的JavaScript函数都是闭包。</p>
+<p>咦，这怎么跟我们平时看到的讲到的闭包不一样呢！？</p>
+<p>别着急，这是理论上的闭包，其实还有一个实践角度上的闭包，让我们看看汤姆大叔翻译的关于闭包的文章中的定义：</p>
+<p>ECMAScript中，闭包指的是：</p>
+<ol>
+<li>从理论角度：所有的函数。因为它们都在创建的时候就将上层上下文的数据保存起来了。哪怕是简单的全局变量也是如此，因为函数中访问全局变量就相当于是在访问自由变量，这个时候使用最外层的作用域。</li>
+<li>从实践角度：以下函数才算是闭包：<ol>
+<li>即使创建它的上下文已经销毁，它仍然存在（比如，内部函数从父函数中返回）</li>
+<li>在代码中引用了自由变量</li>
+</ol>
+</li>
+</ol>
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">"global scope"</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> scope = <span class="string">"local scope"</span>;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> scope;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = checkscope();</span><br><span class="line">foo();</span><br></pre></td></tr></table></figure>
+
+<p>首先我们要分析一下这段代码中执行上下文栈和执行上下文的变化情况。</p>
+<p>这里直接给出简要的执行过程：</p>
+<ol>
+<li>进入全局代码，创建全局执行上下文，全局执行上下文压入执行上下文栈</li>
+<li>全局执行上下文初始化</li>
+<li>执行 checkscope 函数，创建 checkscope 函数执行上下文，checkscope 执行上下文被压入执行上下文栈</li>
+<li>checkscope 执行上下文初始化，创建变量对象、作用域链、this等</li>
+<li>checkscope 函数执行完毕，checkscope 执行上下文从执行上下文栈中弹出</li>
+<li>执行 f 函数，创建 f 函数执行上下文，f 执行上下文被压入执行上下文栈</li>
+<li>f 执行上下文初始化，创建变量对象、作用域链、this等</li>
+<li>f 函数执行完毕，f 函数上下文从执行上下文栈中弹出</li>
+</ol>
+<p>了解到这个过程，我们应该思考一个问题，那就是：</p>
+<p>当 f 函数执行的时候，checkscope 函数上下文已经被销毁了啊(即从执行上下文栈中被弹出)，怎么还会读取到 checkscope 作用域下的 scope 值呢？</p>
+<p>以上的代码，要是转换成 PHP，就会报错，因为在 PHP 中，f 函数只能读取到自己作用域和全局作用域里的值，所以读不到 checkscope 下的 scope 值。(这段我问的PHP同事……)</p>
+<p>然而 JavaScript 却是可以的！</p>
+<p>当我们了解了具体的执行过程后，我们知道 f 执行上下文维护了一个作用域链：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fContext = &#123;</span><br><span class="line">    Scope: [AO, checkscopeContext.AO, globalContext.VO],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>对的，就是因为这个作用域链，f 函数依然可以读取到 checkscopeContext.AO 的值，说明当 f 函数引用了 checkscopeContext.AO 中的值的时候，即使 checkscopeContext 被销毁了，但是 JavaScript 依然会让 checkscopeContext.AO 活在内存中，f 函数依然可以通过 f 函数的作用域链找到它，正是因为 JavaScript 做到了这一点，从而实现了闭包这个概念。</p>
+<p>所以，让我们再看一遍实践角度上闭包的定义：</p>
+<ol>
+<li>即使创建它的上下文已经销毁，它仍然存在（比如，内部函数从父函数中返回）</li>
+<li>在代码中引用了自由变量</li>
+</ol>
+<p>在这里再补充一个《JavaScript权威指南》英文原版对闭包的定义:</p>
+<blockquote>
+<p>This combination of a function object and a scope (a set of variable bindings) in which the function’s variables are resolved is called a closure in the computer science literature.</p>
+</blockquote>
+<p>闭包在计算机科学中也只是一个普通的概念，不要去想得太复杂。</p>
+<h3 id="例题-1"><a href="#例题-1" class="headerlink" title="例题"></a>例题</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">  data[i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i);</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="number">0</span>]();</span><br><span class="line">data[<span class="number">1</span>]();</span><br><span class="line">data[<span class="number">2</span>]();</span><br></pre></td></tr></table></figure>
+
+<p>答案是都是 3，让我们分析一下原因：</p>
+<p>当执行到 data[0] 函数之前，此时全局上下文的 VO 为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">globalContext = &#123;</span><br><span class="line">    VO: &#123;</span><br><span class="line">        data: [...],</span><br><span class="line">        i: <span class="number">3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当执行 data[0] 函数的时候，data[0] 函数的作用域链为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">data[<span class="number">0</span>]Context = &#123;</span><br><span class="line">    Scope: [AO, globalContext.VO]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>data[0]Context 的 AO 并没有 i 值，所以会从 globalContext.VO 中查找，i 为 3，所以打印的结果就是 3。</p>
+<p>data[1] 和 data[2] 是一样的道理。</p>
+<p>所以让我们改成闭包看看：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">  data[i] = (<span class="function"><span class="keyword">function</span> (<span class="params">i</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">            <span class="built_in">console</span>.log(i);</span><br><span class="line">        &#125;</span><br><span class="line">  &#125;)(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="number">0</span>]();</span><br><span class="line">data[<span class="number">1</span>]();</span><br><span class="line">data[<span class="number">2</span>]();</span><br></pre></td></tr></table></figure>
+
+<p>当执行到 data[0] 函数之前，此时全局上下文的 VO 为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">globalContext = &#123;</span><br><span class="line">    VO: &#123;</span><br><span class="line">        data: [...],</span><br><span class="line">        i: <span class="number">3</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>跟没改之前一模一样。</p>
+<p>当执行 data[0] 函数的时候，data[0] 函数的作用域链发生了改变：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">data[<span class="number">0</span>]Context = &#123;</span><br><span class="line">    Scope: [AO, 匿名函数Context.AO globalContext.VO]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>匿名函数执行上下文的AO为：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">匿名函数Context = &#123;</span><br><span class="line">    AO: &#123;</span><br><span class="line">        <span class="built_in">arguments</span>: &#123;</span><br><span class="line">            <span class="number">0</span>: <span class="number">0</span>,</span><br><span class="line">            length: <span class="number">1</span></span><br><span class="line">        &#125;,</span><br><span class="line">        i: <span class="number">0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>data[0]Context 的 AO 并没有 i 值，所以会沿着作用域链从匿名函数 Context.AO 中查找，这时候就会找 i 为 0，找到了就不会往 globalContext.VO 中查找了，即使 globalContext.VO 也有 i 的值(值为3)，所以打印的结果就是0。</p>
+<p>data[1] 和 data[2] 是一样的道理。</p>
+<h3 id="闭包问题"><a href="#闭包问题" class="headerlink" title="闭包问题"></a>闭包问题</h3><h4 id="循环中赋值为引用的问题"><a href="#循环中赋值为引用的问题" class="headerlink" title="循环中赋值为引用的问题"></a>循环中赋值为引用的问题</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解决方法有3种</p>
+<p>第一种，使用<code>立即执行函数</code>方式</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  (fuction(j)&#123;</span><br><span class="line">    setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(j)</span><br><span class="line">    &#125;, j * <span class="number">1000</span>)</span><br><span class="line">  &#125;)(i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第二种，使用ES6的<code>let</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第三种，使用<code>setTimeout的第三个参数</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>; i &lt; <span class="number">5</span>; i++) &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="keyword">function</span> <span class="title">timer</span>(<span class="params">j</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(j)</span><br><span class="line">  &#125;, i * <span class="number">1000</span>, i)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="计数器"><a href="#计数器" class="headerlink" title="计数器"></a>计数器</h3><p>实现一个foo函数 可以这么使用:</p>
+<p><code>a = foo();b = foo();c = foo();
+// a === 1;b === 2;c === 3;
+foo.clear();d = foo(); //d === 1;</code></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">myIndex</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> index = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> index++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    foo.clear = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        index = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> foo;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = myIndex();</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="六、参数按值传递"><a href="#六、参数按值传递" class="headerlink" title="六、参数按值传递"></a>六、参数按值传递</h2><blockquote>
+<p>ECMAScript中所有函数的参数都是按值传递的。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    value: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">    o = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(o); <span class="comment">//2</span></span><br><span class="line">&#125;</span><br><span class="line">foo(obj);</span><br><span class="line"><span class="built_in">console</span>.log(obj.value) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>运算符<code>=</code>就是<strong>创建或修改</strong>变量在内存中的指向.</p>
+<p>初始化变量时为创建,重新赋值即为修改.</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = &#123;<span class="attr">b</span>: <span class="number">1</span>&#125;;<span class="comment">// a = &#123;b: 1&#125;</span></span><br><span class="line"><span class="keyword">var</span> c = a;<span class="comment">// c = &#123;b: 1&#125;</span></span><br><span class="line">a = <span class="number">2</span>;<span class="comment">// 重新赋值a</span></span><br><span class="line"><span class="built_in">console</span>.log(c);<span class="comment">// &#123;b: 1&#125;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">栈</th>
+<th align="center">堆</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">a, c</td>
+<td align="center">{b: 1}</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center"></th>
+<th align="center"></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">栈</td>
+<td align="center">堆</td>
+<td align="center">常量区</td>
+</tr>
+<tr>
+<td align="center">a</td>
+<td align="center"></td>
+<td align="center">2</td>
+</tr>
+<tr>
+<td align="center">c</td>
+<td align="center">{b: 1}</td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<h4 id="例子一"><a href="#例子一" class="headerlink" title="例子一"></a>例子一</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> value = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">v</span>) </span>&#123;</span><br><span class="line">    v = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(v); <span class="comment">//2</span></span><br><span class="line">&#125;</span><br><span class="line">foo(value);</span><br><span class="line"><span class="built_in">console</span>.log(value) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>内存分布如下：</p>
+<p>改变前：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>v</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>改变后：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>value</td>
+<td>1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>v</td>
+<td>2</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<h4 id="例子二"><a href="#例子二" class="headerlink" title="例子二"></a>例子二</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">value: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">    o.value = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(o.value); <span class="comment">//2</span></span><br><span class="line">&#125;</span><br><span class="line">foo(obj);</span><br><span class="line"><span class="built_in">console</span>.log(obj.value) <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>内存分布如下：</p>
+<p>改变前：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>obj，o</td>
+<td>指针地址</td>
+<td>{value: 1}</td>
+</tr>
+</tbody></table>
+<p>改变后：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>obj，o</td>
+<td>指针地址</td>
+<td>{value: 2}</td>
+</tr>
+</tbody></table>
+<h4 id="例子三"><a href="#例子三" class="headerlink" title="例子三"></a>例子三</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">value: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">o</span>) </span>&#123;</span><br><span class="line">    o = <span class="number">2</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(o); <span class="comment">//2</span></span><br><span class="line">&#125;</span><br><span class="line">foo(obj);</span><br><span class="line"><span class="built_in">console</span>.log(obj.value) <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>内存分布如下：</p>
+<p>改变前：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>obj，o</td>
+<td>指针地址</td>
+<td>{value: 1}</td>
+</tr>
+</tbody></table>
+<p>改变后：</p>
+<table>
+<thead>
+<tr>
+<th>栈内存</th>
+<th>堆内存</th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>obj</td>
+<td>指针地址</td>
+<td>{value: 1}</td>
+</tr>
+<tr>
+<td>o</td>
+<td>2</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>==拷贝传递，不管是基本数据类型还是对象类型的，都是拷贝。前者拷贝值，后者拷贝引用。==</p>
+<p>简单来说，就是</p>
+<ul>
+<li><strong>基本类型</strong>存在栈里</li>
+<li><strong>引用类型</strong>存在堆里，而引用变量的指针存在栈里</li>
+</ul>
+<p>对于深浅拷贝</p>
+<ul>
+<li><strong>基本类型</strong>全部都是深拷贝</li>
+<li><strong>引用类型</strong>具体看是不是递归地拷贝基本类型的键值对</li>
+</ul>
+<p>对于函数参数传值/址</p>
+<ul>
+<li><strong>基本类型</strong>传的是值</li>
+<li><strong>引用类型</strong>传的是址</li>
+</ul>
+<p>所以，</p>
+<ul>
+<li>例一中两者不一样的原因是，基本类型的深拷贝导致这就是两个内存数据</li>
+<li>例二中是按址传值，在函数中改变堆内存中的基本数据类型，相当于重新开辟了一块栈内存</li>
+<li>例三中还是按址传值，形参和实参是两个都指向相同堆内存的指针，在函数中改变了形参的指针，而实参的指针不变，所以不影响原始值。</li>
+</ul>
 ]]></content>
   </entry>
   <entry>
@@ -766,6 +1525,12 @@ obj.constructor === Array
 <p>Could you do this in one pass?</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">n</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> removeNthFromEnd = <span class="function"><span class="keyword">function</span>(<span class="params">head, n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=&#123;<span class="attr">val</span>:<span class="number">0</span>,<span class="attr">next</span>:head&#125;,</span><br><span class="line">        fast=dummy,</span><br><span class="line">        slow=dummy;</span><br><span class="line">    <span class="keyword">while</span>(n--) &#123;</span><br><span class="line">        fast=fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(fast.next) &#123;</span><br><span class="line">        slow=slow.next;</span><br><span class="line">        fast=fast.next;</span><br><span class="line">    &#125;</span><br><span class="line">    slow.next=slow.next.next;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
+<h2 id="21-Merge-Two-Sorted-Lists"><a href="#21-Merge-Two-Sorted-Lists" class="headerlink" title="21. Merge Two Sorted Lists"></a>21. Merge Two Sorted Lists</h2><p>Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;4, 1-&gt;3-&gt;4</span><br><span class="line">Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l1</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">l2</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> mergeTwoLists = <span class="function"><span class="keyword">function</span>(<span class="params">l1, l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>),</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(l1&amp;&amp;l2) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l1.val&lt;l2.val) &#123;</span><br><span class="line">            cur.next=l1;</span><br><span class="line">            l1=l1.next;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            cur.next=l2;</span><br><span class="line">            l2=l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=l1||l2;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
 
 
 
@@ -777,6 +1542,34 @@ obj.constructor === Array
 <p><strong>每一个状态的左括号数大于右括号数，一旦小于，肯定是不满足的</strong></p>
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">n</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;string[]&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> generateParenthesis = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    generate(n,n,<span class="string">''</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">generate</span>(<span class="params">l,r,s</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(l&gt;r) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(!l&amp;&amp;!r) <span class="keyword">return</span> res.push(s);</span><br><span class="line">        <span class="keyword">if</span>(l) generate(l<span class="number">-1</span>,r,s+<span class="string">'('</span>);</span><br><span class="line">        <span class="keyword">if</span>(r) generate(l,r<span class="number">-1</span>,s+<span class="string">')'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="23-Merge-k-Sorted-Lists"><a href="#23-Merge-k-Sorted-Lists" class="headerlink" title="23. Merge k Sorted Lists"></a>23. Merge k Sorted Lists</h2><p>Merge <em>k</em> sorted linked lists and return it as one sorted list. Analyze and describe its complexity.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input:</span><br><span class="line">[</span><br><span class="line">  1-&gt;4-&gt;5,</span><br><span class="line">  1-&gt;3-&gt;4,</span><br><span class="line">  2-&gt;6</span><br><span class="line">]</span><br><span class="line">Output: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode[]&#125;</span> <span class="variable">lists</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> mergeKLists = <span class="function"><span class="keyword">function</span>(<span class="params">lists</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(lists.length===<span class="number">0</span>) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span>(lists.length===<span class="number">1</span>) <span class="keyword">return</span> lists[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">let</span> mid=<span class="built_in">Math</span>.floor(lists.length/<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">let</span> l1=lists.slice(<span class="number">0</span>,mid),</span><br><span class="line">        l2=lists.slice(mid);</span><br><span class="line">    <span class="keyword">return</span> mergeTwoLists(mergeKLists(l1),mergeKLists(l2));</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeTwoLists</span>(<span class="params">l1,l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>),</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(l1&amp;&amp;l2) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l1.val&lt;l2.val) &#123;</span><br><span class="line">            cur.next=l1;</span><br><span class="line">            l1=l1.next;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            cur.next=l2;</span><br><span class="line">            l2=l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=l1||l2;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="24-Swap-Nodes-in-Pairs"><a href="#24-Swap-Nodes-in-Pairs" class="headerlink" title="24. Swap Nodes in Pairs"></a>24. Swap Nodes in Pairs</h2><p>Given a linked list, swap every two adjacent nodes and return its head.</p>
+<p>You may <strong>not</strong> modify the values in the list’s nodes, only nodes itself may be changed.</p>
+<p><strong>Example:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Given 1-&gt;2-&gt;3-&gt;4, you should return the list as 2-&gt;1-&gt;4-&gt;3.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> swapPairs = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=&#123;<span class="attr">val</span>:<span class="number">0</span>,<span class="attr">next</span>:head&#125;,</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(cur.next&amp;&amp;cur.next.next) &#123;</span><br><span class="line">        <span class="keyword">let</span> node1=cur.next,</span><br><span class="line">            node2=cur.next.next;</span><br><span class="line">        node1.next=node2.next;</span><br><span class="line">        node2.next=node1;</span><br><span class="line">        cur.next=node2;</span><br><span class="line">        cur=cur.next.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="25-Reverse-Nodes-in-k-Group"><a href="#25-Reverse-Nodes-in-k-Group" class="headerlink" title="25. Reverse Nodes in k-Group"></a>25. Reverse Nodes in k-Group</h2><p>Given a linked list, reverse the nodes of a linked list <em>k</em> at a time and return its modified list.</p>
+<p><em>k</em> is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of <em>k</em> then left-out nodes in the end should remain as it is.</p>
+<p><strong>Example:</strong></p>
+<p>Given this linked list: <code>1-&gt;2-&gt;3-&gt;4-&gt;5</code></p>
+<p>For <em>k</em> = 2, you should return: <code>2-&gt;1-&gt;4-&gt;3-&gt;5</code></p>
+<p>For <em>k</em> = 3, you should return: <code>3-&gt;2-&gt;1-&gt;4-&gt;5</code></p>
+<p><strong>Note:</strong></p>
+<ul>
+<li>Only constant extra memory is allowed.</li>
+<li>You may not alter the values in the list’s nodes, only nodes itself may be changed.</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">k</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> reverseKGroup = <span class="function"><span class="keyword">function</span>(<span class="params">head, k</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!head) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">let</span> prev=cur=head;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;k;i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!cur) <span class="keyword">return</span> head;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> newList=reverseK(prev,cur);</span><br><span class="line">    prev.next=reverseKGroup(cur,k); <span class="comment">//继续反转后面k个节点</span></span><br><span class="line">    <span class="keyword">return</span> newList;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reverseK</span>(<span class="params">a,b</span>) </span>&#123; <span class="comment">//翻转[a,b)的链表</span></span><br><span class="line">    <span class="keyword">let</span> prev=<span class="literal">null</span>,</span><br><span class="line">        cur=a;</span><br><span class="line">    <span class="keyword">while</span>(cur!==b) &#123;</span><br><span class="line">        <span class="keyword">let</span> next=cur.next;</span><br><span class="line">        cur.next=prev;</span><br><span class="line">        prev=cur;</span><br><span class="line">        cur=next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> prev;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
 
 <h2 id="39-Combination-Sum"><a href="#39-Combination-Sum" class="headerlink" title="39. Combination Sum"></a>39. Combination Sum</h2><p>Given a <strong>set</strong> of candidate numbers (<code>candidates</code>) <strong>(without duplicates)</strong> and a target number (<code>target</code>), find all unique combinations in <code>candidates</code> where the candidate numbers sums to <code>target</code>.</p>
 <p>The <strong>same</strong> repeated number may be chosen from <code>candidates</code> unlimited number of times.</p>
@@ -850,9 +1643,14 @@ obj.constructor === Array
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">n</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">k</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;string&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> getPermutation = <span class="function"><span class="keyword">function</span> (<span class="params">n, k</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> arr=<span class="built_in">Array</span>(n),</span><br><span class="line">        temp=<span class="number">1</span>,</span><br><span class="line">        res=<span class="string">''</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">        arr[i]=i+<span class="number">1</span>;</span><br><span class="line">        temp*=arr[i];</span><br><span class="line">    &#125;</span><br><span class="line">    temp/=n;</span><br><span class="line">    k--;<span class="comment">//如果k整除temp的话，会出现边界数组找不到情况，所以统一处理-1</span></span><br><span class="line">    <span class="keyword">while</span>(n) &#123;</span><br><span class="line">        <span class="keyword">let</span> index=<span class="built_in">Math</span>.floor(k/temp); <span class="comment">//第几组</span></span><br><span class="line">        k%=temp; <span class="comment">//下一个循环</span></span><br><span class="line">        n--;</span><br><span class="line">        temp/=n; <span class="comment">//基底</span></span><br><span class="line">        res+=arr[index];</span><br><span class="line">        arr.splice(index,<span class="number">1</span>); <span class="comment">//加入的数字移除</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
+<h2 id="61-Rotate-List"><a href="#61-Rotate-List" class="headerlink" title="61. Rotate List"></a>61. Rotate List</h2><p>Given a linked list, rotate the list to the right by <em>k</em> places, where <em>k</em> is non-negative.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;4-&gt;5-&gt;NULL, k &#x3D; 2</span><br><span class="line">Output: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: 5-&gt;1-&gt;2-&gt;3-&gt;4-&gt;NULL</span><br><span class="line">rotate 2 steps to the right: 4-&gt;5-&gt;1-&gt;2-&gt;3-&gt;NULL</span><br></pre></td></tr></table></figure>
 
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 0-&gt;1-&gt;2-&gt;NULL, k &#x3D; 4</span><br><span class="line">Output: 2-&gt;0-&gt;1-&gt;NULL</span><br><span class="line">Explanation:</span><br><span class="line">rotate 1 steps to the right: 2-&gt;0-&gt;1-&gt;NULL</span><br><span class="line">rotate 2 steps to the right: 1-&gt;2-&gt;0-&gt;NULL</span><br><span class="line">rotate 3 steps to the right: 0-&gt;1-&gt;2-&gt;NULL</span><br><span class="line">rotate 4 steps to the right: 2-&gt;0-&gt;1-&gt;NULL</span><br></pre></td></tr></table></figure>
 
-
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number&#125;</span> <span class="variable">k</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> rotateRight = <span class="function"><span class="keyword">function</span>(<span class="params">head, k</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> cur=head,</span><br><span class="line">        len=<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span>(!head) <span class="keyword">return</span> head;</span><br><span class="line">    <span class="keyword">while</span>(cur.next) &#123;</span><br><span class="line">        len++;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=head;</span><br><span class="line">    k=len-k%len;</span><br><span class="line">    cur=head;</span><br><span class="line">    <span class="keyword">while</span>(--k) &#123;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">let</span> newNode=cur.next;</span><br><span class="line">    cur.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> newNode;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 <h2 id="77-Combinations"><a href="#77-Combinations" class="headerlink" title="77. Combinations"></a>77. Combinations</h2><p>Given two integers <em>n</em> and <em>k</em>, return all possible combinations of <em>k</em> numbers out of 1 … <em>n</em>.</p>
 <p><strong>Example:</strong></p>
@@ -868,6 +1666,26 @@ obj.constructor === Array
 
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number[]&#125;</span> <span class="variable">nums</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number[][]&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> subsets = <span class="function"><span class="keyword">function</span>(<span class="params">nums</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    backtrack(res,[],nums,<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">res,tempArr,nums,start</span>) </span>&#123;</span><br><span class="line">    res.push([...tempArr]); <span class="comment">//不限制长度 所以这里直接插入</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=start;i&lt;nums.length;i++) &#123;</span><br><span class="line">        tempArr.push(nums[i]);</span><br><span class="line">        backtrack(res,tempArr,nums,i+<span class="number">1</span>);</span><br><span class="line">        tempArr.pop();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="82-Remove-Duplicates-from-Sorted-List-II"><a href="#82-Remove-Duplicates-from-Sorted-List-II" class="headerlink" title="82. Remove Duplicates from Sorted List II"></a>82. Remove Duplicates from Sorted List II</h2><p>Given a sorted linked list, delete all nodes that have duplicate numbers, leaving only <em>distinct</em> numbers from the original list.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;2-&gt;3-&gt;3-&gt;4-&gt;4-&gt;5</span><br><span class="line">Output: 1-&gt;2-&gt;5</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;1-&gt;1-&gt;2-&gt;3</span><br><span class="line">Output: 2-&gt;3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> deleteDuplicates = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!head) <span class="keyword">return</span> head;</span><br><span class="line">    <span class="keyword">let</span> dummy=&#123;<span class="attr">val</span>:<span class="number">0</span>,<span class="attr">next</span>:head&#125;,</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(cur.next&amp;&amp;cur.next.next) &#123;</span><br><span class="line">        <span class="keyword">if</span>(cur.next.val===cur.next.next.val) &#123;</span><br><span class="line">            <span class="keyword">let</span> val=cur.next.val;</span><br><span class="line">            <span class="keyword">while</span>(cur.next&amp;&amp;cur.next.val===val) &#123;</span><br><span class="line">                cur.next=cur.next.next;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            cur=cur.next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="83-Remove-Duplicates-from-Sorted-List"><a href="#83-Remove-Duplicates-from-Sorted-List" class="headerlink" title="83. Remove Duplicates from Sorted List"></a>83. Remove Duplicates from Sorted List</h2><p>Given a sorted linked list, delete all duplicates such that each element appear only <em>once</em>.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;1-&gt;2</span><br><span class="line">Output: 1-&gt;2</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 1-&gt;1-&gt;2-&gt;3-&gt;3</span><br><span class="line">Output: 1-&gt;2-&gt;3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> deleteDuplicates = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!head) <span class="keyword">return</span> head;</span><br><span class="line">    <span class="keyword">let</span> cur=head,</span><br><span class="line">        nxt=head; </span><br><span class="line">    <span class="keyword">while</span>(cur) &#123;</span><br><span class="line">        <span class="keyword">while</span>(nxt&amp;&amp;nxt.val===cur.val) nxt=nxt.next; <span class="comment">//和当前的cur指向的节点比较</span></span><br><span class="line">        cur.next=nxt; <span class="comment">//下一个不相同的节点找到-&gt;连接</span></span><br><span class="line">        cur=nxt; <span class="comment">// 移到下一个需要比较的节点</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
 
 
 
@@ -1038,6 +1856,15 @@ obj.constructor === Array
 
 <p><strong>code</strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> <span class="variable">s</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;string[][]&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> partition = <span class="function"><span class="keyword">function</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> res=[];</span><br><span class="line">  backtrack(res,[],s);</span><br><span class="line">  <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isPalindrome</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> i=<span class="number">0</span>,</span><br><span class="line">        j=s.length<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(i&lt;j) &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[i]!==s[j]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        i++;</span><br><span class="line">        j--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">res,tempArr,s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!s) <span class="keyword">return</span> res.push([...tempArr]);</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;s.length;i++) &#123;</span><br><span class="line">        <span class="keyword">if</span>(isPalindrome(s.slice(<span class="number">0</span>,i+<span class="number">1</span>)))&#123;</span><br><span class="line">            tempArr.push(s.slice(<span class="number">0</span>,i+<span class="number">1</span>));</span><br><span class="line">            backtrack(res,tempArr,s.slice(i+<span class="number">1</span>));</span><br><span class="line">            tempArr.pop();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="148-Sort-List"><a href="#148-Sort-List" class="headerlink" title="148. Sort List"></a>148. Sort List</h2><p>Sort a linked list in <em>O</em>(<em>n</em> log <em>n</em>) time using constant space complexity.</p>
+<p><strong>Example 1:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: 4-&gt;2-&gt;1-&gt;3</span><br><span class="line">Output: 1-&gt;2-&gt;3-&gt;4</span><br></pre></td></tr></table></figure>
+
+<p><strong>Example 2:</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: -1-&gt;5-&gt;3-&gt;4-&gt;0</span><br><span class="line">Output: -1-&gt;0-&gt;3-&gt;4-&gt;5</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for singly-linked list.</span></span><br><span class="line"><span class="comment"> * function ListNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.next = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;ListNode&#125;</span> <span class="variable">head</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;ListNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> sortList = <span class="function"><span class="keyword">function</span>(<span class="params">head</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!head||!head.next) <span class="keyword">return</span> head;</span><br><span class="line">    <span class="keyword">let</span> slow=fast=pre=head;</span><br><span class="line">    <span class="keyword">while</span>(fast&amp;&amp;fast.next) &#123;</span><br><span class="line">        pre=slow;</span><br><span class="line">        slow=slow.next;</span><br><span class="line">        fast=fast.next.next;</span><br><span class="line">    &#125;</span><br><span class="line">    pre.next=<span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> mergeTwo(sortList(head),sortList(slow));</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mergeTwo</span>(<span class="params">l1,l2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> dummy=<span class="keyword">new</span> ListNode(<span class="number">0</span>),</span><br><span class="line">        cur=dummy;</span><br><span class="line">    <span class="keyword">while</span>(l1&amp;&amp;l2) &#123;</span><br><span class="line">        <span class="keyword">if</span>(l1.val&lt;l2.val) &#123;</span><br><span class="line">            cur.next=l1;</span><br><span class="line">            l1=l1.next;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            cur.next=l2;</span><br><span class="line">            l2=l2.next;</span><br><span class="line">        &#125;</span><br><span class="line">        cur=cur.next;</span><br><span class="line">    &#125;</span><br><span class="line">    cur.next=l1||l2;</span><br><span class="line">    <span class="keyword">return</span> dummy.next;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="199-Binary-Tree-Right-Side-View"><a href="#199-Binary-Tree-Right-Side-View" class="headerlink" title="199. Binary Tree Right Side View"></a>199. Binary Tree Right Side View</h2><p>Given a binary tree, imagine yourself standing on the <em>right</em> side of it, return the values of the nodes you can see ordered from top to bottom.</p>
 <p><strong>Example:</strong></p>
