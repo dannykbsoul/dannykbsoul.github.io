@@ -191,6 +191,245 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/JS%E9%83%A8%E5%88%86API%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Zhou Jun">
+      <meta itemprop="description" content="FOCUS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZJ's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/01/JS%E9%83%A8%E5%88%86API%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">JS部分API实现</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-01 22:35:08" itemprop="dateCreated datePublished" datetime="2020-03-01T22:35:08+08:00">2020-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-02 10:50:23" itemprop="dateModified" datetime="2020-03-02T10:50:23+08:00">2020-03-02</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="call、apply和bind"><a href="#call、apply和bind" class="headerlink" title="call、apply和bind"></a>call、apply和bind</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><blockquote>
+<p>apply、call、bind的作用都是改变运行时上下文的（即函数中的this对象），区别是apply和call是立即执行，而bind的作用是改变运行上下文后返回新的函数，用于以后执行的函数。</p>
+<p>apply和call的区别在于使用方式不同，apply中传递的参数是一个数组，而call则是传递了一系列参数</p>
+</blockquote>
+<h2 id="call"><a href="#call" class="headerlink" title="call"></a>call</h2><blockquote>
+<p>call() 方法在使用一个指定的 this 值和若干个指定的参数值的前提下调用某个函数或方法</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">    value: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bar.call(foo); <span class="comment">// 1</span></span><br></pre></td></tr></table></figure>
+
+<p>注意两点：</p>
+<ol>
+<li>call 改变了 this 的指向，指向到 foo</li>
+<li>bar 函数执行了</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.call2 = <span class="function"><span class="keyword">function</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> context = context || <span class="built_in">window</span></span><br><span class="line">    context.fn = <span class="keyword">this</span></span><br><span class="line">    <span class="keyword">var</span> args = []</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">1</span>, len = <span class="built_in">arguments</span>.length;i &lt; len;i++) &#123;</span><br><span class="line">        args.push(<span class="string">'arguments['</span> + i + <span class="string">']'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> result = <span class="built_in">eval</span>(<span class="string">'context.fn('</span> + args + <span class="string">')'</span>)</span><br><span class="line">    <span class="keyword">delete</span> context.fn</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试一下</span></span><br><span class="line"><span class="keyword">var</span> value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">    value: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.value);</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        value: <span class="keyword">this</span>.value,</span><br><span class="line">        name: name,</span><br><span class="line">        age: age</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bar.call2(<span class="literal">null</span>); <span class="comment">// 2</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(bar.call2(obj, <span class="string">'kevin'</span>, <span class="number">18</span>));</span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// Object &#123;</span></span><br><span class="line"><span class="comment">//    value: 1,</span></span><br><span class="line"><span class="comment">//    name: 'kevin',</span></span><br><span class="line"><span class="comment">//    age: 18</span></span><br><span class="line"><span class="comment">// &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>eval函数接收参数是个字符串</strong></p>
+<p>定义和用法</p>
+<blockquote>
+<p>eval() 函数可计算某个字符串，并执行其中的的 JavaScript 代码。</p>
+</blockquote>
+<p>语法：<br><code>eval(string)</code></p>
+<blockquote>
+<p>string必需。要计算的字符串，其中含有要计算的 JavaScript 表达式或要执行的语句。该方法只接受原始字符串作为参数，如果 string 参数不是原始字符串，那么该方法将不作任何改变地返回。因此请不要为 eval() 函数传递 String 对象来作为参数。</p>
+</blockquote>
+<p>简单来说吧，就是用JavaScript的解析引擎来解析这一堆字符串里面的内容，这么说吧，你可以这么理解，你把<code>eval</code>看成是<code>&lt;script&gt;</code>标签。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span>(<span class="string">'function Test(a,b,c,d)&#123;console.log(a,b,c,d)&#125;;Test(1,2,3,4)'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>==难点解析:==</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> args = [];</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">1</span>, len = <span class="built_in">arguments</span>.length; i &lt; len; i++) &#123;</span><br><span class="line">        args.push(<span class="string">'arguments['</span> + i + <span class="string">']'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终的数组为：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> args = [<span class="built_in">arguments</span>[<span class="number">1</span>], <span class="built_in">arguments</span>[<span class="number">2</span>], ...]</span><br></pre></td></tr></table></figure>
+
+<p>然后</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = <span class="built_in">eval</span>(<span class="string">'context.fn('</span> + args +<span class="string">')'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>在eval中，args 自动调用 args.toString()方法，eval的效果如 jawil所说，最终的效果相当于：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> result = context.fn(<span class="built_in">arguments</span>[<span class="number">1</span>], <span class="built_in">arguments</span>[<span class="number">2</span>], ...);</span><br></pre></td></tr></table></figure>
+
+<p>这样就做到了把传给call的参数传递给了context.fn函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//call ES6版本</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.callEs6 = <span class="function"><span class="keyword">function</span> (<span class="params">context, ...args</span>) </span>&#123;</span><br><span class="line">    context = context || <span class="built_in">window</span>;</span><br><span class="line">    context.fn = <span class="keyword">this</span>; <span class="comment">//挂载到context下的fn中</span></span><br><span class="line">    <span class="keyword">let</span> result = context.fn(...args);</span><br><span class="line">    <span class="keyword">delete</span> context.fn;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.callSym = <span class="function"><span class="keyword">function</span> (<span class="params">context, ...args</span>) </span>&#123;</span><br><span class="line">    context = context || <span class="built_in">window</span>;</span><br><span class="line">    <span class="keyword">let</span> fn = <span class="built_in">Symbol</span>();</span><br><span class="line">    context[fn] = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">let</span> result = context[fn](...args);</span><br><span class="line">    <span class="built_in">Reflect</span>.deleteProperty(context, fn);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="apply"><a href="#apply" class="headerlink" title="apply"></a>apply</h2><ul>
+<li>首先要先原型上即 Function.prototype上编程</li>
+<li>需要拿到函数的引用， 在这里是 this</li>
+<li>让传入对象.fn = this</li>
+<li>执行传入对象.fn(传入参数)</li>
+<li>返回执行结果</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//apply</span></span><br><span class="line"><span class="built_in">Function</span>.prototype.apply2 = <span class="function"><span class="keyword">function</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Error'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    context = context || <span class="built_in">window</span></span><br><span class="line">    context.fn = <span class="keyword">this</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> result</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">arguments</span>[<span class="number">1</span>]) &#123;</span><br><span class="line">        result = context.fn(...arguments[<span class="number">1</span>])</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        result = context.fn()</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">delete</span> context.fn</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>==call和apply的区别仅仅是:==</p>
+<p>call是通过传多个参数的方式，而apply则是传入一个数组。</p>
+<h2 id="bind"><a href="#bind" class="headerlink" title="bind"></a>bind</h2><blockquote>
+<p>bind() 方法会创建一个新函数。当这个新函数被调用时，bind() 的第一个参数将作为它运行时的 this，之后的一序列参数将会在传递的实参前传入作为它的参数。</p>
+</blockquote>
+<ul>
+<li>因为bind的使用方法是 某函数.bind(某对象，…剩余参数)<ul>
+<li>所以需要在Function.prototype 上进行编程</li>
+</ul>
+</li>
+<li>将传递的参数中的某对象和剩余参数使用apply的方式在一个回调函数中执行即可</li>
+<li>要在第一层获取到被绑定函数的this，因为要拿到那个函数用apply</li>
+</ul>
+<p>简单版</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.myBind = <span class="function">(<span class="params">context, ...args</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> funcThis = <span class="keyword">this</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...bindArgs</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> funcThis.apply(context, args.concat(bindArgs));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>进阶版</p>
+<blockquote>
+<p>一个绑定函数也能使用new操作符创建对象：这种行为就像把原函数当成构造器。提供的 this 值被忽略，同时调用时的参数被提供给模拟函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> value = <span class="number">2</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> foo = &#123;</span><br><span class="line">    value: <span class="number">1</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.habit = <span class="string">'shopping'</span>;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.value);</span><br><span class="line">    <span class="built_in">console</span>.log(name);</span><br><span class="line">    <span class="built_in">console</span>.log(age);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bar.prototype.friend = <span class="string">'kevin'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> bindFoo = bar.bind(foo, <span class="string">'daisy'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> bindFoo(<span class="string">'18'</span>);</span><br><span class="line"><span class="comment">// undefined</span></span><br><span class="line"><span class="comment">// daisy</span></span><br><span class="line"><span class="comment">// 18</span></span><br><span class="line"><span class="built_in">console</span>.log(obj.habit);</span><br><span class="line"><span class="built_in">console</span>.log(obj.friend);</span><br><span class="line"><span class="comment">// shopping</span></span><br><span class="line"><span class="comment">// kevin</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.bindEs6 = <span class="function"><span class="keyword">function</span> (<span class="params">context, ...rest</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">'function'</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'invalid invoked!'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> <span class="keyword">instanceof</span> F) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> self(...rest, ...args);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> self.apply(context, rest.concat(args));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Function</span>.prototype.bind2 = <span class="function"><span class="keyword">function</span> (<span class="params">context</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">typeof</span> <span class="keyword">this</span> !== <span class="string">"function"</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"Function.prototype.bind - what is trying to be bound is not callable"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> self = <span class="keyword">this</span>;</span><br><span class="line">    <span class="comment">//获取bind2函数从第二个参数到最后一个参数</span></span><br><span class="line">    <span class="keyword">var</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>, <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> fNOP = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> fBound = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="comment">//转换类数组元素 arguments 为数组元素，方便使用数组方法，比如后面的 array.concat()</span></span><br><span class="line">        <span class="keyword">var</span> bindArgs = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">        <span class="comment">// 当作为构造函数时，this 指向实例，此时结果为 true，将绑定函数的 this 指向该实例，可以让实例获得来自绑定函数的值</span></span><br><span class="line">        <span class="comment">// 以上面的是 demo 为例，如果改成 `this instanceof fBound ? null : context`，实例只是一个空对象，将 null 改成 this ，实例会具有 habit 属性</span></span><br><span class="line">        <span class="comment">// 当作为普通函数时，this 指向 window，此时结果为 false，将绑定函数的 this 指向 context</span></span><br><span class="line">        <span class="keyword">return</span> self.apply(<span class="keyword">this</span> <span class="keyword">instanceof</span> fNOP ? <span class="keyword">this</span> : context, args.concat(bindArgs));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fNOP.prototype = <span class="keyword">this</span>.prototype;</span><br><span class="line">    fBound.prototype = <span class="keyword">new</span> fNOP();</span><br><span class="line">    <span class="keyword">return</span> fBound;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="new"><a href="#new" class="headerlink" title="new"></a>new</h1><h2 id="new的模拟实现"><a href="#new的模拟实现" class="headerlink" title="new的模拟实现"></a>new的模拟实现</h2><blockquote>
+<p>new 运算符创建一个用户定义的对象类型的实例或具有构造函数的内置对象类型之一</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> obj  = &#123;&#125;;</span><br><span class="line">obj.__proto__ = F.prototype;</span><br><span class="line">F.call(obj);</span><br></pre></td></tr></table></figure>
+
+<p>new运算符具体干了三件事:</p>
+<ol>
+<li>创建一个空对象obj</li>
+<li>将这个空对象的<strong>proto</strong>成员指向了F函数对象prototype成员对象</li>
+<li>将F函数对象的this指针替换成obj，然后再调用F函数</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">objectFactory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> args = <span class="built_in">Array</span>.prototype.slice.call(<span class="built_in">arguments</span>);</span><br><span class="line">  <span class="keyword">let</span> Constructor = args.shift();</span><br><span class="line">  <span class="keyword">let</span> instance = <span class="built_in">Object</span>.create(Constructor.prototype);</span><br><span class="line">  <span class="keyword">let</span> temp = Constructor.apply(instance, args);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> (<span class="keyword">typeof</span> temp === <span class="string">'object'</span> &amp;&amp; temp !== <span class="literal">null</span>) ? temp : instance;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">objectFactory</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> obj = <span class="keyword">new</span> <span class="built_in">Object</span>(),<span class="comment">//从Object.prototype上克隆一个对象</span></span><br><span class="line"></span><br><span class="line">    Constructor = [].shift.call(<span class="built_in">arguments</span>);<span class="comment">//取得外部传入的构造器</span></span><br><span class="line"></span><br><span class="line">    obj.__proto__ = Constructor.prototype;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> ret = Constructor.apply(obj, <span class="built_in">arguments</span>);</span><br><span class="line">    <span class="comment">//改变构造函数 this 的指向到新建的对象，这样obj就可以访问到构造函数中的属性</span></span><br><span class="line">    <span class="comment">//obj代替Constructor中this对象</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> ret === <span class="string">'object'</span> ? ret : obj;<span class="comment">//确保构造器总是返回一个对象</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Otaku</span> (<span class="params">name, age</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">    <span class="keyword">this</span>.age = age;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.habit = <span class="string">'Games'</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Otaku.prototype.strength = <span class="number">60</span>;</span><br><span class="line"></span><br><span class="line">Otaku.prototype.sayYourName = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'I am '</span> + <span class="keyword">this</span>.name);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> person = objectFactory(Otaku, <span class="string">'Kevin'</span>, <span class="string">'18'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(person.name) <span class="comment">// Kevin</span></span><br><span class="line"><span class="built_in">console</span>.log(person.habit) <span class="comment">// Games</span></span><br><span class="line"><span class="built_in">console</span>.log(person.strength) <span class="comment">// 60</span></span><br><span class="line"></span><br><span class="line">person.sayYourName(); <span class="comment">// I am Kevin</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="Object-create-和-new-Object-的区别"><a href="#Object-create-和-new-Object-的区别" class="headerlink" title="Object.create() 和 new Object()的区别"></a>Object.create() 和 new Object()的区别</h2><p><img src="/2020/03/01/JS%E9%83%A8%E5%88%86API%E5%AE%9E%E7%8E%B0/1.png" alt></p>
+<p>使用<code>create</code>创建的对象，没有任何属性，显示<code>No properties</code>，我们可以把它当作一个非常<strong>纯净</strong>的map来使用，我们可以自己定义<code>hasOwnProperty</code>、<code>toString</code>方法，不管是有意还是不小心，我们完全不必担心会将原型链上的同名方法覆盖掉。</p>
+<h3 id="new-Object-创建的对象纯净么？"><a href="#new-Object-创建的对象纯净么？" class="headerlink" title="new Object()创建的对象纯净么？"></a>new Object()创建的对象纯净么？</h3><p>首先什么是纯净？我们定义一个对象的<code>__proto__</code>属性为空的对象是一个纯净的对象。</p>
+<p>在第二步的时候中已经改变的obj的原型链，所以无论它前面的原型链是咋样的都无所谓，但是为了保证对象的纯净性，我们有必要引出<code>Object.create()</code>，该方法创建一个新对象，使用现有的对象来提供新创建的对象的<code>__proto__</code>。</p>
+<h2 id="Object-create实现"><a href="#Object-create实现" class="headerlink" title="Object.create实现"></a>Object.create实现</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Object</span>.create = <span class="function"><span class="keyword">function</span>(<span class="params"> o </span>) </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>)</span>&#123;&#125;</span><br><span class="line">    f.prototype = o;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> f;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="类数组对象"><a href="#类数组对象" class="headerlink" title="类数组对象"></a>类数组对象</h1><h2 id="类数组对象-1"><a href="#类数组对象-1" class="headerlink" title="类数组对象"></a>类数组对象</h2><p>类数组对象:</p>
+<blockquote>
+<p>拥有一个 length 属性和若干索引属性的对象</p>
+</blockquote>
+<p>从读写、获取长度和遍历来看无差别,但不能用数组的方法,所以叫类数组</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> array = [<span class="string">'name'</span>, <span class="string">'age'</span>, <span class="string">'sex'</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> arrayLike = &#123;</span><br><span class="line">    <span class="number">0</span>: <span class="string">'name'</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="string">'age'</span>,</span><br><span class="line">    <span class="number">2</span>: <span class="string">'sex'</span>,</span><br><span class="line">    length: <span class="number">3</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="调用数组的方法"><a href="#调用数组的方法" class="headerlink" title="调用数组的方法"></a>调用数组的方法</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Array</span>.prototype.join.call(arrayLike, <span class="string">'&amp;'</span>); <span class="comment">// name&amp;age&amp;sex</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.slice.call(arrayLike, <span class="number">0</span>); <span class="comment">// ["name", "age", "sex"] </span></span><br><span class="line"><span class="comment">// slice可以做到类数组转数组</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.map.call(arrayLike, <span class="function"><span class="keyword">function</span>(<span class="params">item</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">return</span> item.toUpperCase();</span><br><span class="line">&#125;); </span><br><span class="line"><span class="comment">// ["NAME", "AGE", "SEX"]</span></span><br></pre></td></tr></table></figure>
+
+<p>把原型指向Array.prototype后就可以调用Array.prototype上的方法，行为上确实是跟数组一样，然而Array.isArray和Object.prototype.toString不认</p>
+<p><img src="/2020/03/01/JS%E9%83%A8%E5%88%86API%E5%AE%9E%E7%8E%B0/2.png" alt></p>
+<h3 id="类数组转数组"><a href="#类数组转数组" class="headerlink" title="类数组转数组"></a>类数组转数组</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> arrayLike = &#123;<span class="number">0</span>: <span class="string">'name'</span>, <span class="number">1</span>: <span class="string">'age'</span>, <span class="number">2</span>: <span class="string">'sex'</span>, <span class="attr">length</span>: <span class="number">3</span> &#125;</span><br><span class="line"><span class="comment">// 1. slice</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.slice.call(arrayLike); <span class="comment">// ["name", "age", "sex"] </span></span><br><span class="line"><span class="comment">// 2. splice</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.splice.call(arrayLike, <span class="number">0</span>); <span class="comment">// ["name", "age", "sex"] </span></span><br><span class="line"><span class="comment">// 3. ES6 Array.from</span></span><br><span class="line"><span class="built_in">Array</span>.from(arrayLike); <span class="comment">// ["name", "age", "sex"] </span></span><br><span class="line"><span class="comment">// 4. apply</span></span><br><span class="line"><span class="built_in">Array</span>.prototype.concat.apply([], arrayLike)</span><br></pre></td></tr></table></figure>
+
+<p>slice和splice的区别:</p>
+<ol>
+<li><p>slice(start,end)：方法可从已有数组中返回选定的元素，返回一个新数组，包含从start到end（不包含该元素）的数组元素</p>
+</li>
+<li><p>splice()：该方法向或者从数组中添加或者删除项目，返回被删除的项目。（==该方法会改变原数组==）</p>
+<p> splice（index,howmany,item1,…itemX）</p>
+</li>
+</ol>
+<p>那么为什么会讲到类数组对象呢？以及类数组有什么应用吗？</p>
+<p>要说到类数组对象，Arguments 对象就是一个类数组对象。在客户端JavaScript中一些DOM方法(document.getElementsByTagName()等)也返回==类数组对象==。</p>
+<blockquote>
+<p>对于 HTMLCollection，length 属性为只读，splice 底层还是会修改 length 的长度，这才导致了报错。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span>  elements = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'box'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.splice.call(elements, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// Uncaught TypeError: Cannot assign to read only property 'length' of object '#&lt;HTMLCollection&gt;'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// slice方法可以</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="Arguments对象"><a href="#Arguments对象" class="headerlink" title="Arguments对象"></a>Arguments对象</h2><p>Arguments 对象只定义在函数体中，包括了函数的参数和其他属性。在函数体中，arguments 指代该函数的 Arguments 对象。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">name, age, sex</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="string">'name'</span>, <span class="string">'age'</span>, <span class="string">'sex'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>打印结果如下：</p>
+<p><img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/JS%E5%9F%BA%E7%A1%80/assets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-09-22%20%E4%B8%8B%E5%8D%886.20.47.png" alt="屏幕快照 2019-09-22 下午6.20.47"></p>
+<h3 id="length属性"><a href="#length属性" class="headerlink" title="length属性"></a>length属性</h3><p>Arguments对象的length属性，表示实参的长度，举个例子：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">b, c, d</span>)</span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"实参的长度为："</span> + <span class="built_in">arguments</span>.length)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">"形参的长度为："</span> + foo.length)</span><br><span class="line"></span><br><span class="line">foo(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 形参的长度为：3</span></span><br><span class="line"><span class="comment">// 实参的长度为：1</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="callee属性"><a href="#callee属性" class="headerlink" title="callee属性"></a>callee属性</h3><p>Arguments 对象的 callee 属性，通过它可以调用函数自身。</p>
+<p>讲个闭包经典面试题使用 callee 的解决方法：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> data = [];</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; i++) &#123;</span><br><span class="line">    (data[i] = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">       <span class="built_in">console</span>.log(<span class="built_in">arguments</span>.callee.i) </span><br><span class="line">    &#125;).i = i;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">data[<span class="number">0</span>]();</span><br><span class="line">data[<span class="number">1</span>]();</span><br><span class="line">data[<span class="number">2</span>]();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 0</span></span><br><span class="line"><span class="comment">// 1</span></span><br><span class="line"><span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+<p>函数也是一种对象，我们可以通过这种方式给函数添加一个自定义的属性。<br>这个解决方式就是给 data[i] 这个函数添加一个自定义属性，这个属性值就是正确的 i 值。</p>
+<p>接下来讲讲 arguments 对象的几个注意要点：</p>
+<h3 id="arguments-和对应参数的绑定"><a href="#arguments-和对应参数的绑定" class="headerlink" title="arguments 和对应参数的绑定"></a>arguments 和对应参数的绑定</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">name, age, sex, hobbit</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(name, <span class="built_in">arguments</span>[<span class="number">0</span>]); <span class="comment">// name name</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 改变形参</span></span><br><span class="line">    name = <span class="string">'new name'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(name, <span class="built_in">arguments</span>[<span class="number">0</span>]); <span class="comment">// new name new name</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 改变arguments</span></span><br><span class="line">    <span class="built_in">arguments</span>[<span class="number">1</span>] = <span class="string">'new age'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(age, <span class="built_in">arguments</span>[<span class="number">1</span>]); <span class="comment">// new age new age</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// 测试未传入的是否会绑定</span></span><br><span class="line">    <span class="built_in">console</span>.log(sex); <span class="comment">// undefined</span></span><br><span class="line"></span><br><span class="line">    sex = <span class="string">'new sex'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(sex, <span class="built_in">arguments</span>[<span class="number">2</span>]); <span class="comment">// new sex undefined</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">arguments</span>[<span class="number">3</span>] = <span class="string">'new hobbit'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">console</span>.log(hobbit, <span class="built_in">arguments</span>[<span class="number">3</span>]); <span class="comment">// undefined new hobbit</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="string">'name'</span>, <span class="string">'age'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>传入的参数，实参和 arguments 的值会共享，当没有传入时，实参与 arguments 值不会共享</p>
+<p>除此之外，以上是在非严格模式下，如果是在严格模式下，实参和 arguments 是不会共享的。</p>
+<h3 id="传递参数"><a href="#传递参数" class="headerlink" title="传递参数"></a>传递参数</h3><p>将参数从一个函数传递到另一个函数</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 apply 将 foo 的参数传递给 bar</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    bar.apply(<span class="keyword">this</span>, <span class="built_in">arguments</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">bar</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">   <span class="built_in">console</span>.log(a, b, c);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">foo(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)</span><br></pre></td></tr></table></figure>
+
+<h3 id="强大的ES6"><a href="#强大的ES6" class="headerlink" title="强大的ES6"></a>强大的ES6</h3><p>使用ES6的 … 运算符，我们可以轻松转成数组。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">...arguments</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="built_in">arguments</span>); <span class="comment">// [1, 2, 3]</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>);</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <div>
+      
+    </div>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/28/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1129,114 +1368,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/23/TS%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Zhou Jun">
-      <meta itemprop="description" content="FOCUS">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZJ's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/23/TS%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">TS实战</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-02-23 15:38:44" itemprop="dateCreated datePublished" datetime="2020-02-23T15:38:44+08:00">2020-02-23</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-24 22:07:53" itemprop="dateModified" datetime="2020-02-24T22:07:53+08:00">2020-02-24</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/express/" itemprop="url" rel="index">
-                    <span itemprop="name">express</span>
-                  </a>
-                </span>
-                  , 
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/express/TypeScript/" itemprop="url" rel="index">
-                    <span itemprop="name">TypeScript</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.4k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="react"><a href="#react" class="headerlink" title="react"></a>react</h2><p>npx create-react-app react-project –template typescript –use-npm</p>
-<h2 id="express"><a href="#express" class="headerlink" title="express"></a>express</h2><h3 id="1-编写express代码遇到的问题"><a href="#1-编写express代码遇到的问题" class="headerlink" title="1.编写express代码遇到的问题"></a>1.编写express代码遇到的问题</h3><p><strong>Q1:express库的类型定义文件.d.ts文件类型描述不准确</strong></p>
-<p>不能直接在express官方提供的.d.ts上修改，因为你下次再npm的时候，下载的还是官方提供的文件。</p>
-<p>可以通过引入官方的相对应的描述文件，在其之上修正描述不准确的地方，如下所示：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/23/TS%E5%AE%9E%E6%88%98/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    <div>
-      
-    </div>
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1309,7 +1440,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1373,13 +1504,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">161k</span>
+    <span title="Symbols count total">170k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">2:26</span>
+    <span title="Reading time total">2:35</span>
 </div>
 
 <!--
