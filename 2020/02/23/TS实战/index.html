@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="reactnpx create-react-app react-project –template typescript –use-npm express1.编写express代码遇到的问题Q1:express库的类型定义文件.d.ts文件类型描述不准确 不能直接在express官方提供的.d.ts上修改，因为你下次再npm的时候，下载的还是官方提供的文件。 可以通过引入官方的相对应的描述文件，在">
+  <meta name="description" content="reactnpx create-react-app react-project –template typescript –use-npm">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TS实战">
 <meta property="og:url" content="http://yoursite.com/2020/02/23/TS%E5%AE%9E%E6%88%98/index.html">
 <meta property="og:site_name" content="ZJ&#39;s BLOG">
-<meta property="og:description" content="reactnpx create-react-app react-project –template typescript –use-npm express1.编写express代码遇到的问题Q1:express库的类型定义文件.d.ts文件类型描述不准确 不能直接在express官方提供的.d.ts上修改，因为你下次再npm的时候，下载的还是官方提供的文件。 可以通过引入官方的相对应的描述文件，在">
+<meta property="og:description" content="reactnpx create-react-app react-project –template typescript –use-npm">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-23T07:38:44.000Z">
-<meta property="article:modified_time" content="2020-02-24T14:07:53.891Z">
+<meta property="article:modified_time" content="2020-03-03T07:49:37.382Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-24 22:07:53" itemprop="dateModified" datetime="2020-02-24T22:07:53+08:00">2020-02-24</time>
+                <time title="Modified: 2020-03-03 15:49:37" itemprop="dateModified" datetime="2020-03-03T15:49:37+08:00">2020-03-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -269,10 +269,20 @@
 
       
         <h2 id="react"><a href="#react" class="headerlink" title="react"></a>react</h2><p>npx create-react-app react-project –template typescript –use-npm</p>
+<a id="more"></a>
+
+
+
+
+
+
+
+
+
 <h2 id="express"><a href="#express" class="headerlink" title="express"></a>express</h2><h3 id="1-编写express代码遇到的问题"><a href="#1-编写express代码遇到的问题" class="headerlink" title="1.编写express代码遇到的问题"></a>1.编写express代码遇到的问题</h3><p><strong>Q1:express库的类型定义文件.d.ts文件类型描述不准确</strong></p>
 <p>不能直接在express官方提供的.d.ts上修改，因为你下次再npm的时候，下载的还是官方提供的文件。</p>
 <p>可以通过引入官方的相对应的描述文件，在其之上修正描述不准确的地方，如下所示：</p>
-<a id="more"></a>
+<!---more-->
 
 <figure class="highlight ts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Router, Request, Response &#125; <span class="keyword">from</span> <span class="string">'express'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">interface</span> RequestWithBody <span class="keyword">extends</span> Request &#123;</span><br><span class="line">  body: &#123;</span><br><span class="line">    [key: <span class="built_in">string</span>]: <span class="built_in">string</span> | <span class="literal">undefined</span>;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> router = Router();</span><br><span class="line">router.get(<span class="string">'/'</span>, <span class="function">(<span class="params">req, res</span>) =&gt;</span> &#123;</span><br><span class="line">  res.send(<span class="string">`</span></span><br><span class="line"><span class="string">  &lt;html&gt;</span></span><br><span class="line"><span class="string">    &lt;body&gt;</span></span><br><span class="line"><span class="string">      &lt;form method="post" action="/getData"&gt;</span></span><br><span class="line"><span class="string">        &lt;input type="password" name="password"&gt;</span></span><br><span class="line"><span class="string">        &lt;button&gt;提交&lt;/button&gt;</span></span><br><span class="line"><span class="string">      &lt;/form&gt;</span></span><br><span class="line"><span class="string">    &lt;/body&gt;</span></span><br><span class="line"><span class="string">  &lt;/html&gt;</span></span><br><span class="line"><span class="string">  `</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">router.post(<span class="string">'/getData'</span>, <span class="function">(<span class="params">req: RequestWithBody, res: Response</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (req.body.password === <span class="string">'123'</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> secret = <span class="string">'secretKey'</span>;</span><br><span class="line">    <span class="keyword">const</span> url = <span class="string">`http://www.dell-lee.com/typescript/demo.html?secret=<span class="subst">$&#123;secret&#125;</span>`</span>;</span><br><span class="line">    <span class="keyword">const</span> analyzer = DellAnalyzer.getInstance();</span><br><span class="line">    <span class="keyword">new</span> Crowller(url, analyzer);</span><br><span class="line">    res.send(<span class="string">'getData Success'</span>);</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    res.send(<span class="string">`<span class="subst">$&#123;req.teacherName&#125;</span>password error`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> router;</span><br></pre></td></tr></table></figure>
 
@@ -465,13 +475,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">196k</span>
+    <span title="Symbols count total">200k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">2:58</span>
+    <span title="Reading time total">3:02</span>
 </div>
 
 <!--
