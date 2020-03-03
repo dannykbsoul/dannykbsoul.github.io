@@ -30,7 +30,7 @@
 <meta property="og:description" content="纯函数：  纯函数是这样一种函数，即相同的输入，永远会得到相同的输出，而且没有任何可观察的副作用。  1.函数柯里化和偏函数柯里化柯里化 (Currying) 的定义:  In mathematics and computer science, currying is the technique of translating the evaluation of a function that ta">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-02T03:19:28.000Z">
-<meta property="article:modified_time" content="2020-03-02T06:45:49.767Z">
+<meta property="article:modified_time" content="2020-03-03T01:46:25.705Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -215,10 +215,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-02 11:19:28 / Modified: 14:45:49" itemprop="dateCreated datePublished" datetime="2020-03-02T11:19:28+08:00">2020-03-02</time>
+              <time title="Created: 2020-03-02 11:19:28" itemprop="dateCreated datePublished" datetime="2020-03-02T11:19:28+08:00">2020-03-02</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-03 09:46:25" itemprop="dateModified" datetime="2020-03-03T09:46:25+08:00">2020-03-03</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -226,14 +232,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>7.1k</span>
+              <span>7.2k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>6 mins.</span>
+              <span>7 mins.</span>
             </span>
 
         </div>
@@ -258,6 +264,7 @@
 <blockquote>
 <p>用闭包把参数保存起来，当参数的数量足够执行函数了，就开始执行函数</p>
 </blockquote>
+<p>做一个闭包，返回一个函数，这个函数每次执行会改写闭包里面记录参数的数组。当这个函数判断参数个数够了，就去执行它。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">curry</span>(<span class="params">fn, args</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> length = fn.length;</span><br><span class="line">    args = args || [];</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">let</span> _args = [...args].concat([...arguments]);</span><br><span class="line">        <span class="keyword">if</span> (_args.length &lt; length) &#123;</span><br><span class="line">            <span class="keyword">return</span> curry.call(<span class="keyword">this</span>, fn, _args);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> fn.apply(<span class="keyword">this</span>, _args);</span><br><span class="line">            <span class="comment">//之所以写成 this 是因为希望根据环境的不同而设置不同的 this 值</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> fn = curry(<span class="function"><span class="keyword">function</span>(<span class="params">a, b, c</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log([a, b, c]);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">fn(<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>) <span class="comment">// ["a", "b", "c"]</span></span><br><span class="line">fn(<span class="string">"a"</span>, <span class="string">"b"</span>)(<span class="string">"c"</span>) <span class="comment">// ["a", "b", "c"]</span></span><br><span class="line">fn(<span class="string">"a"</span>)(<span class="string">"b"</span>)(<span class="string">"c"</span>) <span class="comment">// ["a", "b", "c"]</span></span><br><span class="line">fn(<span class="string">"a"</span>)(<span class="string">"b"</span>, <span class="string">"c"</span>) <span class="comment">// ["a", "b", "c"]</span></span><br></pre></td></tr></table></figure>
 
 <p>ES6写法</p>
@@ -522,13 +529,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">195k</span>
+    <span title="Symbols count total">196k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">2:57</span>
+    <span title="Reading time total">2:58</span>
 </div>
 
 <!--
