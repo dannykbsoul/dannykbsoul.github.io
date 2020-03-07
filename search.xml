@@ -1,6 +1,206 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>事件轮询机制</title>
+    <url>/2020/03/07/%E4%BA%8B%E4%BB%B6%E8%BD%AE%E8%AF%A2%E6%9C%BA%E5%88%B6/</url>
+    <content><![CDATA[<h1 id="为什么JavaScript是单线程？"><a href="#为什么JavaScript是单线程？" class="headerlink" title="为什么JavaScript是单线程？"></a>为什么JavaScript是单线程？</h1><p>JavaScript是一门==<strong>单线程</strong>、<strong>非阻塞</strong>==的脚本语言，目的是为了实现与浏览器交互。</p>
+<a id="more"></a>
+
+<blockquote>
+<p>JavaScript的单线程，与它的用途有关。作为浏览器脚本语言，JavaScript的主要用途是与用户互动，以及操作DOM。这决定了它只能是单线程，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器应该以哪个线程为准？</p>
+</blockquote>
+<blockquote>
+<p>所以，为了避免复杂性，从一诞生，JavaScript就是单线程，这已经成了这门语言的核心特征，将来也不会改变。</p>
+</blockquote>
+<blockquote>
+<p>为了利用多核CPU的计算能力，HTML5提出Web Worker标准，允许JavaScript脚本创建多个线程，但是子线程完全受主线程控制，且不得操作DOM。所以，这个新标准并没有改变JavaScript单线程的本质。</p>
+</blockquote>
+<h1 id="浏览器中的-Event-Loop"><a href="#浏览器中的-Event-Loop" class="headerlink" title="浏览器中的 Event Loop"></a>浏览器中的 Event Loop</h1><h2 id="Event-Loop"><a href="#Event-Loop" class="headerlink" title="Event Loop"></a>Event Loop</h2><h3 id="执行栈"><a href="#执行栈" class="headerlink" title="执行栈"></a>执行栈</h3><p>当我们调用一个方法的时候，js会生成一个与这个方法相对应的执行环境，也叫执行上下文，这个执行环境存在着这个方法的私有作用域、参数、this对象等等。因为js是单线程的，同一时间只能执行一个方法，所以当一系列的方法被依次调用的时候，js会先解析这些方法，把其中的<strong>同步任务</strong>按照执行顺序排队到一个地方，这个地方叫做执行栈。</p>
+<h3 id="事件队列"><a href="#事件队列" class="headerlink" title="事件队列"></a>事件队列</h3><p>当我们发出一个ajax请求，他并不会立刻返回结果，为了防止浏览器出现假死或者空白，主线程会把这个异步任务挂起(pending)，继续执行执行栈中的其他任务，等异步任务返回结果后，js会将这个<strong>异步任务</strong>按照执行顺序，加入到与执行栈不同的另一个队列，也就是事件队列。</p>
+<p><img src="/2020/03/07/%E4%BA%8B%E4%BB%B6%E8%BD%AE%E8%AF%A2%E6%9C%BA%E5%88%B6/1.png" alt></p>
+<h4 id="setTimeout"><a href="#setTimeout" class="headerlink" title="setTimeout"></a>setTimeout</h4><figure class="highlight js"><table><tr><td class="code"><pre><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    task()</span><br><span class="line">&#125;,<span class="number">3000</span>)</span><br><span class="line"></span><br><span class="line">sleep(<span class="number">10000000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>流程：</p>
+<ul>
+<li><code>task()</code>进入Event Table并注册,计时开始。</li>
+<li>执行<code>sleep</code>函数，很慢，非常慢，计时仍在继续。</li>
+<li>3秒到了，计时事件<code>timeout</code>完成，<code>task()</code>进入Event Queue，但是<code>sleep</code>也太慢了吧，还没执行完，只好等着。</li>
+<li><code>sleep</code>终于执行完了，<code>task()</code>终于从Event Queue进入了主线程执行。</li>
+</ul>
+<p>即便主线程为空，0毫秒实际上也是达不到的。根据HTML的标准，最低是4毫秒。</p>
+<h4 id="setInterval"><a href="#setInterval" class="headerlink" title="setInterval"></a>setInterval</h4><p>对于执行顺序来说，<code>setInterval</code>会每隔指定的时间将注册的函数置入Event Queue，如果前面的任务耗时太久，那么同样需要等待。</p>
+<p>唯一需要注意的一点是，对于<code>setInterval(fn,ms)</code>来说，我们已经知道不是每过<code>ms</code>秒会执行一次<code>fn</code>，而是每过<code>ms</code>秒，会有<code>fn</code>进入Event Queue。一旦<strong>setInterval的回调函数fn执行时间超过了延迟时间ms，那么就完全看不出来有时间间隔了</strong>。</p>
+<h4 id="Promise与process-nextTick-callback"><a href="#Promise与process-nextTick-callback" class="headerlink" title="Promise与process.nextTick(callback)"></a>Promise与process.nextTick(callback)</h4><p><code>process.nextTick(callback)</code>类似node.js版的”setTimeout”，在事件循环的下一次循环中调用callback回调函数。</p>
+<p>除了广义的同步任务和异步任务，还有进一步的细分：</p>
+<h2 id="宏任务"><a href="#宏任务" class="headerlink" title="宏任务"></a>宏任务</h2><p>(macro)task（又称之为宏任务），可以理解是每次执行栈执行的代码就是一个宏任务（包括每次从事件队列中获取一个事件回调并放到执行栈中执行）。</p>
+<p>浏览器为了能够使得JS内部(macro)task与DOM任务能够有序的执行，<strong>会在一个(macro)task执行结束后，在下一个(macro)task 执行开始前，对页面进行重新渲染</strong>，流程如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">(macro)task-&gt;渲染-&gt;(macro)task-&gt;...</span><br></pre></td></tr></table></figure>
+
+<p>(macro)task主要包含：script(整体代码)、setTimeout、setInterval、I/O、UI交互事件、postMessage、MessageChannel、setImmediate(Node.js 环境)</p>
+<h2 id="微任务"><a href="#微任务" class="headerlink" title="微任务"></a>微任务</h2><p>microtask（又称为微任务），<strong>可以理解是在当前 task 执行结束后立即执行的任务</strong>。也就是说，在当前task任务后，下一个task之前，在渲染之前。</p>
+<p>所以它的响应速度相比setTimeout（setTimeout是task）会更快，因为无需等渲染。也就是说，在某一个macrotask执行完后，就会将在它执行期间产生的所有microtask都执行完毕（在渲染前）。</p>
+<p>microtask主要包含：Promise.then、MutaionObserver、process.nextTick(Node.js 环境)</p>
+<h2 id="运行机制"><a href="#运行机制" class="headerlink" title="运行机制"></a>运行机制</h2><p>在事件循环中，每进行一次循环操作称为 tick，每一次 tick 的任务处理模型是比较复杂的，但关键步骤如下：</p>
+<ul>
+<li>执行一个宏任务（栈中没有就从事件队列中获取）</li>
+<li>执行过程中如果遇到微任务，就将它添加到微任务的任务队列中</li>
+<li>宏任务执行完毕后，立即执行当前微任务队列中的所有微任务（依次执行）</li>
+<li>当前宏任务执行完毕，开始检查渲染，然后GUI线程接管渲染</li>
+<li>渲染完毕后，JS线程继续接管，开始下一个宏任务（从事件队列中获取）</li>
+</ul>
+<p><img src="/2020/03/07/%E4%BA%8B%E4%BB%B6%E8%BD%AE%E8%AF%A2%E6%9C%BA%E5%88%B6/2.png" alt></p>
+<h4 id="Promise和async中的立即执行"><a href="#Promise和async中的立即执行" class="headerlink" title="Promise和async中的立即执行"></a>Promise和async中的立即执行</h4><p>我们知道Promise中的异步体现在<code>then</code>和<code>catch</code>中，所以写在Promise中的代码是被当做同步任务立即执行的。而在async/await中，在出现await出现之前，其中的代码也是立即执行的。那么出现了await时候发生了什么呢？</p>
+<h4 id="await做了什么"><a href="#await做了什么" class="headerlink" title="await做了什么?"></a>await做了什么?</h4><p><strong>实际上await是一个让出线程的标志。await后面的表达式会先执行一遍，将await后面的代码加入到microtask中，然后就会跳出整个async函数来执行后面的代码。</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'async1 start'</span>);</span><br><span class="line">	<span class="keyword">await</span> async2();</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'async1 end'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>等价于</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'async1 start'</span>);</span><br><span class="line">	<span class="built_in">Promise</span>.resolve(async2()).then(() =&#123;</span><br><span class="line">                <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>);</span><br><span class="line">        &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/03/07/%E4%BA%8B%E4%BB%B6%E8%BD%AE%E8%AF%A2%E6%9C%BA%E5%88%B6/3.png" alt></p>
+<p>当执行栈中的任务清空，主线程会先检查微任务队列中是否有任务，如果有，就将微任务队列中的任务依次执行，直到微任务队列为空，之后再检查宏任务队列中是否有任务，如果有，则每次取出第一个宏任务加入到执行栈中，之后再清空执行栈，检查微任务，以此循环… …</p>
+<h2 id="例题："><a href="#例题：" class="headerlink" title="例题："></a>例题：</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">//请写出输出内容</span></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 start'</span>);</span><br><span class="line">    <span class="keyword">await</span> async2();</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'async2'</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>);</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">async1();</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'promise1'</span>);</span><br><span class="line">    resolve();</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'promise2'</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">script start</span></span><br><span class="line"><span class="comment">async1 start</span></span><br><span class="line"><span class="comment">async2</span></span><br><span class="line"><span class="comment">promise1</span></span><br><span class="line"><span class="comment">script end</span></span><br><span class="line"><span class="comment">async1 end</span></span><br><span class="line"><span class="comment">promise2</span></span><br><span class="line"><span class="comment">setTimeout</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>==<strong>分析：</strong>==</p>
+<ol>
+<li><p>首先，事件循环从宏任务(macrotask)队列开始，这个时候，宏任务队列中，只有一个script(整体代码)任务；当遇到任务源(task source)时，则会先分发任务到对应的任务队列中去。所以，上面例子的第一步执行如下图所示：</p>
+<p> <img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/JS%E5%9F%BA%E7%A1%80/assets/2442.png" alt="2442"></p>
+</li>
+<li><p>然后我们看到首先定义了两个async函数，接着往下看，然后遇到了 <code>console</code> 语句，直接输出 <code>script start</code>。输出之后，script 任务继续往下执行，遇到 <code>setTimeout</code>，其作为一个宏任务源，则会先将其任务分发到对应的队列中：</p>
+<p> <img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/JS%E5%9F%BA%E7%A1%80/assets/32443.png" alt="32443"></p>
+</li>
+<li><p>script 任务继续往下执行，执行了async1()函数，前面讲过async函数中在await之前的代码是立即执行的，所以会立即输出<code>async1 start</code>。</p>
+<p> 遇到了await时，会将await后面的表达式执行一遍，所以就紧接着输出<code>async2</code>，然后将await后面的代码也就是<code>console.log(&#39;async1 end&#39;)</code>加入到microtask中的Promise队列中，接着跳出async1函数来执行后面的代码。</p>
+<p> <img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/JS%E5%9F%BA%E7%A1%80/assets/r4riqr.png" alt="r4riqr"></p>
+</li>
+<li><p>script任务继续往下执行，遇到Promise实例。由于Promise中的函数是立即执行的，而后续的 <code>.then</code> 则会被分发到 microtask 的 <code>Promise</code> 队列中去。所以会先输出 <code>promise1</code>，然后执行 <code>resolve</code>，将 <code>promise2</code> 分配到对应队列。</p>
+<p> <img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/JS%E5%9F%BA%E7%A1%80/assets/iauieu9092.png" alt="iauieu9092"></p>
+</li>
+<li><p>script任务继续往下执行，最后只有一句输出了 <code>script end</code>，至此，全局任务就执行完毕了。</p>
+<p> 根据上述，每次执行完一个宏任务之后，会去检查是否存在 Microtasks；如果有，则执行 Microtasks 直至清空 Microtask Queue。</p>
+<p> 因而在script任务执行完毕之后，开始查找清空微任务队列。此时，微任务中， <code>Promise</code> 队列有的两个任务<code>async1 end</code>和<code>promise2</code>，因此按先后顺序输出 <code>async1 end，promise2</code>。当所有的 Microtasks 执行完毕之后，表示第一轮的循环就结束了。</p>
+</li>
+<li><p>第二轮循环依旧从宏任务队列开始。此时宏任务中只有一个 <code>setTimeout</code>，取出直接输出即可，至此整个流程结束。</p>
+</li>
+</ol>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'1'</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'2'</span>);</span><br><span class="line">    process.nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'3'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'4'</span>);</span><br><span class="line">        resolve();</span><br><span class="line">    &#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'5'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line">process.nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'6'</span>);</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'7'</span>);</span><br><span class="line">    resolve();</span><br><span class="line">&#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'8'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'9'</span>);</span><br><span class="line">    process.nextTick(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'10'</span>);</span><br><span class="line">    &#125;)</span><br><span class="line">    <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'11'</span>);</span><br><span class="line">        resolve();</span><br><span class="line">    &#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'12'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>第一轮事件循环流程分析如下：</p>
+<ul>
+<li>整体script作为第一个宏任务进入主线程，遇到<code>console.log</code>，输出1。</li>
+<li>遇到<code>setTimeout</code>，其回调函数被分发到宏任务Event Queue中。我们暂且记为<code>setTimeout1</code>。</li>
+<li>遇到<code>process.nextTick()</code>，其回调函数被分发到微任务Event Queue中。我们记为<code>process1</code>。</li>
+<li>遇到<code>Promise</code>，<code>new Promise</code>直接执行，输出7。<code>then</code>被分发到微任务Event Queue中。我们记为<code>then1</code>。</li>
+<li>又遇到了<code>setTimeout</code>，其回调函数被分发到宏任务Event Queue中，我们记为<code>setTimeout2</code>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">宏任务Event Queue</th>
+<th align="center">微任务Event Queue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">setTimeout1</td>
+<td align="center">process1</td>
+</tr>
+<tr>
+<td align="center">setTimeout2</td>
+<td align="center">then1</td>
+</tr>
+</tbody></table>
+<ul>
+<li>上表是第一轮事件循环宏任务结束时各Event Queue的情况，此时已经输出了1和7。</li>
+<li>我们发现了<code>process1</code>和<code>then1</code>两个微任务。</li>
+<li>执行<code>process1</code>,输出6。</li>
+<li>执行<code>then1</code>，输出8。</li>
+</ul>
+<p>好了，第一轮事件循环正式结束，这一轮的结果是输出1，7，6，8。那么第二轮时间循环从<code>setTimeout1</code>宏任务开始：</p>
+<ul>
+<li>首先输出2。接下来遇到了<code>process.nextTick()</code>，同样将其分发到微任务Event Queue中，记为<code>process2</code>。<code>new Promise</code>立即执行输出4，<code>then</code>也分发到微任务Event Queue中，记为<code>then2</code>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">宏任务Event Queue</th>
+<th align="center">微任务Event Queue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">setTimeout2</td>
+<td align="center">process2</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">then2</td>
+</tr>
+</tbody></table>
+<ul>
+<li>第二轮事件循环宏任务结束，我们发现有<code>process2</code>和<code>then2</code>两个微任务可以执行。</li>
+<li>输出3。</li>
+<li>输出5。</li>
+<li>第二轮事件循环结束，第二轮输出2，4，3，5。</li>
+<li>第三轮事件循环开始，此时只剩setTimeout2了，执行。</li>
+<li>直接输出9。</li>
+<li>将<code>process.nextTick()</code>分发到微任务Event Queue中。记为<code>process3</code>。</li>
+<li>直接执行<code>new Promise</code>，输出11。</li>
+<li>将<code>then</code>分发到微任务Event Queue中，记为<code>then3</code>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">宏任务Event Queue</th>
+<th align="center">微任务Event Queue</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"></td>
+<td align="center">process3</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center">then3</td>
+</tr>
+</tbody></table>
+<ul>
+<li>第三轮事件循环宏任务执行结束，执行两个微任务<code>process3</code>和<code>then3</code>。</li>
+<li>输出10。</li>
+<li>输出12。</li>
+<li>第三轮事件循环结束，第三轮输出9，11，10，12。</li>
+</ul>
+<p>整段代码，共进行了三次事件循环，完整的输出为1，7，6，8，2，4，3，5，9，11，10，12。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">a1</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a1 start'</span>)</span><br><span class="line">    <span class="keyword">await</span> a2()</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a1 end'</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">a2</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a2'</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>)</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>)</span><br><span class="line">&#125;, <span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'promise1'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">a1()</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> promise2 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    resolve(<span class="string">'promise2.then'</span>)</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'promise2'</span>)</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">promise2.then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res)</span><br><span class="line">    <span class="built_in">Promise</span>.resolve().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'promise3'</span>)</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">script start</span><br><span class="line">a1 start</span><br><span class="line">a2</span><br><span class="line">promise2</span><br><span class="line">script end</span><br><span class="line">promise1</span><br><span class="line">a1 end</span><br><span class="line">promise2.then</span><br><span class="line">promise3   <span class="comment">//这俩个别弄反了，等微任务做完了会再去执行宏任务。</span></span><br><span class="line">setTimeout <span class="comment">//</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="promise与setTimeout-判断执行顺序"><a href="#promise与setTimeout-判断执行顺序" class="headerlink" title="promise与setTimeout 判断执行顺序"></a>promise与setTimeout 判断执行顺序</h2><p>promise和setTimeout都会将事件放入异步队列，但setTimeout即便是写0，也会有4ms的延迟</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'begin'</span>);</span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout 1'</span>);</span><br><span class="line"></span><br><span class="line">  <span class="built_in">Promise</span>.resolve()</span><br><span class="line">    .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'promise 1'</span>);</span><br><span class="line">      setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">          <span class="built_in">console</span>.log(<span class="string">'setTimeout2'</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'promise 2'</span>);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'a'</span>);</span><br><span class="line">    resolve();</span><br><span class="line">  &#125;).then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'b'</span>);</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'end'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>答案</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">begin</span><br><span class="line">end</span><br><span class="line">setTimeout <span class="number">1</span></span><br><span class="line">a</span><br><span class="line">promise <span class="number">1</span></span><br><span class="line">b</span><br><span class="line">promise <span class="number">2</span></span><br><span class="line">setTimeout2</span><br></pre></td></tr></table></figure>
+
+<h2 id="async函数的使用"><a href="#async函数的使用" class="headerlink" title="async函数的使用"></a>async函数的使用</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">repeat</span>(<span class="params">func, times, wait</span>) </span>&#123;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输入</span></span><br><span class="line"><span class="keyword">const</span> repeatFunc = repeat(alert, <span class="number">4</span>, <span class="number">3000</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// 会alert4次 helloworld, 每次间隔3秒</span></span><br><span class="line">repeatFunc(<span class="string">'hellworld'</span>);</span><br><span class="line"><span class="comment">// 会alert4次 worldhellp, 每次间隔3秒</span></span><br><span class="line">repeatFunc(<span class="string">'worldhello'</span>)</span><br></pre></td></tr></table></figure>
+
+<p>我自己的实现，没有成功。这种实现是setTimeout新建了两个，然而只清理了一个。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">repeat</span>(<span class="params">func, times, wait</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> timer = <span class="literal">null</span>;</span><br><span class="line">  <span class="keyword">var</span> count = <span class="number">0</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">    timer = setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      func.apply(<span class="literal">null</span>, args);</span><br><span class="line">      count ++;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'count'</span>, count, <span class="string">"times"</span>, times)</span><br><span class="line">      <span class="keyword">if</span>( count &gt;= times) &#123;</span><br><span class="line">        clearInterval(timer);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;, wait);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 输入</span></span><br><span class="line"><span class="keyword">const</span> repeatFunc = repeat(<span class="built_in">console</span>.log, <span class="number">4</span>, <span class="number">3000</span>);</span><br><span class="line"><span class="comment">// 输出</span></span><br><span class="line"><span class="comment">// 会alert4次 helloworld, 每次间隔3秒</span></span><br><span class="line">repeatFunc(<span class="string">'hellworld'</span>);</span><br><span class="line"><span class="comment">// 会alert4次 worldhellp, 每次间隔3秒</span></span><br><span class="line">repeatFunc(<span class="string">'worldhello'</span>);</span><br></pre></td></tr></table></figure>
+
+<p>正确解法：使用 async/await来实现</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">wait</span>(<span class="params">seconds</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">        setTimeout(res, seconds);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">repeat</span>(<span class="params">func, times, s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; times; i++) &#123;</span><br><span class="line">            func.apply(<span class="literal">null</span>, args);</span><br><span class="line">            <span class="keyword">await</span> wait(s);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> log = <span class="built_in">console</span>.log</span><br><span class="line"><span class="keyword">let</span> repeatFunc = repeat(log,<span class="number">4</span>,<span class="number">3000</span>)</span><br><span class="line">repeatFunc(<span class="string">'HelloWorld'</span>)</span><br><span class="line">repeatFunc(<span class="string">'WorldHello'</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="async执行练习"><a href="#async执行练习" class="headerlink" title="async执行练习"></a>async执行练习</h2><ul>
+<li>await后面的才是异步的，之前都是同步的</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 start'</span>);  <span class="comment">// 2</span></span><br><span class="line">  <span class="keyword">await</span> async2();</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async1 end'</span>);    <span class="comment">// 6</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">async2</span>(<span class="params"></span>) </span>&#123;     </span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'async2'</span>);        <span class="comment">// 3</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script start'</span>);    <span class="comment">//  1</span></span><br><span class="line"></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'setTimeout'</span>);    <span class="comment">// 8</span></span><br><span class="line">&#125;, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">async1();</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'promise1'</span>);      <span class="comment">// 4</span></span><br><span class="line">    resolve();</span><br><span class="line">  &#125;).then(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'promise2'</span>);  <span class="comment">// 7</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'script end'</span>);      <span class="comment">// 5</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="关于-setTimeOut、setImmediate、process-nextTick-的比较"><a href="#关于-setTimeOut、setImmediate、process-nextTick-的比较" class="headerlink" title="关于 setTimeOut、setImmediate、process.nextTick()的比较"></a>关于 setTimeOut、setImmediate、process.nextTick()的比较</h3><h4 id="setTimeout-1"><a href="#setTimeout-1" class="headerlink" title="setTimeout()"></a>setTimeout()</h4><p>将事件插入到了事件队列，必须等到当前代码（执行栈）执行完，主线程才会去执行它指定的回调函数。 当主线程时间执行过长，无法保证回调会在事件指定的时间执行。 浏览器端每次setTimeout会有4ms的延迟，当连续执行多个setTimeout，有可能会阻塞进程，造成性能问题。</p>
+<h4 id="setImmediate"><a href="#setImmediate" class="headerlink" title="setImmediate()"></a>setImmediate()</h4><p>事件插入到事件队列尾部，主线程和事件队列的函数执行完成之后立即执行。和setTimeout(fn,0)的效果差不多。 服务端node提供的方法。浏览器端最新的api也有类似实现:window.setImmediate,但支持的浏览器很少。</p>
+<h4 id="process-nextTick"><a href="#process-nextTick" class="headerlink" title="process.nextTick()"></a>process.nextTick()</h4><p>插入到事件队列尾部，但在下次事件队列之前会执行。也就是说，它指定的任务总是发生在所有异步任务之前，当前主线程的末尾。 大致流程：当前”执行栈”的尾部–&gt;下一次Event Loop（主线程读取”任务队列”）之前–&gt;触发process指定的回调函数。 服务器端node提供的办法。用此方法可以用于处于异步延迟的问题。 可以理解为：此次不行，预约下次优先执行。</p>
+<h1 id="Node中的Event-Loop"><a href="#Node中的Event-Loop" class="headerlink" title="Node中的Event Loop"></a>Node中的Event Loop</h1>]]></content>
+  </entry>
+  <entry>
     <title>洗牌算法</title>
     <url>/2020/03/03/%E6%B4%97%E7%89%8C%E7%AE%97%E6%B3%95/</url>
     <content><![CDATA[<p>缘起：如何真正的打乱数组?</p>
@@ -1092,10 +1292,535 @@
 
 
 
+<h1 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h1><p>和普通函数区别：</p>
+<ol>
+<li><p><strong>没有this</strong></p>
+<blockquote>
+<p><strong>箭头函数没有 this，所以需要通过查找作用域链来确定 this 的值。</strong></p>
+<p>这就意味着如果箭头函数被非箭头函数包含，this 绑定的就是最近一层非箭头函数的 this。</p>
+</blockquote>
+</li>
+<li><p><strong>没有arguments</strong></p>
+<blockquote>
+<p>如果想要得到箭头函数的参数可以通过以下的方式：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> nums = <span class="function">(<span class="params">...nums</span>) =&gt;</span> nums;</span><br></pre></td></tr></table></figure>
+</blockquote>
+</li>
+<li><p><strong>不能通过 new 关键字调用</strong></p>
+</li>
+<li><p><strong>没有 new.target</strong></p>
+<blockquote>
+<p><code>new</code>是从构造函数生成实例对象的命令。ES6 为<code>new</code>命令引入了一个<code>new.target</code>属性，该属性一般用在构造函数之中，返回<code>new</code>命令作用于的那个构造函数。如果构造函数不是通过<code>new</code>命令或<code>Reflect.construct()</code>调用的，<code>new.target</code>会返回<code>undefined</code>，因此这个属性可以用来确定构造函数是怎么调用的。</p>
+</blockquote>
+</li>
+<li><p><strong>没有原型</strong></p>
+</li>
+<li><p><strong>没有 super</strong></p>
+</li>
+</ol>
+<p>最后，关于箭头函数，引用 MDN 的介绍就是：</p>
+<blockquote>
+<p>An arrow function expression has a shorter syntax than a function expression and does not have its own <code>this</code>, <code>arguments</code>, <code>super</code>, or <code>new.target</code>. These function expressions are best suited for <code>non-method functions</code>, and they cannot be used as <code>constructors</code>.</p>
+</blockquote>
+<p>method的定义：</p>
+<blockquote>
+<p>A method is a function which is a property of an object.</p>
+</blockquote>
+<p>对象属性中的函数就被称之为 method，那么 non-method 就是指不被用作对象属性中的函数了，可是为什么说箭头函数更适合 non-method 呢？</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  i: <span class="number">10</span>,</span><br><span class="line">  b: <span class="function"><span class="params">()</span> =&gt;</span> <span class="built_in">console</span>.log(<span class="keyword">this</span>.i, <span class="keyword">this</span>),</span><br><span class="line">  c: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log( <span class="keyword">this</span>.i, <span class="keyword">this</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">obj.b();</span><br><span class="line"><span class="comment">// undefined Window</span></span><br><span class="line">obj.c();</span><br><span class="line"><span class="comment">// 10, Object &#123;...&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>因为它内部this的指向原因，当使用obj.b()的时候，很明显我们希望b方法里面的this指向obj，但是它却指向了obj所在上下文中的this（即window），违背了我们的意愿，所以箭头函数不适合作为对象的方法。这也是为什么vue组件里面方法不允许使用箭头函数的原因。</p>
+<h1 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h1><ol>
+<li><p>Symbol 值通过 Symbol 函数生成，使用 typeof，结果为 “symbol”</p>
+</li>
+<li><p>Symbol 函数前不能使用 new 命令，否则会报错。这是因为生成的 Symbol 是一个原始类型的值，不是对象。</p>
+</li>
+<li><p>instanceof 的结果为 false</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s = <span class="built_in">Symbol</span>(<span class="string">'foo'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(s <span class="keyword">instanceof</span> <span class="built_in">Symbol</span>); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol 函数可以接受一个字符串作为参数，表示对 Symbol 实例的描述，主要是为了在控制台显示，或者转为字符串时，比较容易区分。</p>
+</li>
+<li><p>如果 Symbol 的参数是一个对象，就会调用该对象的 toString 方法，将其转为字符串，然后才生成一个 Symbol 值。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> obj = &#123;</span><br><span class="line">  toString() &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">'abc'</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">const</span> sym = <span class="built_in">Symbol</span>(obj);</span><br><span class="line"><span class="built_in">console</span>.log(sym); <span class="comment">// Symbol(abc)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol 函数的参数只是表示对当前 Symbol 值的描述，相同参数的 Symbol 函数的返回值是不相等的。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 没有参数的情况</span></span><br><span class="line"><span class="keyword">var</span> s1 = <span class="built_in">Symbol</span>();</span><br><span class="line"><span class="keyword">var</span> s2 = <span class="built_in">Symbol</span>();</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(s1 === s2); <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 有参数的情况</span></span><br><span class="line"><span class="keyword">var</span> s1 = <span class="built_in">Symbol</span>(<span class="string">'foo'</span>);</span><br><span class="line"><span class="keyword">var</span> s2 = <span class="built_in">Symbol</span>(<span class="string">'foo'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(s1 === s2); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol 值不能与其他类型的值进行运算，会报错。</p>
+</li>
+<li><p>Symbol 值可以显式转为字符串。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> sym = <span class="built_in">Symbol</span>(<span class="string">'My symbol'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">String</span>(sym)); <span class="comment">// 'Symbol(My symbol)'</span></span><br><span class="line"><span class="built_in">console</span>.log(sym.toString()); <span class="comment">// 'Symbol(My symbol)'</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol 值可以作为标识符，用于对象的属性名，可以保证不会出现同名的属性。</p>
+</li>
+<li><p>Symbol 作为属性名，该属性不会出现在 for…in、for…of 循环中，也不会被 Object.keys()、Object.getOwnPropertyNames()、JSON.stringify() 返回。但是，它也不是私有属性，有一个 Object.getOwnPropertySymbols 方法，可以获取指定对象的所有 Symbol 属性名。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> a = <span class="built_in">Symbol</span>(<span class="string">'a'</span>);</span><br><span class="line"><span class="keyword">var</span> b = <span class="built_in">Symbol</span>(<span class="string">'b'</span>);</span><br><span class="line"></span><br><span class="line">obj[a] = <span class="string">'Hello'</span>;</span><br><span class="line">obj[b] = <span class="string">'World'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> objectSymbols = <span class="built_in">Object</span>.getOwnPropertySymbols(obj);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(objectSymbols);</span><br><span class="line"><span class="comment">// [Symbol(a), Symbol(b)]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>如果我们希望使用同一个 Symbol 值，可以使用 Symbol.for。它接受一个字符串作为参数，然后搜索有没有以该参数作为名称的 Symbol 值。如果有，就返回这个 Symbol 值，否则就新建并返回一个以该字符串为名称的 Symbol 值。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s1 = <span class="built_in">Symbol</span>.for(<span class="string">'foo'</span>);</span><br><span class="line"><span class="keyword">var</span> s2 = <span class="built_in">Symbol</span>.for(<span class="string">'foo'</span>);</span><br><span class="line">s1 === s2 <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol.keyFor 方法返回一个<code>已登记</code>的 Symbol 类型值的 key。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> s1 = <span class="built_in">Symbol</span>.for(<span class="string">"foo"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Symbol</span>.keyFor(s1)); <span class="comment">// "foo"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> s2 = <span class="built_in">Symbol</span>(<span class="string">"foo"</span>);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Symbol</span>.keyFor(s2) ); <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="Symbol-for与Symbol"><a href="#Symbol-for与Symbol" class="headerlink" title="Symbol.for与Symbol"></a>Symbol.for与Symbol</h2><p>Symbol.for()与Symbol()这两种写法，都会生成新的Symbol。它们的区别是，前者会被<code>登记</code>在<code>全局环境</code>中供搜索，后者不会。Symbol.for()不会每次调用就返回一个新的Symbol类型的值，而是会先检查给定的key是否已经存在，如果不存在才会新建一个值。比如，如果你调用 Symbol.for(“cat”)30次，每次都会返回同一个Symbol值，但是调用 Symbol(“cat”) 30次，会返回30个不同的Symbol值。</p>
+<h2 id="内置Symbol值"><a href="#内置Symbol值" class="headerlink" title="内置Symbol值"></a>内置Symbol值</h2><ol>
+<li><p>Symbol.hasInstance</p>
+<p> 当调用<code>instanceof</code>这个方法时，实际调用对象的Symbol.hasInstance属性，这个属性指向一个内部方法。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyClass</span> </span>&#123;</span><br><span class="line">    [<span class="built_in">Symbol</span>.hasInstance](foo) &#123;</span><br><span class="line">        <span class="keyword">return</span> foo <span class="keyword">instanceof</span> <span class="built_in">Array</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>] <span class="keyword">instanceof</span> <span class="keyword">new</span> MyClass()) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol.isConcatSpreadable</p>
+<p> 对象的Symbol.isConcatSpreadable属性等于一个布尔值，表示该对象使用Array.prototype.concat() 时，是否可以展开。</p>
+<p> Symbol.isConcatSpreadable属性等于<code>true</code>或<code>undefined</code>时，表示可以展开。</p>
+<p> 类数组对象也可以展开，但它的Symbol.isConcatSpreadable属性默认为false，必须手动打开。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    length: <span class="number">2</span>,</span><br><span class="line">    <span class="number">0</span>: <span class="string">'c'</span>,</span><br><span class="line">    <span class="number">1</span>: <span class="string">'d'</span></span><br><span class="line">&#125;;</span><br><span class="line">[<span class="string">'a'</span>, <span class="string">'b'</span>].concat(obj, <span class="string">'e'</span>) <span class="comment">// ['a', 'b', obj, 'e']</span></span><br><span class="line">obj[<span class="built_in">Symbol</span>.isConcatSpreadable] = <span class="literal">true</span>;</span><br><span class="line">[<span class="string">'a'</span>, <span class="string">'b'</span>].concat(obj, <span class="string">'e'</span>) <span class="comment">// ['a', 'b', 'c', 'd', 'e']</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol.iterator</p>
+<p> 对象的Symbol.iterator属性，指向该对象的默认遍历器方法。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myIterable = &#123;&#125;;</span><br><span class="line">myIterable[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;;</span><br><span class="line">[...myIterable] <span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+<p> 对象进行for…of循环时，会调用Symbol.iterator方法，返回该对象的默认遍历器。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myIterable = &#123;&#125;;</span><br><span class="line">myIterable[<span class="built_in">Symbol</span>.iterator] = <span class="function"><span class="keyword">function</span>* (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">of</span> myIterable) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//1</span></span><br><span class="line"><span class="comment">//2</span></span><br><span class="line"><span class="comment">//3</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Symbol.toPrimitive</p>
+<p> 对象的Symbol.toPrimitive属性，指向一个方法。该对象被转为原始类型的值时，会调用这个方法，返回该对象对应的原始类型值。</p>
+<p> Symbol.toPrimitive被调用时，会接受一个字符串参数，表示当前运算的模式，一共有三种模式。</p>
+<ul>
+<li><p>Number：该场合需要转成数值</p>
+</li>
+<li><p>String：该场合需要转成字符串</p>
+</li>
+<li><p>Default：该场合可以转成数值，也可以转成字符串</p>
+<p>一般情况下，+连接运算符传入的参数是<code>default</code>，而对于乘法等算数运算符传入的是<code>number</code>。对于String(str),${str}等情况，传入的参数是<code>string</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123;</span><br><span class="line">    [<span class="built_in">Symbol</span>.toPrimitive](hint) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (hint) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'number'</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">123</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'string'</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">'str'</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">'default'</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="string">'default'</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="number">2</span> * obj <span class="comment">// 246</span></span><br><span class="line"><span class="number">3</span> + obj <span class="comment">// '3default'</span></span><br><span class="line">obj == <span class="string">'default'</span> <span class="comment">// true</span></span><br><span class="line"><span class="built_in">String</span>(obj) <span class="comment">// 'str'</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p> <strong>Symbol.toPrimitive在类型转换方面，优先级是最高的。</strong></p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> ab = &#123;</span><br><span class="line">    valueOf() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    toString() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'1'</span>;</span><br><span class="line">    &#125;,</span><br><span class="line">    [<span class="built_in">Symbol</span>.toPrimitive]() &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span>+ab); <span class="comment">// 3</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'1'</span>+ab); <span class="comment">// 12</span></span><br></pre></td></tr></table></figure>
 
 
 
+</li>
+</ol>
+<h1 id="defineProperty-与-proxy"><a href="#defineProperty-与-proxy" class="headerlink" title="defineProperty 与 proxy"></a>defineProperty 与 proxy</h1><h2 id="defineProperty"><a href="#defineProperty" class="headerlink" title="defineProperty"></a>defineProperty</h2><blockquote>
+<p>Object.defineProperty(obj, prop, descriptor)</p>
+</blockquote>
+<p>descriptor：</p>
+<ol>
+<li>数据描述符：<strong>configurable</strong>、<strong>enumerable</strong>、<strong>value</strong>、<strong>writable</strong></li>
+<li>存取描述符：<strong>configurable</strong>、<strong>enumerable</strong>、<strong>get</strong>、<strong>set</strong></li>
+</ol>
+<p>configurable：</p>
+<blockquote>
+<p>当且仅当该属性的configurable为true时，该属性描述符才能够被改变，也能够被删除。默认为false。</p>
+</blockquote>
+<p>enumerable：</p>
+<blockquote>
+<p>当且仅当该属性的enumerable为true时，该属性才能够出现在对象的枚举属性中。默认为 false。</p>
+</blockquote>
+<h2 id="proxy"><a href="#proxy" class="headerlink" title="proxy"></a>proxy</h2><p>Proxy可以理解成，在目标对象之前架设一层“拦截”，外界对该对象的访问，都必须先通过这层拦截，因此提供了一种机制，可以对外界的访问进行过滤和改写。Proxy这个词的原意是代理，用在这里表示由它来“代理”某些操作，可以译为“代理器”。</p>
+<p>Proxy 是 ES6 中新增的功能，它可以用来自定义对象中的操作。 Vue3.0 中将会通过 Proxy 来替换原本的 Object.defineProperty 来实现数据响应式。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler)</span><br></pre></td></tr></table></figure>
 
+<p><code>target</code> 代表需要添加代理的对象，<code>handler</code> 用来自定义对象中的操作，比如可以用来自定义 set 或者 get 函数。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> onWatch = <span class="function">(<span class="params">obj, setBind, getLogger</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> handler = &#123;</span><br><span class="line">    <span class="keyword">set</span>(target, property, value, receiver) &#123;</span><br><span class="line">      setBind(value, property)</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Reflect</span>.set(target, property, value)</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">get</span>(target, property, receiver) &#123;</span><br><span class="line">      getLogger(target, property)</span><br><span class="line">      <span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, property, receiver)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Proxy</span>(obj, handler)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> obj = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;</span><br><span class="line"><span class="keyword">let</span> p = onWatch(</span><br><span class="line">  obj,</span><br><span class="line">  (v, property) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`监听到属性<span class="subst">$&#123;property&#125;</span>改变为<span class="subst">$&#123;v&#125;</span>`</span>)</span><br><span class="line">  &#125;,</span><br><span class="line">  (target, property) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`'<span class="subst">$&#123;property&#125;</span>' = <span class="subst">$&#123;target[property]&#125;</span>`</span>)</span><br><span class="line">  &#125;</span><br><span class="line">)</span><br><span class="line">p.a = <span class="number">2</span> <span class="comment">// 控制台输出：监听到属性a改变</span></span><br><span class="line">p.a <span class="comment">// 'a' = 2</span></span><br></pre></td></tr></table></figure>
+
+<p>自定义 set 和 get 函数的方式，在原本的逻辑中插入了我们的函数逻辑，实现了在对对象任何属性进行读写时发出通知。</p>
+<p>当然这是简单版的响应式实现，如果需要实现一个 Vue 中的响应式，需要我们在 get 中收集依赖，在 set 派发更新，之所以 Vue3.0 要使用 Proxy 替换原本的 API 原因在于 Proxy 无需一层层递归为每个属性添加代理，一次即可完成以上操作，性能上更好，并且原本的实现有一些数据更新不能监听到，但是 Proxy 可以完美监听到任何方式的数据改变，唯一缺陷可能就是浏览器的兼容性不好了。</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h3 id="1-get"><a href="#1-get" class="headerlink" title="1.get()"></a>1.get()</h3><blockquote>
+<p>get方法用于拦截某个属性的读取操作</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> person = &#123;</span><br><span class="line">    name: <span class="string">"zj"</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(person, &#123;</span><br><span class="line">    <span class="keyword">get</span>: function(target, property) &#123;</span><br><span class="line">        <span class="keyword">if</span> (property <span class="keyword">in</span> target) &#123;</span><br><span class="line">            <span class="keyword">return</span>  target[property];</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="built_in">ReferenceError</span>(<span class="string">"Property \""</span> + property + <span class="string">"\" does not exist."</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(proxy.name) <span class="comment">//"张三"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//console.log(proxy.age) //抛出一个错误</span></span><br><span class="line"><span class="comment">//如果没有这个拦截函数，访问不存在的属性，只会返回undefined</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>get方法可以继承</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> proto = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">    <span class="keyword">get</span>(target, propertyKey, receiver) &#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'GET'</span> + propertyKey);</span><br><span class="line">        <span class="keyword">return</span> target[propertyKey];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj = <span class="built_in">Object</span>.create(proto);</span><br><span class="line"><span class="built_in">console</span>.log(obj.xxx);</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-set"><a href="#2-set" class="headerlink" title="2.set()"></a>2.set()</h3><blockquote>
+<p>set方法用来拦截某个属性的赋值操作</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> validator = &#123;</span><br><span class="line">    <span class="keyword">set</span>: function(obj, prop, value) &#123;</span><br><span class="line">        <span class="keyword">if</span>(prop === <span class="string">'age'</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!<span class="built_in">Number</span>.isInteger(value)) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'The age is not an integer'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(value &gt; <span class="number">200</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">RangeError</span>(<span class="string">'The age seems invalid'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//对于age以外的属性，直接保存</span></span><br><span class="line">        obj[prop] = value;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> person = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, validator);</span><br><span class="line"></span><br><span class="line">person.age = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(person.age); <span class="comment">//100</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// person.age = 'young'; //报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// person.age = 300; //报错</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//利用set方法还是可以数据绑定，即每当对象发生变化时，会自动更新DOM</span></span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-apply"><a href="#3-apply" class="headerlink" title="3.apply()"></a>3.apply()</h3><blockquote>
+<p>apply方法可以拦截函数的调用、call和apply的操作</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> target = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123; <span class="keyword">return</span> <span class="string">'I am the target'</span>; &#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">    apply: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">'I am the proxy'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(p()); <span class="comment">//I am the proxy</span></span><br><span class="line"><span class="comment">//上述代码p是Proxy的实例，当它作为函数调用时p()，就会被apply方法拦截，返回一个字符串</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> twice = &#123;</span><br><span class="line">    apply (target, ctx, args) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Reflect</span>.apply(...arguments) * <span class="number">2</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sum</span> (<span class="params">left, right</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> left + right;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(sum, twice);</span><br><span class="line">proxy(<span class="number">1</span>, <span class="number">2</span>) <span class="comment">// 6</span></span><br><span class="line">proxy.call(<span class="literal">null</span>, <span class="number">5</span>, <span class="number">6</span>) <span class="comment">// 22</span></span><br><span class="line">proxy.apply(<span class="literal">null</span>, [<span class="number">7</span>, <span class="number">8</span>]) <span class="comment">// 30</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//上面代码中，每当执行proxy函数，就会被apply方法拦截</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//另外 直接调用Reflect.apply方法，也会被拦截</span></span><br><span class="line"><span class="built_in">Reflect</span>.apply(proxy, <span class="literal">null</span>, [<span class="number">9</span>, <span class="number">10</span>]) <span class="comment">// 38</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-has"><a href="#4-has" class="headerlink" title="4.has()"></a>4.has()</h3><blockquote>
+<p>用来拦截HasProperty操作，即判断对象是否有某个属性时，这个方法会生效。</p>
+</blockquote>
+<blockquote>
+<p>典型的操作就是<code>in</code>运算符。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">    has (target, key) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key[<span class="number">0</span>] === <span class="string">'_'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> key <span class="keyword">in</span> target;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> target = &#123; <span class="attr">_prop</span>: <span class="string">'foo'</span>, <span class="attr">prop</span>: <span class="string">'foo'</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'_prop'</span> <span class="keyword">in</span> proxy);</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，如果原对象的属性名的第一个字符是下划线，proxy.has就会返回 false，从而不会被 in 运算符发现。</p>
+<p>如果原对象不可配置或者禁止扩展，这时 has 拦截会报错。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> obj = &#123; <span class="attr">a</span>: <span class="number">10</span> &#125;;</span><br><span class="line"><span class="built_in">Object</span>.preventExtensions(obj);</span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(obj, &#123;</span><br><span class="line">	has: <span class="function"><span class="keyword">function</span>(<span class="params">target, prop</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="string">'a'</span> <span class="keyword">in</span> p <span class="comment">// TypeError is thrown</span></span><br></pre></td></tr></table></figure>
+
+<p>has拦截的是HasProperty操作，而不是HasOwnProperty操作，即 has 方法不判断一个属性是对象自身的属性，还是继承的属性。由于for…in操作内部也会用到 HasProperty 操作，所以has方法在for…in循环时也会生效。</p>
+<h3 id="5-construct"><a href="#5-construct" class="headerlink" title="5.construct()"></a>5.construct()</h3><blockquote>
+<p>construct方法用于拦截new命令</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;, &#123;</span><br><span class="line">    construct: <span class="function"><span class="keyword">function</span>(<span class="params">target, args</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'called: '</span> + args.join(<span class="string">', '</span>));</span><br><span class="line">        <span class="keyword">return</span> &#123;<span class="attr">value</span>: args[<span class="number">0</span>] * <span class="number">10</span>&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">new</span> p(<span class="number">1</span>).value</span><br><span class="line"><span class="comment">//"called: 1"</span></span><br><span class="line"><span class="comment">//10</span></span><br></pre></td></tr></table></figure>
+
+<p><code>construct方法返回的必须是一个对象</code>，否则会报错。</p>
+<h3 id="6-deleteProperty"><a href="#6-deleteProperty" class="headerlink" title="6.deleteProperty()"></a>6.deleteProperty()</h3><blockquote>
+<p>deleteProperty方法用于拦截delete操作，如果这个方法抛出错误或者返回false，当前属性就无法被delete命令删除。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">	deleteProperty (target, key) &#123;</span><br><span class="line">		invariant(key, <span class="string">'delete'</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">invariant</span> (<span class="params">key, action</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (key[<span class="number">0</span>] === <span class="string">'_'</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">`Invalid attempt to <span class="subst">$&#123;action&#125;</span> private "<span class="subst">$&#123;key&#125;</span>" property`</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> target = &#123; <span class="attr">_prop</span>: <span class="string">'foo'</span> &#125;;</span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line"><span class="keyword">delete</span> proxy._prop</span><br><span class="line"><span class="comment">// Error: Invalid attempt to delete private "_prop" property</span></span><br></pre></td></tr></table></figure>
+
+<p>deleteProperty方法拦截了delete操作符，删除第一个字符为下划线的属性会报错。</p>
+<h3 id="7-defineProperty"><a href="#7-defineProperty" class="headerlink" title="7.defineProperty()"></a>7.defineProperty()</h3><blockquote>
+<p>defineProperty 方法拦截了 Object.defineProperty 操作</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">	defineProperty (target, key, descriptor) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> target = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line">proxy.foo = <span class="string">'bar'</span></span><br><span class="line"><span class="comment">// TypeError: proxy defineProperty handler returned false for property '"foo"'</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，defineProperty方法返回false，导致添加新属性会抛出错误。</p>
+<h3 id="8-getOwnPropertyDescriptor"><a href="#8-getOwnPropertyDescriptor" class="headerlink" title="8.getOwnPropertyDescriptor()"></a>8.getOwnPropertyDescriptor()</h3><blockquote>
+<p>getOwnPropertyDescriptor 方法拦截 Object.getOwnPropertyDescriptor ，返回一个属性描述对象或者 undefined 。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">    getOwnPropertyDescriptor(target, key) &#123;</span><br><span class="line">        <span class="keyword">if</span> (key[<span class="number">0</span>] === <span class="string">'_'</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Object</span>.getOwnPropertyDescriptor(target, key);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> target = &#123;</span><br><span class="line">    _foo: <span class="string">'bar'</span>,</span><br><span class="line">    baz: <span class="string">'tar'</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getOwnPropertyDescriptor(proxy, <span class="string">'wat'</span>))</span><br><span class="line"><span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getOwnPropertyDescriptor(proxy, <span class="string">'_foo'</span>))</span><br><span class="line"><span class="comment">// undefined</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">Object</span>.getOwnPropertyDescriptor(proxy, <span class="string">'baz'</span>))</span><br><span class="line"><span class="comment">// &#123; value: 'tar', writable: true, enumerable: true, configurable: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，handler.getOwnPropertyDescriptor 方法对于第一个字符为下划线的属性名会返回 undefined 。</p>
+<h3 id="9-getPrototypeOf"><a href="#9-getPrototypeOf" class="headerlink" title="9.getPrototypeOf()"></a>9.getPrototypeOf()</h3><blockquote>
+<p>getPrototypeOf 方法主要用来拦截 Object.getPrototypeOf() 运算符，以及其他一些操作：</p>
+<ul>
+<li>Object.prototype.<strong>proto</strong></li>
+<li>Object.prototype.isPrototypeOf()</li>
+<li>Object.getPrototypeOf()</li>
+<li>Reflect.getPrototypeOf()</li>
+<li>instanceof 运算符</li>
+</ul>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> proto = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">	getPrototypeOf(target) &#123;</span><br><span class="line">		<span class="keyword">return</span> proto;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">Object</span>.getPrototypeOf(p) === proto <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中， getPrototypeOf 方法拦截 Object.getPrototypeOf() ，返回 proto 对象。</p>
+<h3 id="10-isExtensible"><a href="#10-isExtensible" class="headerlink" title="10.isExtensible()"></a>10.isExtensible()</h3><blockquote>
+<p>isExtensible方法拦截Object.isExtensible 操作。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">	isExtensible: <span class="function"><span class="keyword">function</span>(<span class="params">target</span>) </span>&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">"called"</span>);</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="built_in">Object</span>.isExtensible(p)</span><br><span class="line"><span class="comment">// "called"</span></span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码设置了 isExtensible 方法，在调用 Object.isExtensible 时会输出 called</p>
+<p>这个方法有一个强限制，如果不能满足下面的条件，就会抛出错误。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Object</span>.isExtensible(proxy) === <span class="built_in">Object</span>.isExtensible(target)</span><br></pre></td></tr></table></figure>
+
+<p>下面是一个例子。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> p = <span class="keyword">new</span> <span class="built_in">Proxy</span>(&#123;&#125;, &#123;</span><br><span class="line">    isExtensible: <span class="function"><span class="keyword">function</span> (<span class="params">target</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.isExtensible(p) <span class="comment">// 报错</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="11-ownKeys"><a href="#11-ownKeys" class="headerlink" title="11.ownKeys()"></a>11.ownKeys()</h3><blockquote>
+<p>ownKeys 方法用来拦截 Object.keys() 操作。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> target = &#123;&#125;;</span><br><span class="line"><span class="keyword">let</span> handler = &#123;</span><br><span class="line">	ownKeys(target) &#123;</span><br><span class="line">		<span class="keyword">return</span> [<span class="string">'hello'</span>, <span class="string">'world'</span>];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">let</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line"><span class="built_in">Object</span>.keys(proxy)</span><br><span class="line"><span class="comment">// [ 'hello', 'world' ]</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码拦截了对于target对象的Object.keys() 操作，返回预先设定的数组。</p>
+<h3 id="12-preventExtensions"><a href="#12-preventExtensions" class="headerlink" title="12.preventExtensions()"></a>12.preventExtensions()</h3><blockquote>
+<p>preventExtensions 方法拦截 Object.preventExtensions() 。该方法必须返回一个布尔值。</p>
+</blockquote>
+<p>这个方法有一个限制，只有当 Object.isExtensible(proxy) 为 false （即不可扩展）时， proxy.preventExtensions 才能返回 true ，否则会报错。</p>
+<h3 id="13-setPrototypeOf"><a href="#13-setPrototypeOf" class="headerlink" title="13.setPrototypeOf()"></a>13.setPrototypeOf()</h3><blockquote>
+<p>setPrototypeOf 方法主要用来拦截 Object.setPrototypeOf 方法</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> handler = &#123;</span><br><span class="line">	setPrototypeOf (target, proto) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'Changing the prototype is forbidden'</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">var</span> proto = &#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> target = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line"><span class="keyword">var</span> proxy = <span class="keyword">new</span> <span class="built_in">Proxy</span>(target, handler);</span><br><span class="line">proxy.setPrototypeOf(proxy, proto);</span><br><span class="line"><span class="comment">// Error: Changing the prototype is forbidden</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，只要修改 target 的原型对象，就会报错</p>
+<h3 id="14-Proxy-revocable"><a href="#14-Proxy-revocable" class="headerlink" title="14.Proxy.revocable()"></a>14.Proxy.revocable()</h3><blockquote>
+<p>Proxy.revocable方法返回一个可取消的Proxy实例</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> target = &#123;&#125;;</span><br><span class="line"><span class="keyword">let</span> handler = &#123;&#125;;</span><br><span class="line"><span class="keyword">let</span> &#123;proxy, revoke&#125; = <span class="built_in">Proxy</span>.revocable(target, handler);</span><br><span class="line">proxy.foo = <span class="number">123</span>;</span><br><span class="line">proxy.foo <span class="comment">// 123</span></span><br><span class="line">revoke();</span><br><span class="line">proxy.foo <span class="comment">// TypeError: Revoked</span></span><br></pre></td></tr></table></figure>
+
+<p>Proxy.revocable方法返回一个对象，该对象的 proxy 属性是 Proxy 实例， revoke 属性是一个函数，可以取消 Proxy 实例。上面代码中，当执行 revoke 函数之后，再访问 Proxy 实例，就会抛出一个错误。</p>
+<h2 id="Reflect"><a href="#Reflect" class="headerlink" title="Reflect"></a>Reflect</h2><h3 id="设计的目的"><a href="#设计的目的" class="headerlink" title="设计的目的"></a>设计的目的</h3><ol>
+<li><p>将 Object 对象的一些明显属于语言内部的方法（比如 Object.defineProperty ），放到Reflect对象上。</p>
+</li>
+<li><p>修改某些Object方法的返回结果，让其变得更合理。比如，Object.defineProperty(obj, name, desc) 在无法定义属性时，会抛出一个错误，而 Reflect.defineProperty(obj, name, desc) 则会返回 false 。</p>
+</li>
+<li><p>让Object操作都变成函数行为。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 老写法</span></span><br><span class="line"><span class="string">'assign'</span> <span class="keyword">in</span> <span class="built_in">Object</span> <span class="comment">// true</span></span><br><span class="line"><span class="comment">// 新写法</span></span><br><span class="line"><span class="built_in">Reflect</span>.has(<span class="built_in">Object</span>, <span class="string">'assign'</span>) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Reflect对象的方法和Proxy对象的方法一一对应，只要是Proxy对象的方法，就能在Reflect对象上找到对应的方法。Proxy对象可以方便地调用对应的Reflect方法，完成默认行为，作为修改行为的基础。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> loggedObj = <span class="keyword">new</span> <span class="built_in">Proxy</span>(obj, &#123;</span><br><span class="line">	<span class="keyword">get</span>(target, name) &#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'get'</span>, target, name);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">Reflect</span>.get(target, name);</span><br><span class="line">	&#125;,</span><br><span class="line">	deleteProperty(target, name) &#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'delete'</span> + name);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">Reflect</span>.deleteProperty(target, name);</span><br><span class="line">	&#125;,</span><br><span class="line">	has(target, name) &#123;</span><br><span class="line">		<span class="built_in">console</span>.log(<span class="string">'has'</span> + name);</span><br><span class="line">		<span class="keyword">return</span> <span class="built_in">Reflect</span>.has(target, name);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>上面代码中，每一个 Proxy 对象的拦截操作（ get 、 delete 、 has ），内部都调用对应的Reflect方法，保证原生行为能够正常执行。添加的工作，就是将每一个操作输出一行日志。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="1-Reflect-set-target-name-value-receiver"><a href="#1-Reflect-set-target-name-value-receiver" class="headerlink" title="1.Reflect.set(target,name,value,receiver)"></a>1.Reflect.set(target,name,value,receiver)</h3><blockquote>
+<p>查找并返回 target 对象的 name 属性，如果没有该属性，则返回 undefined 。如果 name 属性部署了读取函数，则读取函数的this绑定 receiver 。</p>
+</blockquote>
+<h3 id="2-Reflect-get-target-name-receiver"><a href="#2-Reflect-get-target-name-receiver" class="headerlink" title="2.Reflect.get(target,name,receiver)"></a>2.Reflect.get(target,name,receiver)</h3><blockquote>
+<p>设置 target 对象的 name 属性等于 value 。如果 name 属性设置了赋值函数，则赋值函数的 this 绑定 receiver 。</p>
+</blockquote>
+<h3 id="3-Reflect-apply-target-thisArg-args"><a href="#3-Reflect-apply-target-thisArg-args" class="headerlink" title="3.Reflect.apply(target,thisArg,args)"></a>3.Reflect.apply(target,thisArg,args)</h3><blockquote>
+<p>等同于 Function.prototype.apply.call(fun,thisArg,args) 。一般来说，如果要绑定一个函数的this对象，可以这样写 fn.apply(obj, args) ，但是如果函数定义了自己的 apply 方法，就只能写成 Function.prototype.apply.call(fn, obj, args) ，采用Reflect对象可以简化这种操作。</p>
+</blockquote>
+<h3 id="4-Reflect-has-target-name"><a href="#4-Reflect-has-target-name" class="headerlink" title="4.Reflect.has(target,name)"></a>4.Reflect.has(target,name)</h3><blockquote>
+<p>等同于 name in obj</p>
+</blockquote>
+<h3 id="5-Reflect-construct-target-args"><a href="#5-Reflect-construct-target-args" class="headerlink" title="5.Reflect.construct(target,args)"></a>5.Reflect.construct(target,args)</h3><blockquote>
+<p>等同于 new target(…args) ，这提供了一种不使用 new ，来调用构造函数的方法。</p>
+</blockquote>
+<h3 id="6-Reflect-deleteProperty-obj-name"><a href="#6-Reflect-deleteProperty-obj-name" class="headerlink" title="6.Reflect.deleteProperty(obj, name)"></a>6.Reflect.deleteProperty(obj, name)</h3><blockquote>
+<p>等同于 delete obj[name] </p>
+</blockquote>
+<h3 id="7-Reflect-getPrototypeOf-obj"><a href="#7-Reflect-getPrototypeOf-obj" class="headerlink" title="7.Reflect.getPrototypeOf(obj)"></a>7.Reflect.getPrototypeOf(obj)</h3><blockquote>
+<p>读取对象的 <strong>proto</strong> 属性，对应 Object.getPrototypeOf(obj)</p>
+</blockquote>
+<h3 id="8-Reflect-setPrototypeOf-obj-newProto"><a href="#8-Reflect-setPrototypeOf-obj-newProto" class="headerlink" title="8.Reflect.setPrototypeOf(obj, newProto)"></a>8.Reflect.setPrototypeOf(obj, newProto)</h3><blockquote>
+<p>设置对象的 <strong>proto</strong> 属性，对应 Object.setPrototypeOf(obj,newProto)</p>
+</blockquote>
+<h3 id="9-Reflect-defineProperty-target-name-desc"><a href="#9-Reflect-defineProperty-target-name-desc" class="headerlink" title="9.Reflect.defineProperty(target,name,desc)"></a>9.Reflect.defineProperty(target,name,desc)</h3><h3 id="10-Reflect-ownKeys-target"><a href="#10-Reflect-ownKeys-target" class="headerlink" title="10.Reflect.ownKeys(target)"></a>10.Reflect.ownKeys(target)</h3><h3 id="11-Reflect-isExtensible-target"><a href="#11-Reflect-isExtensible-target" class="headerlink" title="11.Reflect.isExtensible(target)"></a>11.Reflect.isExtensible(target)</h3><h3 id="12-Reflect-preventExtensions-target"><a href="#12-Reflect-preventExtensions-target" class="headerlink" title="12.Reflect.preventExtensions(target)"></a>12.Reflect.preventExtensions(target)</h3><h3 id="13-Reflect-getOwnPropertyDescriptor-target-name"><a href="#13-Reflect-getOwnPropertyDescriptor-target-name" class="headerlink" title="13.Reflect.getOwnPropertyDescriptor(target, name)"></a>13.Reflect.getOwnPropertyDescriptor(target, name)</h3><p>Reflect.set()、Reflect.defineProperty()、Reflect.freeze()、Reflect.seal()和 Reflect.preventExtensions() 返回一个布尔值，表示操作是否成功。它们对应的Object方法，失败时都会抛出错误。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 失败时抛出错误</span></span><br><span class="line"><span class="built_in">Object</span>.defineProperty(obj, name, desc);</span><br><span class="line"><span class="comment">// 失败时返回false</span></span><br><span class="line"><span class="built_in">Reflect</span>.defineProperty(obj, name, desc);</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中， Reflect.defineProperty方法的作用与Object.defineProperty是一样的，都是为对象定义一个属性。但是，Reflect.defineProperty方法失败时，不会抛出错误，只会返回false 。</p>
+<h1 id="set和map"><a href="#set和map" class="headerlink" title="set和map"></a>set和map</h1><h2 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h2><p>ES6 新增的一种新的数据结构，类似于数组，但成员是唯一且无序的，没有重复的值。</p>
+<p><strong>Set 本身是一种构造函数，用来生成 Set 数据结构。</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Set</span>([iterable])</span><br></pre></td></tr></table></figure>
+
+<p>举个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> s = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">[<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>].forEach(<span class="function"><span class="params">x</span> =&gt;</span> s.add(x))</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i <span class="keyword">of</span> s) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(i)	<span class="comment">// 1 2 3 4</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 去重数组的重复对象</span></span><br><span class="line"><span class="keyword">let</span> arr = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">1</span>]</span><br><span class="line">[... new <span class="built_in">Set</span>(arr)]	<span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+<p>Set 对象允许你储存任何类型的唯一值，无论是原始值或者是对象引用。</p>
+<p>向 Set 加入值的时候，不会发生类型转换，所以<code>5</code>和<code>&quot;5&quot;</code>是两个不同的值。Set 内部判断两个值是否不同，使用的算法叫做“Same-value-zero equality”，它类似于<strong>精确相等</strong>运算符（<code>===</code>），主要的区别是<strong><code>NaN</code>等于自身，而精确相等运算符认为<code>NaN</code>不等于自身。</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">set</span> = new Set();</span><br><span class="line">let a = NaN;</span><br><span class="line">let b = NaN;</span><br><span class="line"><span class="keyword">set</span>.add(a);</span><br><span class="line"><span class="keyword">set</span>.add(b);</span><br><span class="line"><span class="keyword">set</span> // Set &#123;<span class="literal">NaN</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> set1 = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">set1.add(<span class="number">5</span>)</span><br><span class="line">set1.add(<span class="string">'5'</span>)</span><br><span class="line"><span class="built_in">console</span>.log([...set1])	<span class="comment">// [5, "5"]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>Set 实例属性</p>
+<ul>
+<li><p>constructor： Set构造函数</p>
+</li>
+<li><p>size：元素数量</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">set</span> = new Set([1, 2, 3, 2, 1])</span><br><span class="line"></span><br><span class="line">console.log(<span class="keyword">set</span>.length)	// undefined</span><br><span class="line">console.log(<span class="keyword">set</span>.size)	// 3</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>Set 实例方法</p>
+<ul>
+<li><p>操作方法</p>
+<ul>
+<li><p>add(value)：新增，相当于 array里的push</p>
+</li>
+<li><p>delete(value)：存在即删除集合中value</p>
+</li>
+<li><p>has(value)：判断集合中是否存在 value</p>
+</li>
+<li><p>clear()：清空集合</p>
+<hr>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">set</span> = new Set()</span><br><span class="line"><span class="keyword">set</span>.add(1).add(2).add(1)</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>.has(1)	// true</span><br><span class="line"><span class="keyword">set</span>.has(3)	// false</span><br><span class="line"><span class="keyword">set</span>.delete(1)	</span><br><span class="line"><span class="keyword">set</span>.has(1)	// false</span><br></pre></td></tr></table></figure>
+
+<p>  <code>Array.from</code> 方法可以将 Set 结构转为数组</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> items = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"><span class="keyword">const</span> array = <span class="built_in">Array</span>.from(items)</span><br><span class="line"><span class="built_in">console</span>.log(array)	<span class="comment">// [1, 2, 3]</span></span><br><span class="line"><span class="comment">// 或</span></span><br><span class="line"><span class="keyword">const</span> arr = [...items]</span><br><span class="line"><span class="built_in">console</span>.log(arr)	<span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>遍历方法（遍历顺序为插入顺序）</p>
+<ul>
+<li><p>keys()：返回一个包含集合中所有键的迭代器</p>
+</li>
+<li><p>values()：返回一个包含集合中所有值得迭代器</p>
+</li>
+<li><p>entries()：返回一个包含Set对象中所有元素得键值对迭代器</p>
+</li>
+<li><p>forEach(callbackFn, thisArg)：用于对集合成员执行callbackFn操作，如果提供了 thisArg 参数，回调中的this会是这个参数，<strong>没有返回值</strong></p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">set</span> = new Set([1, 2, 3])</span><br><span class="line">console.log(<span class="keyword">set</span>.keys())	// SetIterator &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">set</span>.values())	// SetIterator &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="keyword">set</span>.entries())	// SetIterator &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> <span class="keyword">set</span>.keys()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(item);</span><br><span class="line">&#125;	<span class="comment">// 1	2	 3</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> <span class="keyword">set</span>.entries()) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(item);</span><br><span class="line">&#125;	<span class="comment">// [1, 1]	[2, 2]	[3, 3]</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span>.forEach((value, key) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(key + <span class="string">' : '</span> + value)</span><br><span class="line">&#125;)	<span class="comment">// 1 : 1	2 : 2	3 : 3</span></span><br><span class="line"><span class="built_in">console</span>.log([...set])	<span class="comment">// [1, 2, 3]</span></span><br></pre></td></tr></table></figure>
+
+<p>  Set 可默认遍历，默认迭代器生成函数是 values() 方法</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Set</span>.prototype[<span class="built_in">Symbol</span>.iterator] === <span class="built_in">Set</span>.prototype.values	<span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>  所以， Set可以使用 map、filter 方法</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> <span class="keyword">set</span> = new Set([1, 2, 3])</span><br><span class="line"><span class="keyword">set</span> = new Set([...<span class="keyword">set</span>].map(item =&gt; item * 2))</span><br><span class="line">console.log([...<span class="keyword">set</span>])	// [2, 4, 6]</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span> = new Set([...<span class="keyword">set</span>].filter(item =&gt; (item &gt;= 4)))</span><br><span class="line">console.log([...<span class="keyword">set</span>])	//[4, 6]</span><br></pre></td></tr></table></figure>
+
+<p>  因此，Set 很容易实现交集（Intersect）、并集（Union）、差集（Difference）</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> set1 = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="keyword">let</span> set2 = <span class="keyword">new</span> <span class="built_in">Set</span>([<span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> intersect = <span class="keyword">new</span> <span class="built_in">Set</span>([...set1].filter(<span class="function"><span class="params">value</span> =&gt;</span> set2.has(value)))</span><br><span class="line"><span class="keyword">let</span> union = <span class="keyword">new</span> <span class="built_in">Set</span>([...set1, ...set2])</span><br><span class="line"><span class="keyword">let</span> difference = <span class="keyword">new</span> <span class="built_in">Set</span>([...set1].filter(<span class="function"><span class="params">value</span> =&gt;</span> !set2.has(value)))</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(intersect)	<span class="comment">// Set &#123;2, 3&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(union)		<span class="comment">// Set &#123;1, 2, 3, 4&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(difference)	<span class="comment">// Set &#123;1&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>  由于Set结构没有键名，只有键值（或者说键名和键值是同一个值），所以 key 方法和 value 方法的行为完全一致。</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="WeakSet"><a href="#WeakSet" class="headerlink" title="WeakSet"></a>WeakSet</h2><p>WeakSet 对象允许你将<strong>弱引用对象</strong>储存在一个集合中</p>
+<p>WeakSet 与 Set 的区别：</p>
+<ul>
+<li>WeakSet 只能储存对象引用，不能存放值，而 Set 对象都可以</li>
+<li>WeakSet 对象中储存的对象值都是被弱引用的，即==垃圾回收机制不考虑 WeakSet 对该对象的应用==，如果没有其他的变量或属性引用这个对象值，则这个对象将会被垃圾回收掉（不考虑该对象还存在于 WeakSet 中），所以，WeakSet 对象里有多少个成员元素，取决于垃圾回收机制有没有运行，运行前后成员个数可能不一致，遍历结束之后，有的成员可能取不到了（被垃圾回收了），==WeakSet 对象是无法被遍历的==（ES6 规定 WeakSet 不可遍历），也没有办法拿到它包含的所有元素</li>
+</ul>
+<p>属性：</p>
+<ul>
+<li><p>constructor：构造函数，任何一个具有 Iterable 接口的对象，都可以作参数</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> arr = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>]]</span><br><span class="line"><span class="keyword">const</span> weakset = <span class="keyword">new</span> <span class="built_in">WeakSet</span>(arr)</span><br><span class="line"><span class="built_in">console</span>.log(weakset)</span><br></pre></td></tr></table></figure>
+
+<p>  将数组作为WeakSet构造函数的参数，数组的成员会自动成为WeakSet的成员，所以数组的成员也必须要是对象。</p>
+</li>
+</ul>
+<p><img src="/Users/dannysoul/Desktop/%E5%89%8D%E7%AB%AF%E9%9D%A2%E8%AF%95/%E8%87%AA%E6%88%91%E6%80%BB%E7%BB%93%E7%9F%A5%E8%AF%86%E7%82%B9/ES6/assets/%E5%B1%8F%E5%B9%95%E5%BF%AB%E7%85%A7%202019-09-29%20%E4%B8%8A%E5%8D%8810.41.43.png" alt="屏幕快照 2019-09-29 上午10.41.43"></p>
+<p>方法：</p>
+<ul>
+<li>add(value)：在WeakSet 对象中添加一个元素value</li>
+<li>has(value)：判断 WeakSet 对象中是否包含value</li>
+<li>delete(value)：删除元素 value</li>
+<li>clear()：清空所有元素，<strong>注意该方法已废弃</strong></li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> <span class="built_in">WeakSet</span>()</span><br><span class="line"><span class="keyword">var</span> obj = &#123;&#125;</span><br><span class="line"><span class="keyword">var</span> foo = &#123;&#125;</span><br><span class="line"></span><br><span class="line">ws.add(<span class="built_in">window</span>)</span><br><span class="line">ws.add(obj)</span><br><span class="line"></span><br><span class="line">ws.has(<span class="built_in">window</span>)	<span class="comment">// true</span></span><br><span class="line">ws.has(foo)	<span class="comment">// false</span></span><br><span class="line"></span><br><span class="line">ws.delete(<span class="built_in">window</span>)	<span class="comment">// true</span></span><br><span class="line">ws.has(<span class="built_in">window</span>)	<span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>用处：</p>
+<p>加入其中的元素不会算入引用计数，所以当其他地方没有对对象的引用之后，就可以删除了，不会造成内存泄漏。</p>
+<p>储存DOM节点，而不用担心这些节点从文档移除时，会引发内存泄漏。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foos = <span class="keyword">new</span> <span class="built_in">WeakSet</span>()</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">	<span class="keyword">constructor</span>() &#123;</span><br><span class="line">		foos.add(<span class="keyword">this</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	method () &#123;</span><br><span class="line">		<span class="keyword">if</span> (!foos.has(<span class="keyword">this</span>)) &#123;</span><br><span class="line">			<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">'Foo.prototype.method 只能在Foo的实例上调用！'</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面代码保证了 Foo 的实例方法，只能在 Foo 的实例上调用。这里使用WeakSet的好处是，foos对实例的引用，不会被计入内存回收机制，所以删除实例的时候，不用考虑 foos ，也不会出现内存泄漏。</p>
+<h2 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h2><p>集合 与 字典 的区别：</p>
+<ul>
+<li>共同点：集合、字典 可以储存不重复的值</li>
+<li>不同点：集合 是以 [value, value]的形式储存元素，字典 是以 [key, value] 的形式储存</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> m = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line"><span class="keyword">const</span> o = &#123;<span class="attr">p</span>: <span class="string">'haha'</span>&#125;</span><br><span class="line">m.set(o, <span class="string">'content'</span>)</span><br><span class="line">m.get(o)	<span class="comment">// content</span></span><br><span class="line"></span><br><span class="line">m.has(o)	<span class="comment">// true</span></span><br><span class="line">m.delete(o)	<span class="comment">// true</span></span><br><span class="line">m.has(o)	<span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<p>JavaScript的对象（Object），本质上是键值对的集合（Hash结构），但是传统上只能用字符串当作键</p>
+<p>它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。也就是说，Object结构提供了“字符串—值”的对应，Map结构提供了“值—值”的对应，是一种更完善的Hash结构实现。如果你需要“键值对”的数据结构，Map比Object更合适。</p>
+<p><strong>任何具有 Iterator 接口、且每个成员都是一个双元素的数组的数据结构</strong>都可以当作<code>Map</code>构造函数的参数，例如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">set</span> = new Set([</span><br><span class="line">  ['foo', 1],</span><br><span class="line">  ['bar', 2]</span><br><span class="line">]);</span><br><span class="line">const m1 = new Map(<span class="keyword">set</span>);</span><br><span class="line">m1.<span class="keyword">get</span>('foo') // 1</span><br><span class="line"></span><br><span class="line">const m2 = new Map([['baz', 3]]);</span><br><span class="line">const m3 = new Map(m2);</span><br><span class="line">m3.<span class="keyword">get</span>('baz') // 3</span><br></pre></td></tr></table></figure>
+
+<p>如果读取一个未知的键，则返回<code>undefined</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Map</span>().get(<span class="string">'asfddfsasadf'</span>)</span><br><span class="line"><span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>注意，==只有对同一个对象的引用，Map 结构才将其视为同一个键==。这一点要非常小心。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"></span><br><span class="line">map.set([<span class="string">'a'</span>], <span class="number">555</span>);</span><br><span class="line">map.get([<span class="string">'a'</span>]) <span class="comment">// undefined</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码的<code>set</code>和<code>get</code>方法，表面是针对同一个键，但实际上这是两个值，内存地址是不一样的，因此<code>get</code>方法无法读取该键，返回<code>undefined</code>。</p>
+<p>由上可知，Map 的键实际上是跟内存地址绑定的，只要内存地址不一样，就视为两个键。这就解决了同名属性碰撞（clash）的问题，我们扩展别人的库的时候，如果使用对象作为键名，就不用担心自己的属性与原作者的属性同名。</p>
+<p>如果 Map 的键是一个简单类型的值（数字、字符串、布尔值），则只要两个值严格相等，Map 将其视为一个键，比如<code>0</code>和<code>-0</code>就是一个键，布尔值<code>true</code>和字符串<code>true</code>则是两个不同的键。另外，<code>undefined</code>和<code>null</code>也是两个不同的键。虽然<code>NaN</code>不严格相等于自身，但 Map 将其视为同一个键。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>();</span><br><span class="line"></span><br><span class="line">map.set(<span class="number">-0</span>, <span class="number">123</span>);</span><br><span class="line">map.get(+<span class="number">0</span>) <span class="comment">// 123</span></span><br><span class="line"></span><br><span class="line">map.set(<span class="literal">true</span>, <span class="number">1</span>);</span><br><span class="line">map.set(<span class="string">'true'</span>, <span class="number">2</span>);</span><br><span class="line">map.get(<span class="literal">true</span>) <span class="comment">// 1</span></span><br><span class="line"></span><br><span class="line">map.set(<span class="literal">undefined</span>, <span class="number">3</span>);</span><br><span class="line">map.set(<span class="literal">null</span>, <span class="number">4</span>);</span><br><span class="line">map.get(<span class="literal">undefined</span>) <span class="comment">// 3</span></span><br><span class="line"></span><br><span class="line">map.set(<span class="literal">NaN</span>, <span class="number">123</span>);</span><br><span class="line">map.get(<span class="literal">NaN</span>) <span class="comment">// 123</span></span><br></pre></td></tr></table></figure>
+
+<p>Map 的属性及方法</p>
+<p>属性：</p>
+<ul>
+<li><p>constructor：Map构造函数</p>
+</li>
+<li><p>size：返回字典中所包含的元素个数</p>
+  <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([</span><br><span class="line">  [<span class="string">'name'</span>, <span class="string">'An'</span>],</span><br><span class="line">  [<span class="string">'des'</span>, <span class="string">'JS'</span>]</span><br><span class="line">]);</span><br><span class="line"></span><br><span class="line">map.size <span class="comment">// 2</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>操作方法：</p>
+<ul>
+<li>set(key, value)：向字典中添加新元素，set 方法返回的是Map本身，因此可以采用链式写法</li>
+<li>get(key)：通过键查找特定的数值并返回，找不到的话返回undefined</li>
+<li>has(key)：判断字典中是否存在键key</li>
+<li>delete(key)：通过键 key 从字典中移除对应的数据</li>
+<li>clear()：将这个字典中的所有元素删除</li>
+</ul>
+<p>遍历方法</p>
+<ul>
+<li>Keys()：将字典中包含的所有键名以迭代器形式返回</li>
+<li>values()：将字典中包含的所有数值以迭代器形式返回</li>
+<li>entries()：返回所有成员的迭代器</li>
+<li>forEach()：遍历字典的所有成员</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([</span><br><span class="line">            [<span class="string">'name'</span>, <span class="string">'An'</span>],</span><br><span class="line">            [<span class="string">'des'</span>, <span class="string">'JS'</span>]</span><br><span class="line">        ]);</span><br><span class="line"><span class="built_in">console</span>.log(map.entries())	<span class="comment">// MapIterator &#123;"name" =&gt; "An", "des" =&gt; "JS"&#125;</span></span><br><span class="line"><span class="built_in">console</span>.log(map.keys()) <span class="comment">// MapIterator &#123;"name", "des"&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>Map 结构的默认遍历器接口（<code>Symbol.iterator</code>属性），就是<code>entries</code>方法。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">map[<span class="built_in">Symbol</span>.iterator] === map.entries</span><br><span class="line"><span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+
+<p>Map 结构转为数组结构，比较快速的方法是使用扩展运算符（<code>...</code>）。</p>
+<p>对于 forEach ，看一个例子</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> reporter = &#123;</span><br><span class="line">  report: <span class="function"><span class="keyword">function</span>(<span class="params">key, value</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Key: %s, Value: %s"</span>, key, value);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([</span><br><span class="line">    [<span class="string">'name'</span>, <span class="string">'An'</span>],</span><br><span class="line">    [<span class="string">'des'</span>, <span class="string">'JS'</span>]</span><br><span class="line">])</span><br><span class="line">map.forEach(<span class="function"><span class="keyword">function</span>(<span class="params">value, key, map</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.report(key, value);</span><br><span class="line">&#125;, reporter);</span><br><span class="line"><span class="comment">// Key: name, Value: An</span></span><br><span class="line"><span class="comment">// Key: des, Value: JS</span></span><br></pre></td></tr></table></figure>
+
+<p>在这个例子中， forEach 方法的回调函数的 this，就指向 reporter</p>
+<p><strong>与其他数据结构的相互转换</strong></p>
+<ol>
+<li><p>Map 转 Array</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">3</span>]])</span><br><span class="line"><span class="built_in">console</span>.log([...map])	<span class="comment">// [[1, 1], [2, 2], [3, 3]]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Array 转 Map</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">2</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">3</span>]])</span><br><span class="line"><span class="built_in">console</span>.log(map)	<span class="comment">// Map &#123;1 =&gt; 1, 2 =&gt; 2, 3 =&gt; 3&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Map 转 Object</p>
+<p> 因为 Object 的键名都为字符串，而Map 的键名为对象，所以转换的时候会把非字符串键名转换为字符串键名。</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapToObj</span>(<span class="params">map</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> obj = <span class="built_in">Object</span>.create(<span class="literal">null</span>)</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> [key, value] <span class="keyword">of</span> map) &#123;</span><br><span class="line">        obj[key] = value</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> obj</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>().set(<span class="string">'name'</span>, <span class="string">'An'</span>).set(<span class="string">'des'</span>, <span class="string">'JS'</span>)</span><br><span class="line">mapToObj(map)  <span class="comment">// &#123;name: "An", des: "JS"&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Object 转 Map</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">objToMap</span>(<span class="params">obj</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>()</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">of</span> <span class="built_in">Object</span>.keys(obj)) &#123;</span><br><span class="line">        map.set(key, obj[key])</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> map</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">objToMap(&#123;<span class="string">'name'</span>: <span class="string">'An'</span>, <span class="string">'des'</span>: <span class="string">'JS'</span>&#125;) <span class="comment">// Map &#123;"name" =&gt; "An", "des" =&gt; "JS"&#125;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Map 转 JSON</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapToJson</span>(<span class="params">map</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">JSON</span>.stringify([...map])</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> map = <span class="keyword">new</span> <span class="built_in">Map</span>().set(<span class="string">'name'</span>, <span class="string">'An'</span>).set(<span class="string">'des'</span>, <span class="string">'JS'</span>)</span><br><span class="line">mapToJson(map)	<span class="comment">// [["name","An"],["des","JS"]]</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSON 转 Map</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">jsonToStrMap</span>(<span class="params">jsonStr</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> objToMap(<span class="built_in">JSON</span>.parse(jsonStr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">jsonToStrMap(<span class="string">'&#123;"name": "An", "des": "JS"&#125;'</span>) <span class="comment">// Map &#123;"name" =&gt; "An", "des" =&gt; "JS"&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h2 id="WeakMap"><a href="#WeakMap" class="headerlink" title="WeakMap"></a>WeakMap</h2><p>WeakMap 对象是一组键值对的集合，其中的<strong>键是弱引用对象，而值可以是任意</strong>。</p>
+<p><strong>注意，WeakMap 弱引用的只是键名，而不是键值。键值依然是正常引用。</strong></p>
+<p>WeakMap 中，每个键对自己所引用对象的引用都是弱引用，在没有其他引用和该键引用同一对象，这个对象将会被垃圾回收（相应的key则变成无效的），所以，WeakMap 的 key 是不可枚举的。</p>
+<p>WeakMap 的设计目的在于，键名是对象的弱引用（垃圾回收机制不将该引用考虑在内），所以其所对应的对象可能会被自动回收。当对象被回收后， WeakMap 自动移除对应的键值对。典型应用是，一个对应DOM元素的 WeakMap 结构，当某个DOM元素被清除，其所对应的 WeakMap 记录就会自动被移除。基本上， WeakMap 的专用场合就是，它的键所对应的对象，可能会在将来消失。 WeakMap 结构有助于防止内存泄漏。</p>
+<p>属性：</p>
+<ul>
+<li>constructor：构造函数</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li>has(key)：判断是否有 key 关联对象</li>
+<li>get(key)：返回key关联对象（没有则则返回 undefined）</li>
+<li>set(key)：设置一组key关联对象</li>
+<li>delete(key)：移除 key 的关联对象</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> myElement = <span class="built_in">document</span>.getElementById(<span class="string">'logo'</span>);</span><br><span class="line"><span class="keyword">let</span> myWeakmap = <span class="keyword">new</span> <span class="built_in">WeakMap</span>();</span><br><span class="line"></span><br><span class="line">myWeakmap.set(myElement, &#123;<span class="attr">timesClicked</span>: <span class="number">0</span>&#125;);</span><br><span class="line"></span><br><span class="line">myElement.addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> logoData = myWeakmap.get(myElement);</span><br><span class="line">  logoData.timesClicked++;</span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p>上面代码中， myElement 是一个DOM节点，每当发生click事件，就更新一下状态。我们将这个状态作为键值放在WeakMap里，对应的键名就是 myElement 。一旦这个DOM节点删除，该状态就会自动消失，不存在内存泄漏风险。</p>
+<p>WeakMap的另一个用处是部署私有属性。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> _counter = <span class="keyword">new</span> <span class="built_in">WeakMap</span>();</span><br><span class="line"><span class="keyword">let</span> _action = <span class="keyword">new</span> <span class="built_in">WeakMap</span>();</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Countdown</span> </span>&#123;</span><br><span class="line">	<span class="keyword">constructor</span>(counter, action) &#123;</span><br><span class="line">		_counter.set(<span class="keyword">this</span>, counter);</span><br><span class="line">		_action.set(<span class="keyword">this</span>, action);</span><br><span class="line">	&#125;</span><br><span class="line">	dec() &#123;</span><br><span class="line">		<span class="keyword">let</span> counter = _counter.get(<span class="keyword">this</span>);</span><br><span class="line">		<span class="keyword">if</span> (counter &lt; <span class="number">1</span>) <span class="keyword">return</span>;</span><br><span class="line">		counter--;</span><br><span class="line">		_counter.set(<span class="keyword">this</span>, counter);</span><br><span class="line">		<span class="keyword">if</span> (counter === <span class="number">0</span>) &#123;</span><br><span class="line">			_action.get(<span class="keyword">this</span>)();</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> c = <span class="keyword">new</span> Countdown(<span class="number">2</span>, () =&gt; <span class="built_in">console</span>.log(<span class="string">'DONE'</span>));</span><br><span class="line">c.dec()</span><br><span class="line">c.dec()</span><br><span class="line"><span class="comment">// DONE</span></span><br></pre></td></tr></table></figure>
+
+<p>上面代码中，Countdown类的两个内部属性 _counter 和 _action ，是实例的弱引用，所以如果删除实例，它们也就随之消失，不会造成内存泄漏。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
+<li>Set<ul>
+<li>成员唯一、无序且不重复</li>
+<li>[value, value]，键值与键名是一致的（或者说只有键值，没有键名）</li>
+<li>可以遍历，方法有：add、delete、has</li>
+</ul>
+</li>
+<li>WeakSet<ul>
+<li>成员都是对象</li>
+<li>成员都是弱引用，可以被垃圾回收机制回收，可以用来保存DOM节点，不容易造成内存泄漏</li>
+<li>不能遍历，方法有add、delete、has</li>
+</ul>
+</li>
+<li>Map<ul>
+<li>本质上是键值对的集合，类似集合</li>
+<li>可以遍历，方法很多可以跟各种数据格式转换</li>
+</ul>
+</li>
+<li>WeakMap<ul>
+<li>只接受对象作为键名（null除外），不接受其他类型的值作为键名</li>
+<li>键名是弱引用，键值可以是任意的，键名所指向的对象可以被垃圾回收，此时键名是无效的</li>
+<li>不能遍历，方法有get、set、has、delete</li>
+</ul>
+</li>
+</ul>
+<h2 id="扩展：Object与Set、Map"><a href="#扩展：Object与Set、Map" class="headerlink" title="扩展：Object与Set、Map"></a>扩展：Object与Set、Map</h2><ol>
+<li><p>Object 与 Set</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// Object</span></span><br><span class="line"><span class="keyword">const</span> properties1 = &#123;</span><br><span class="line">    <span class="string">'width'</span>: <span class="number">1</span>,</span><br><span class="line">    <span class="string">'height'</span>: <span class="number">1</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(properties1[<span class="string">'width'</span>]? <span class="literal">true</span>: <span class="literal">false</span>) <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Set</span></span><br><span class="line"><span class="keyword">const</span> properties2 = <span class="keyword">new</span> <span class="built_in">Set</span>()</span><br><span class="line">properties2.add(<span class="string">'width'</span>)</span><br><span class="line">properties2.add(<span class="string">'height'</span>)</span><br><span class="line"><span class="built_in">console</span>.log(properties2.has(<span class="string">'width'</span>)) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Object 与 Map</p>
+</li>
+</ol>
+<p>JS 中的对象（Object），本质上是键值对的集合（hash 结构）</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> data = &#123;&#125;;</span><br><span class="line"><span class="keyword">const</span> element = <span class="built_in">document</span>.getElementsByClassName(<span class="string">'App'</span>);</span><br><span class="line"></span><br><span class="line">data[element] = <span class="string">'metadata'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(data[<span class="string">'[object HTMLCollection]'</span>]) <span class="comment">// "metadata"</span></span><br></pre></td></tr></table></figure>
+
+<p>但当以一个DOM节点作为对象 data 的键，对象会被自动转化为字符串[Object HTMLCollection]，所以说，Object 结构提供了 <strong>字符串-值</strong> 对应，Map则提供了 <strong>值-值</strong> 的对应。</p>
 <h1 id="Iterator"><a href="#Iterator" class="headerlink" title="Iterator"></a>Iterator</h1><p>Iterator接口的目的就是为所有数据结构提供了一种统一的访问机制，即<code>for…of</code>循环。当使用这个<code>for…of</code>循环遍历某种数据结构时，该循环会自动去寻找Iterator接口。</p>
 <ul>
 <li><p>定义：为各种不同的数据结构提供统一的访问机制。</p>
@@ -2274,7 +2999,7 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="keyword">const</span> p1 = <span class="keyword">new</span> Person()</span><br><span class="line">p1 <span class="keyword">instanceof</span> Person <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'hello world'</span></span><br><span class="line">str <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str1 = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'hello world'</span>)</span><br><span class="line">str1 <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p>对于原始类型来说，你想直接通过 <code>instanceof</code> 来判断类型是不行的，当然我们还是有办法让 <code>instanceof</code> 判断原始类型的</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class PrimitiveString &#123;</span><br><span class="line">  static [Symbol.hasInstance](x) &#123;</span><br><span class="line">    return typeof x &#x3D;&#x3D;&#x3D; &#39;string&#39;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log(&#39;hello world&#39; instanceof PrimitiveString) &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveString</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> x === <span class="string">'string'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello world'</span> <span class="keyword">instanceof</span> PrimitiveString) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p>你可能不知道 <code>Symbol.hasInstance</code> 是什么东西，其实就是一个能让我们自定义 <code>instanceof</code> 行为的东西，以上代码等同于 <code>typeof &#39;hello world&#39; === &#39;string&#39;</code>，所以结果自然是 <code>true</code> 了。这其实也侧面反映了一个问题， <code>instanceof</code> 也不是百分之百可信的。</p>
 <h3 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h3><blockquote>

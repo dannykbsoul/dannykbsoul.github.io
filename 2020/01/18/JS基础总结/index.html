@@ -38,7 +38,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/01/18/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/4.png">
 <meta property="og:image" content="http://yoursite.com/2020/01/18/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/8.jpg">
 <meta property="article:published_time" content="2020-01-18T08:52:35.000Z">
-<meta property="article:modified_time" content="2020-03-06T13:54:12.673Z">
+<meta property="article:modified_time" content="2020-03-07T06:01:33.255Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/01/18/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/6.png">
@@ -232,7 +232,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-06 21:54:12" itemprop="dateModified" datetime="2020-03-06T21:54:12+08:00">2020-03-06</time>
+                <time title="Modified: 2020-03-07 14:01:33" itemprop="dateModified" datetime="2020-03-07T14:01:33+08:00">2020-03-07</time>
               </span>
 
           <br>
@@ -292,7 +292,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> Person = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;</span><br><span class="line"><span class="keyword">const</span> p1 = <span class="keyword">new</span> Person()</span><br><span class="line">p1 <span class="keyword">instanceof</span> Person <span class="comment">// true</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str = <span class="string">'hello world'</span></span><br><span class="line">str <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> str1 = <span class="keyword">new</span> <span class="built_in">String</span>(<span class="string">'hello world'</span>)</span><br><span class="line">str1 <span class="keyword">instanceof</span> <span class="built_in">String</span> <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p>对于原始类型来说，你想直接通过 <code>instanceof</code> 来判断类型是不行的，当然我们还是有办法让 <code>instanceof</code> 判断原始类型的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class PrimitiveString &#123;</span><br><span class="line">  static [Symbol.hasInstance](x) &#123;</span><br><span class="line">    return typeof x &#x3D;&#x3D;&#x3D; &#39;string&#39;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">console.log(&#39;hello world&#39; instanceof PrimitiveString) &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PrimitiveString</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> [<span class="built_in">Symbol</span>.hasInstance](x) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">typeof</span> x === <span class="string">'string'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'hello world'</span> <span class="keyword">instanceof</span> PrimitiveString) <span class="comment">// true</span></span><br></pre></td></tr></table></figure>
 
 <p>你可能不知道 <code>Symbol.hasInstance</code> 是什么东西，其实就是一个能让我们自定义 <code>instanceof</code> 行为的东西，以上代码等同于 <code>typeof &#39;hello world&#39; === &#39;string&#39;</code>，所以结果自然是 <code>true</code> 了。这其实也侧面反映了一个问题， <code>instanceof</code> 也不是百分之百可信的。</p>
 <h3 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h3><blockquote>
@@ -1987,7 +1987,7 @@ foo.clear();d = foo(); //d === 1;</code></p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -2051,13 +2051,13 @@ foo.clear();d = foo(); //d === 1;</code></p>
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">271k</span>
+    <span title="Symbols count total">304k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">4:06</span>
+    <span title="Reading time total">4:36</span>
 </div>
 
 <!--
