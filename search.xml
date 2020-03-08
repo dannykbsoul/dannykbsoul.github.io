@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>从输入URL到页面加载发生了什么?</title>
+    <url>/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
+    <title>跨域解决方案</title>
+    <url>/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</url>
+    <content><![CDATA[<p><strong>同源策略</strong></p>
+<p>同源要求</p>
+<ul>
+<li>协议相同</li>
+<li>域名相同</li>
+<li>端口相同</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">http://www.example.com/dir2/other.html：同源</span><br><span class="line">http://example.com/dir/other.html：不同源（域名不同）</span><br><span class="line">http://v2.www.example.com/dir/other.html：不同源（域名不同）</span><br><span class="line">http://www.example.com:81/dir/other.html：不同源（端口不同）</span><br></pre></td></tr></table></figure>
+
+<p>限制范围</p>
+<ul>
+<li>cookie、localstorage和 indexDB无法读取</li>
+<li>DOM 无法获得</li>
+<li>Ajax 请求不能发送</li>
+</ul>
+<a id="more"></a>
+
+<h1 id="一、JSONP"><a href="#一、JSONP" class="headerlink" title="一、JSONP"></a>一、JSONP</h1><p><strong>JSONP(JSON with Padding)</strong> 是一种跨域请求方式。主要原理是利用了<code>script</code>标签可以跨域请求的特性，由其 <code>src</code> 属性发送请求到服务器，服务器返回 <code>JavaScript</code>代码，浏览器接受响应，然后就直接执行了，这和通过 <code>script</code> 标签引用外部文件的原理是一样的。</p>
+<p><strong>JSONP</strong>由两部分组成：<code>回调函数</code>和<code>数据</code>，回调函数一般是在浏览器控制，作为参数发往服务器端（当然，你也可以固定回调函数的名字，但客户端和服务器端的名称一定要一致）。当服务器响应时，服务器端就会把该函数和数据拼成字符串返回。 </p>
+<p><strong>JSONP</strong>的请求过程：</p>
+<ul>
+<li>请求阶段：浏览器创建一个 <code>script</code> 标签，并给其<code>src</code> 赋值(类似 <code>http://example.com/api/?callback=jsonpCallback</code>）。</li>
+<li>发送请求：当给<code>script</code>的<code>src</code>赋值时，浏览器就会发起一个请求。</li>
+<li>数据响应：服务端将要返回的<code>数据</code>作为参数和<code>函数名称</code>拼接在一起(格式类似”<code>jsonpCallback({name: &#39;abc&#39;})</code>”)返回。当浏览器接收到了响应数据，由于发起请求的是 <code>script</code>，所以相当于直接调用 <code>jsonpCallback</code> 方法，并且传入了一个参数。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// foo 函数将会被调用 传入后台返回的数据</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">foo</span>(<span class="params">data</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'通过jsonp获取后台数据:'</span>, data);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 通过手动创建一个 script 标签发送一个 get 请求</span></span><br><span class="line"><span class="comment"> * 并利用浏览器对 &lt;script&gt; 不进行跨域限制的特性绕过跨域问题</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">(<span class="function"><span class="keyword">function</span> <span class="title">jsonp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'head'</span>)[<span class="number">0</span>]; <span class="comment">// 获取head元素 把js放里面</span></span><br><span class="line">    <span class="keyword">let</span> js = <span class="built_in">document</span>.createElement(<span class="string">'script'</span>);</span><br><span class="line">    js.src = <span class="string">'http://domain:port/testJSONP?a=1&amp;b=2&amp;callback=foo'</span>; <span class="comment">// 设置请求地址</span></span><br><span class="line">    head.appendChild(js); <span class="comment">// 这一步会发送请求</span></span><br><span class="line">&#125;)();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 后台代码</span></span><br><span class="line"><span class="comment">// 因为是通过 script 标签调用的 后台返回的相当于一个 js 文件</span></span><br><span class="line"><span class="comment">// 根据前端传入的 callback 的函数名直接调用该函数</span></span><br><span class="line"><span class="comment">// 返回的是 'foo(3)'</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">testJSONP</span>(<span class="params">callback, a, b</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`<span class="subst">$&#123;callback&#125;</span>(<span class="subst">$&#123;a + b&#125;</span>)`</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>允许用户传递一个callback参数给服务端，然后服务端返回数据时会将这个callback参数作为函数名来包裹住JSON数据，这样客户端就可以随意定制自己的函数来自动处理返回数据了。</p>
+<p><strong>使用注意</strong></p>
+<p>基于JSONP的实现原理,所以JSONP只能是“GET”请求,不能进行较为复杂的POST和其它请求,所以遇到那种情况,就得参考下面的CORS解决跨域了(所以如今它也基本被淘汰了)</p>
+<p><img src="/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png" alt></p>
+]]></content>
+  </entry>
+  <entry>
     <title>DOM事件机制</title>
     <url>/2020/03/07/DOM%E4%BA%8B%E4%BB%B6%E6%9C%BA%E5%88%B6/</url>
     <content><![CDATA[<p>面试的时候经常会被问到，事件代理是利用了事件的什么机制？一般我们都会说，是利用了事件冒泡机制，但具体冒泡机制在事件代理的过程了起到了什么关键作用，我想大部分人也是不了解的。静下心来，仔细看了下有关事件和事件代理问题，自己终于找到了合适的答案。</p>
@@ -70,6 +111,19 @@
 <li>删除子元素的时候不用考虑删除绑定事件</li>
 </ul>
 <p>为了减少事件的注册，我们使用一个代理元素是代理它内部所有子元素事件</p>
+<p>由于事件会在冒泡阶段向上传播到父节点，因此可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件。这种方法叫做事件的代理（delegation）。</p>
+<p>优点：</p>
+<ul>
+<li><p>减少内存消耗，提高性能</p>
+<p>  假设有一个列表，列表之中有大量的列表项，我们需要在点击每个列表项的时候响应一个事件</p>
+  <figure class="highlight html"><table><tr><td class="code"><pre><span class="line">// 例4</span><br><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">"list"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>item 1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>item 2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>item 3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  ......</span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span>&gt;</span>item n<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>  如果给每个列表项一一都绑定一个函数，那对于内存消耗是非常大的，效率上需要消耗很多性能。借助事件代理，我们只需要给父容器ul绑定方法即可，这样不管点击的是哪一个后代元素，都会根据冒泡传播的传递机制，把容器的click行为触发，然后把对应的方法执行，根据事件源，我们可以知道点击的是谁，从而完成不同的事。</p>
+</li>
+<li><p>动态绑定事件</p>
+<p>  在很多时候，我们需要通过用户操作动态的增删列表项元素，如果一开始给每个子元素绑定事件，那么在列表发生变化时，就需要重新给新增的元素绑定事件，给即将删去的元素解绑事件，如果用事件代理就会省去很多这样麻烦。</p>
+</li>
+</ul>
 <p>还是上面的例子，执行下面的代码</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'wrap'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(e.target.classList.contains(<span class="string">'box'</span>))&#123;</span><br><span class="line">		logerBox.innerHTML += <span class="string">'&lt;p&gt;'</span>+type+<span class="string">': '</span>+e.target.id+<span class="string">'&lt;/p&gt;'</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;, useCapture)</span><br></pre></td></tr></table></figure>
 
@@ -80,43 +134,21 @@
 <p>先来看两个问题<br>在同一个元素上同时绑定事件冒泡事件和事件捕获事件，谁先触发？<br>在同一个元素上同时绑定事件冒泡事件，第一个阻止事件传播，第二个会触发吗？</p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'box3'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'box3-stop:'</span>,e.target.id)</span><br><span class="line">	e.stopPropagation();</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'box3'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'box3-冒泡:'</span>, e.target.id)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'box3'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'box3-捕获:'</span>, e.target.id)</span><br><span class="line">&#125;,<span class="literal">true</span>)</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'box3'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'box3-冒泡:'</span>, e.target.id)</span><br><span class="line">&#125;)</span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'box3'</span>).addEventListener(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</span><br><span class="line">	<span class="built_in">console</span>.log(<span class="string">'box3-stop:'</span>,e.target.id)</span><br><span class="line">	e.stopPropagation();</span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">/*点击输出：</span></span><br><span class="line"><span class="comment">box3-stop: box3</span></span><br><span class="line"><span class="comment">box3-冒泡: box3</span></span><br><span class="line"><span class="comment">box3-捕获: box3</span></span><br><span class="line"><span class="comment">box3-冒泡: box3</span></span><br><span class="line"><span class="comment">box3-stop: box3*/</span></span><br></pre></td></tr></table></figure>
 
-<p>其实要回答这两个问题，首先要弄清楚捕获和冒泡的适用性，捕获和冒泡发生在嵌套元素绑定了相同的事件类型，才需要捕获和冒泡的机制去控制，单个元素上绑定的事件，在触发的时候，其实就是事件三个阶段中的目标阶段，此时，这个元素本身的事件的触发顺序，只和绑定顺序有关，和是否捕获，是否冒泡，是否阻止了事件传播都没有关系。</p>
+<p>其实要回答这两个问题，首先要弄清楚捕获和冒泡的适用性，捕获和冒泡发生在嵌套元素绑定了相同的事件类型，才需要捕获和冒泡的机制去控制，单个元素上绑定的事件，在触发的时候，其实就是事件三个阶段中的目标阶段，此时，这个元素本身的事件的触发顺序，只和绑定顺序有关，和是否捕获，是否冒泡，是否阻止了事件传播都没有关系。<strong>stopImmediatePropagation 既能阻止事件向父元素冒泡，也能阻止元素同事件类型的其它监听器被触发。而 stopPropagation 只能实现前者的效果</strong>。</p>
 <p>再来看看 <code>e.target</code> 与 <code>e.currentTarget</code><br><code>e.target</code> 事件属性可返回事件的目标节点（触发该事件的节点），如生成事件的元素、文档或窗口。<br><code>e.currentTarget</code> 返回其监听器触发事件的节点，即当前处理该事件的元素、文档或窗口。在捕获和冒泡阶段，该属性是非常有用的，因为在这两个节点，它不同于 target 属性。</p>
 <p>在事件代理中，<code>e.target</code> 是当前点击的目标元素，而 <code>e.currentTarget</code> 始终是事件的代理元素</p>
+<p><strong>event.currentTarget始终是监听事件者，而event.target是事件的真正发出者</strong>。</p>
 <p>回到上面的问题：无论<code>useCapture</code>是 <code>true</code> 或是 <code>false</code> ，都能正确触发事件，那是不是说事件代理和事件冒泡没有关系呢？</p>
 <p>嵌套关系 box1 &gt; box2 &gt; box3</p>
 <ol>
 <li>代理事件使用事件冒泡，先给box2注册一个click事件，并阻止冒泡，点击box3和box2，这里就不能触发代理事件了，说明子元素是利用了事件冒泡向上查找到事件，并将本身的 <code>e.target</code> 传递给了事件函数，box2阻止了冒泡，所以在事件向上流动中断了，就无法触发事件代理函数了。</li>
 <li>代理事件使用事件捕获，先给box2注册一个click事件，并阻止捕获，点击box3和box2，这里仍然可以正常触发代理事件，原因其实是父元素上的事件是捕获还是冒泡，其实子元素是不关心的，子元素事件流动一直都是冒泡行为。父元素的捕获或冒泡只会影响父元素的父级元素。</li>
 </ol>
-<p>了解了DOM事件模型，我们应该看看事件模型的内部实现是什么样的。</p>
-<h2 id="自定义事件模型"><a href="#自定义事件模型" class="headerlink" title="自定义事件模型"></a>自定义事件模型</h2><p>事件模型的实现从设计模式的角度来看，是一种观察者模式或者也叫发布订阅模式，订阅者订阅一个消息，发布者发布这个消息，订阅者收到消息，这是一种数据流动的方式，使用这个模式的好处是，可以有多个订阅者，一个发布者，发布一条消息，可被多个订阅者收到。</p>
-<p>最简短的发布订阅事件模型</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> o = $(&#123;&#125;);</span><br><span class="line">$.subscribe = <span class="function">(<span class="params">...args</span>) =&gt;</span> o.on.apply( o, args)</span><br><span class="line">$.publish = <span class="function">(<span class="params">...args</span>) =&gt;</span> o.trigger.apply( o, args )</span><br><span class="line">$.unsubscribe = <span class="function">(<span class="params">...args</span>) =&gt;</span> o.off.apply( o, args )</span><br><span class="line"></span><br><span class="line">$.subscribe(<span class="string">'cus'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e, a, b</span>)</span>&#123; <span class="built_in">console</span>.log(a+b+<span class="number">1</span>) &#125;)</span><br><span class="line">$.subscribe(<span class="string">'cus'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e, a, b</span>)</span>&#123; <span class="built_in">console</span>.log(a+b+<span class="number">2</span>) &#125;)</span><br><span class="line">$.subscribe(<span class="string">'cus'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e, a, b</span>)</span>&#123; <span class="built_in">console</span>.log(a+b+<span class="number">3</span>) &#125;)</span><br><span class="line">$.publish(<span class="string">'cus'</span>, [<span class="number">1</span>, <span class="number">2</span>])</span><br><span class="line"><span class="comment">// 4, 5, 6</span></span><br><span class="line">$.unsubscribe(<span class="string">'cus'</span>)</span><br><span class="line">$.publish(<span class="string">'cus'</span>, [<span class="number">1</span>, <span class="number">2</span>])</span><br></pre></td></tr></table></figure>
-
-<p>这里只是将jQuery的事件方法重命名了而已，要了解真正的事件模型内部对事件处理，还是需要我们从源码层面去探索了解的</p>
-<p>下面我们用ES6的语法，实现一个简单版的事件模型</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">;</span><br><span class="line">(<span class="function"><span class="keyword">function</span> (<span class="params">global</span>) </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">Events</span> </span>&#123;</span><br><span class="line">        <span class="keyword">constructor</span>() &#123;</span><br><span class="line">            <span class="keyword">this</span>.cache = &#123;&#125;;</span><br><span class="line">            <span class="keyword">this</span>.onceKeys = [];</span><br><span class="line">        &#125;</span><br><span class="line">        on(key, fn) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>.cache[key]) <span class="keyword">this</span>.cache[key] = [];</span><br><span class="line">            <span class="keyword">this</span>.cache[key].push(fn);</span><br><span class="line">        &#125;</span><br><span class="line">        one(key, fn) &#123;</span><br><span class="line">            <span class="keyword">this</span>.cache[key] = [];</span><br><span class="line">            <span class="keyword">this</span>.on(key, fn);</span><br><span class="line">            <span class="keyword">this</span>.onceKeys.push(key);</span><br><span class="line">        &#125;</span><br><span class="line">        off(key, fn) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.cache[key]) <span class="keyword">this</span>.cache[key] = fn ? <span class="keyword">this</span>.cache[key].filter(<span class="function"><span class="params">v</span> =&gt;</span> v !== fn) : [];</span><br><span class="line">        &#125;</span><br><span class="line">        emit(key, ...args) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.cache[key]) &#123;</span><br><span class="line">                <span class="keyword">this</span>.cache[key].forEach(<span class="function"><span class="params">v</span> =&gt;</span> v.apply(<span class="literal">null</span>, args))</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">this</span>.onceKeys.includes(key)) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.cache[key] = [];</span><br><span class="line">                    <span class="keyword">this</span>.onceKeys = <span class="keyword">this</span>.onceKeys.filter(<span class="function"><span class="params">v</span> =&gt;</span> v !== key);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    global.Events = <span class="keyword">new</span> Events();</span><br><span class="line">&#125;)(<span class="keyword">this</span>)</span><br></pre></td></tr></table></figure>
-
-<p>这个事件模型很简单</p>
-<ul>
-<li><code>on()</code>用于绑定事件，参数：事件名称，事件处理函数</li>
-<li><code>emit()</code>用于触发事件，参数：事件名称，传递给事件处理函数的参数</li>
-<li><code>off</code> 用于解除绑定的指定事件， 参数：事件名称，要解绑的事件函数</li>
-<li><code>one</code> 用于绑定一次性事件，只能触发一次，参数：事件名称，事件处理函数</li>
-</ul>
-<p>使用</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">Events.on(<span class="string">'cus'</span>, (a, b)=&gt;<span class="built_in">console</span>.log(a+b))</span><br><span class="line">Events.emit(<span class="string">'cus'</span>, <span class="number">1</span>, <span class="number">2</span>);<span class="comment">//3</span></span><br><span class="line">Events.off(<span class="string">'cus'</span>);</span><br><span class="line">Events.emit(<span class="string">'cus'</span>, <span class="number">1</span>, <span class="number">2</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 只触发一次</span></span><br><span class="line">Events.one(<span class="string">'once'</span>, a=&gt;<span class="built_in">console</span>.log(a))</span><br><span class="line">Events.emit(<span class="string">'once'</span>, <span class="number">1</span>);<span class="comment">//1</span></span><br><span class="line">Events.emit(<span class="string">'once'</span>, <span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="取消默认操作"><a href="#取消默认操作" class="headerlink" title="取消默认操作"></a>取消默认操作</h3><p>取消默认操作 w3c 的方法是 e.preventDefault()，IE 则是使用 e.returnValue = false;</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">cancelHandler</span>(<span class="params">event</span>)</span>&#123;  </span><br><span class="line">  <span class="keyword">var</span> event = event || <span class="built_in">window</span>.event;  <span class="comment">//用于IE  </span></span><br><span class="line">  <span class="keyword">if</span>(event.preventDefault) event.preventDefault();  <span class="comment">//标准技术  </span></span><br><span class="line">  <span class="keyword">if</span>(event.returnValue) event.returnValue = <span class="literal">false</span>;  <span class="comment">//IE  </span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;   <span class="comment">//用于处理使用对象属性注册的处理程序  </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 
-<p>当然 一个能用于生产环境的pubsub模块还需要考虑更多的情况</p>
-<ol>
-<li>不同平台下的引用</li>
-<li>命名空间和继承</li>
-<li>回调的上下文控制</li>
-</ol>
-<p>Github上有一个比较好的pubsub事件模块，有时间再来将这个模块做一个源码分析<a href="https://github.com/Sahadar/pubsub.js/blob/master/pubsub.js" target="_blank" rel="noopener">pubsub.js</a></p>
 ]]></content>
   </entry>
   <entry>
@@ -545,7 +577,22 @@
   <entry>
     <title>设计模式</title>
     <url>/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</url>
-    <content><![CDATA[<h1 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1.单例模式"></a>1.单例模式</h1><a id="more"></a>]]></content>
+    <content><![CDATA[<h1 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1.单例模式"></a>1.单例模式</h1><a id="more"></a>
+
+<h1 id="2-JS观察者模式"><a href="#2-JS观察者模式" class="headerlink" title="2.JS观察者模式"></a>2.JS观察者模式</h1><blockquote>
+<p>观察者模式:观察者模式（Observer mode）指的是函数自动观察数据对象，一旦对象有变化，函数就会自动执行。而js中最常见的观察者模式就是事件触发机制。</p>
+</blockquote>
+<p>要有一个对象，存储着它自己的触发函数。而且这个对象的触发函数可能有很多种，比如一个onclick可能触发多个事件，那么handler的属性应该是一个数组，每个数组的值都是一个函数。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">handler=&#123;</span><br><span class="line">  type1:[func1,func2...],</span><br><span class="line">  type2:[func3,func4...],</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在这个对象的主体部分已经思考好了，现在就是要它‘动起来’，给它添加各种动作。 一个事件可能有哪些动作呢？</p>
+<ul>
+<li>on：添加事件某种类型的函数，</li>
+<li>off: 移除某种类型的函数，</li>
+<li>emit：触发某种类型的函数,</li>
+<li>once:触发某种类型的函数，然后移除掉这个函数</li>
+</ul>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EventEmitter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    on(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool[eventName] ? <span class="keyword">this</span>.eventPool[eventName].push(cb) : <span class="keyword">this</span>.eventPool[eventName] = [cb];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    emit(eventName, ...args) &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool[eventName] &amp;&amp; <span class="keyword">this</span>.eventPool[eventName].forEach(<span class="function"><span class="params">cb</span> =&gt;</span> cb(...args));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    off(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.eventPool[eventName]) &#123;</span><br><span class="line">            <span class="keyword">let</span> index = <span class="keyword">this</span>.eventPool[eventName].indexOf(cb);</span><br><span class="line">            <span class="keyword">this</span>.eventPool[eventName].splice(index, <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.eventPool[eventName].length === <span class="number">0</span>) <span class="keyword">delete</span> <span class="keyword">this</span>.eventPool[eventName];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//将订阅的方法再包裹一层函数，在执行后将此函数移除即可。</span></span><br><span class="line">    once(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.on(eventName, <span class="function"><span class="keyword">function</span> <span class="title">_cb</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">            cb(...args);</span><br><span class="line">            self.off(eventName, _cb);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> event = <span class="keyword">new</span> EventEmitter();</span><br><span class="line">event.on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f1触发'</span>)</span><br><span class="line">&#125;);</span><br><span class="line">event.on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f2触发'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f3</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f3触发'</span>);</span><br><span class="line">&#125;</span><br><span class="line">event.emit(<span class="string">'click'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">event.once(<span class="string">'once'</span>, f3);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">event.emit(<span class="string">'once'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">--------------------------------------------------------------</span><br><span class="line">f1触发</span><br><span class="line">f2触发</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ] &#125;</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ],</span><br><span class="line">  once: [ [<span class="built_in">Function</span>: _cb] ] &#125;</span><br><span class="line">f3触发</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ] &#125;</span><br></pre></td></tr></table></figure>]]></content>
   </entry>
   <entry>
     <title>函数式编程</title>
@@ -3236,6 +3283,111 @@
 <li>第一种事件停止触发后没有办法再执行事件，第二种事件停止触发后依然会再执行一次事件</li>
 </ol>
 <p>防抖是虽然事件持续触发，但只有等事件停止触发后 n 秒才执行函数，节流是持续触发的时候，每 n 秒执行一次函数。</p>
+<h1 id="12-使用setTimeout模拟setInterval"><a href="#12-使用setTimeout模拟setInterval" class="headerlink" title="12.使用setTimeout模拟setInterval"></a>12.使用setTimeout模拟setInterval</h1><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 可避免setInterval因执行时间导致的间隔执行时间不一致</span></span><br><span class="line">setTimeout(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="comment">// do something</span></span><br><span class="line">    setTimeout(<span class="built_in">arguments</span>.callee, <span class="number">500</span>)</span><br><span class="line">&#125;, <span class="number">500</span>)</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="13-AJAX原生实现与promise封装"><a href="#13-AJAX原生实现与promise封装" class="headerlink" title="13.AJAX原生实现与promise封装"></a>13.AJAX原生实现与promise封装</h1><p>流程：</p>
+<ol>
+<li><p>创建XHR</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) &#123;</span><br><span class="line">    <span class="comment">// code for IE7+, Firefox, Chrome, Opera, Safari</span></span><br><span class="line">    xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// code for IE6, IE5</span></span><br><span class="line">    xhr = <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发送请求</p>
+<blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">xhr.open(method,url,<span class="keyword">async</span>);</span><br><span class="line">xhr.setRequestHeader(header,value);</span><br><span class="line">xhr.send(string);</span><br></pre></td></tr></table></figure>
+
+<p>规定请求的类型、URL 以及是否异步处理请求</p>
+<ul>
+<li><em>method</em>：请求的类型；GET 或 POST</li>
+<li><em>url</em>：文件在服务器上的位置</li>
+<li><em>async</em>：true（异步）或 false（同步）</li>
+</ul>
+<p>向请求添加 HTTP 头</p>
+<ul>
+<li><em>header</em>: 规定头的名称</li>
+<li><em>value</em>: 规定头的值</li>
+</ul>
+<p>将请求发送到服务器</p>
+<ul>
+<li><em>string</em>：仅用于 POST 请求</li>
+</ul>
+<p>当使用 async=true 时，请规定在响应处于 onreadystatechange 事件中的就绪状态时执行的函数</p>
+<p>当使用 async=false 时，请不要编写 onreadystatechange 函数 - 把代码放到 send() 语句后面即可</p>
+</blockquote>
+</li>
+<li><p>onreadystatechange</p>
+<blockquote>
+<p>当请求被发送到服务器时，我们需要执行一些基于响应的任务。每当readyState改变时，就会触发onreadystatechange事件。readyState 属性存有XMLHttpRequest的状态信息。</p>
+<ul>
+<li>onreadystatechange: 一个函数，每当readyState属性改变时，就会调用该函数</li>
+<li>readyState: XMLHttpRequest的状态<ul>
+<li>0: 请求未初始化</li>
+<li>1: 服务器连接已建立</li>
+<li>2: 请求已接收</li>
+<li>3: 请求处理中</li>
+<li>4: 请求已完成，且响应已就绪</li>
+</ul>
+</li>
+<li>status 200: “OK”、404: 未找到页面</li>
+</ul>
+</blockquote>
+</li>
+<li><p>服务器响应</p>
+<blockquote>
+<p>获得来自服务器的响应，使用XMLHttpRequest对象的responseText或responseXML属性</p>
+<ul>
+<li>responseText 获得字符串形式的响应数据。</li>
+<li>responseXML 获得 XML 形式的响应数据。</li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<p>AJAX的核心是<code>XMLHttpRequest</code>。</p>
+<p>一个完整的<code>AJAX</code>请求一般包括以下步骤：</p>
+<ul>
+<li>实例化<code>XMLHttpRequest</code>对象</li>
+<li>连接服务器</li>
+<li>发送请求</li>
+<li>接收响应数据</li>
+</ul>
+<h3 id="ajax-的-xhr-对象的-7-个事件"><a href="#ajax-的-xhr-对象的-7-个事件" class="headerlink" title="ajax 的 xhr 对象的 7 个事件"></a>ajax 的 xhr 对象的 7 个事件</h3><ul>
+<li>onloadstart<ul>
+<li>开始send触发</li>
+</ul>
+</li>
+<li>onprogress<ul>
+<li>从服务器上下载数据每50ms触发一次</li>
+</ul>
+</li>
+<li>onload<ul>
+<li>得到响应</li>
+</ul>
+</li>
+<li>onerror<ul>
+<li>服务器异常</li>
+</ul>
+</li>
+<li>onloadend<ul>
+<li>请求结束，无论成功失败</li>
+</ul>
+</li>
+<li>onreadystatechange<ul>
+<li>xhr.readyState改变使触发</li>
+</ul>
+</li>
+<li>onabort<ul>
+<li>调用xhr.abort时触发</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">options</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> method = options.method || <span class="string">'GET'</span>,</span><br><span class="line">        params = options.params,</span><br><span class="line">        data = options.data,</span><br><span class="line">        url = options.url + (params ? <span class="string">'?'</span> + <span class="built_in">Object</span>.keys(params).map(<span class="function"><span class="params">key</span> =&gt;</span> key + <span class="string">'='</span> + params[key]).join(<span class="string">'&amp;'</span>) : <span class="string">''</span>),</span><br><span class="line">        <span class="keyword">async</span> = options.async === <span class="literal">false</span> ? <span class="literal">false</span> : <span class="literal">true</span>,</span><br><span class="line">        success = options.success,</span><br><span class="line">        headers = options.headers;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> xhr;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">window</span>.XMLHttpRequest) xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    <span class="keyword">else</span> xhr = <span class="keyword">new</span> ActiveXObject(<span class="string">'Microsoft.XMLHTTP'</span>);</span><br><span class="line"></span><br><span class="line">    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (xhr.readyState === <span class="number">4</span> &amp;&amp; xhr.status === <span class="number">200</span>) success &amp;&amp; success(xhr.responseText);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xhr.open(method, url, <span class="keyword">async</span>);</span><br><span class="line">    <span class="keyword">if</span> (headers) <span class="built_in">Object</span>.keys(headers).forEach(<span class="function"><span class="params">key</span> =&gt;</span> xhr.setRequestHeader(key, headers[key]));</span><br><span class="line">    method === <span class="string">'GET'</span> ? xhr.send() : xhr.send(data);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">ajax(&#123;</span><br><span class="line">    method: <span class="string">'GET'</span>,</span><br><span class="line">    url: <span class="string">'...'</span>,</span><br><span class="line">    success: <span class="function"><span class="keyword">function</span> (<span class="params">res</span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(<span class="string">'success'</span>, res);</span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="keyword">async</span>: <span class="literal">true</span>,</span><br><span class="line">    params: &#123;</span><br><span class="line">        p: <span class="string">'test'</span>,</span><br><span class="line">        t: <span class="number">666</span></span><br><span class="line">    &#125;,</span><br><span class="line">    headers: &#123;</span><br><span class="line">        <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 1. 简单流程</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 实例化</span></span><br><span class="line"><span class="keyword">let</span> xhr = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="comment">// 初始化</span></span><br><span class="line">xhr.open(method, url, <span class="keyword">async</span>)</span><br><span class="line"><span class="comment">// 发送请求</span></span><br><span class="line">xhr.send(data)</span><br><span class="line"><span class="comment">// 设置状态变化回调处理请求结果</span></span><br><span class="line">xhr.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (xhr.readyStatus === <span class="number">4</span> &amp;&amp; xhr.status === <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.responseText)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 基于promise实现 </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 请求地址</span></span><br><span class="line">  <span class="keyword">const</span> url = options.url</span><br><span class="line">  <span class="comment">// 请求方法</span></span><br><span class="line">  <span class="keyword">const</span> method = options.method.toLocaleLowerCase() || <span class="string">'get'</span></span><br><span class="line">  <span class="comment">// 默认为异步true</span></span><br><span class="line">  <span class="keyword">const</span> <span class="keyword">async</span> = options.async</span><br><span class="line">  <span class="comment">// 请求参数</span></span><br><span class="line">  <span class="keyword">const</span> data = options.data</span><br><span class="line">  <span class="comment">// 实例化</span></span><br><span class="line">  <span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line">  <span class="comment">// 请求超时</span></span><br><span class="line">  <span class="keyword">if</span> (options.timeout &amp;&amp; options.timeout &gt; <span class="number">0</span>) &#123;</span><br><span class="line">    xhr.timeout = options.timeout</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 返回一个Promise实例</span></span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span> (<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    xhr.ontimeout = <span class="function"><span class="params">()</span> =&gt;</span> reject &amp;&amp; reject(<span class="string">'请求超时'</span>)</span><br><span class="line">    <span class="comment">// 监听状态变化回调</span></span><br><span class="line">    xhr.onreadystatechange = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</span><br><span class="line">        <span class="comment">// 200-300 之间表示请求成功，304资源未变，取缓存</span></span><br><span class="line">        <span class="keyword">if</span> (xhr.status &gt;= <span class="number">200</span> &amp;&amp; xhr.status &lt; <span class="number">300</span> || xhr.status == <span class="number">304</span>) &#123;</span><br><span class="line">          resolve &amp;&amp; resolve(xhr.responseText)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          reject &amp;&amp; reject()</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 错误回调</span></span><br><span class="line">    xhr.onerror = <span class="function"><span class="params">err</span> =&gt;</span> reject &amp;&amp; reject(err)</span><br><span class="line">    <span class="keyword">let</span> paramArr = []</span><br><span class="line">    <span class="keyword">let</span> encodeData</span><br><span class="line">    <span class="comment">// 处理请求参数</span></span><br><span class="line">    <span class="keyword">if</span> (data <span class="keyword">instanceof</span> <span class="built_in">Object</span>) &#123;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> data) &#123;</span><br><span class="line">        <span class="comment">// 参数拼接需要通过 encodeURIComponent 进行编码</span></span><br><span class="line">        paramArr.push(<span class="built_in">encodeURIComponent</span>(key) + <span class="string">'='</span> + <span class="built_in">encodeURIComponent</span>(data[key]))</span><br><span class="line">      &#125;</span><br><span class="line">      encodeData = paramArr.join(<span class="string">'&amp;'</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// get请求拼接参数</span></span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">'get'</span>) &#123;</span><br><span class="line">      <span class="comment">// 检测url中是否已存在 ? 及其位置</span></span><br><span class="line">      <span class="keyword">const</span> index = url.indexOf(<span class="string">'?'</span>)</span><br><span class="line">      <span class="keyword">if</span> (index === <span class="number">-1</span>) url += <span class="string">'?'</span></span><br><span class="line">      <span class="keyword">else</span> <span class="keyword">if</span> (index !== url.length <span class="number">-1</span>) url += <span class="string">'&amp;'</span></span><br><span class="line">      <span class="comment">// 拼接url</span></span><br><span class="line">      url += encodeData</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 初始化</span></span><br><span class="line">    xhr.open(method, url, <span class="keyword">async</span>)</span><br><span class="line">    <span class="comment">// 发送请求</span></span><br><span class="line">    <span class="keyword">if</span> (method === <span class="string">'get'</span>) xhr.send(<span class="literal">null</span>)</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="comment">// post 方式需要设置请求头</span></span><br><span class="line">      xhr.setRequestHeader(<span class="string">'Content-Type'</span>,<span class="string">'application/x-www-form-urlencoded;charset=UTF-8'</span>)</span><br><span class="line">      xhr.send(encodeData)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
 ]]></content>
   </entry>
   <entry>

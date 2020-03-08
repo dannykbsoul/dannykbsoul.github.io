@@ -30,7 +30,7 @@
 <meta property="og:description" content="1.单例模式">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-03-02T05:52:45.000Z">
-<meta property="article:modified_time" content="2020-03-03T07:49:09.370Z">
+<meta property="article:modified_time" content="2020-03-08T05:19:17.934Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -223,7 +223,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-03 15:49:09" itemprop="dateModified" datetime="2020-03-03T15:49:09+08:00">2020-03-03</time>
+                <time title="Modified: 2020-03-08 13:19:17" itemprop="dateModified" datetime="2020-03-08T13:19:17+08:00">2020-03-08</time>
               </span>
 
           <br>
@@ -232,14 +232,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>6</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>2 mins.</span>
             </span>
 
         </div>
@@ -252,6 +252,21 @@
 
       
         <h1 id="1-单例模式"><a href="#1-单例模式" class="headerlink" title="1.单例模式"></a>1.单例模式</h1><a id="more"></a>
+
+<h1 id="2-JS观察者模式"><a href="#2-JS观察者模式" class="headerlink" title="2.JS观察者模式"></a>2.JS观察者模式</h1><blockquote>
+<p>观察者模式:观察者模式（Observer mode）指的是函数自动观察数据对象，一旦对象有变化，函数就会自动执行。而js中最常见的观察者模式就是事件触发机制。</p>
+</blockquote>
+<p>要有一个对象，存储着它自己的触发函数。而且这个对象的触发函数可能有很多种，比如一个onclick可能触发多个事件，那么handler的属性应该是一个数组，每个数组的值都是一个函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">handler=&#123;</span><br><span class="line">  type1:[func1,func2...],</span><br><span class="line">  type2:[func3,func4...],</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在这个对象的主体部分已经思考好了，现在就是要它‘动起来’，给它添加各种动作。 一个事件可能有哪些动作呢？</p>
+<ul>
+<li>on：添加事件某种类型的函数，</li>
+<li>off: 移除某种类型的函数，</li>
+<li>emit：触发某种类型的函数,</li>
+<li>once:触发某种类型的函数，然后移除掉这个函数</li>
+</ul>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">EventEmitter</span> </span>&#123;</span><br><span class="line">    <span class="keyword">constructor</span>() &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool = &#123;&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    on(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool[eventName] ? <span class="keyword">this</span>.eventPool[eventName].push(cb) : <span class="keyword">this</span>.eventPool[eventName] = [cb];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    emit(eventName, ...args) &#123;</span><br><span class="line">        <span class="keyword">this</span>.eventPool[eventName] &amp;&amp; <span class="keyword">this</span>.eventPool[eventName].forEach(<span class="function"><span class="params">cb</span> =&gt;</span> cb(...args));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    off(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.eventPool[eventName]) &#123;</span><br><span class="line">            <span class="keyword">let</span> index = <span class="keyword">this</span>.eventPool[eventName].indexOf(cb);</span><br><span class="line">            <span class="keyword">this</span>.eventPool[eventName].splice(index, <span class="number">1</span>);</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.eventPool[eventName].length === <span class="number">0</span>) <span class="keyword">delete</span> <span class="keyword">this</span>.eventPool[eventName];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	<span class="comment">//将订阅的方法再包裹一层函数，在执行后将此函数移除即可。</span></span><br><span class="line">    once(eventName, cb) &#123;</span><br><span class="line">        <span class="keyword">let</span> self = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">this</span>.on(eventName, <span class="function"><span class="keyword">function</span> <span class="title">_cb</span>(<span class="params">...args</span>) </span>&#123;</span><br><span class="line">            cb(...args);</span><br><span class="line">            self.off(eventName, _cb);</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> event = <span class="keyword">new</span> EventEmitter();</span><br><span class="line">event.on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">f1</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f1触发'</span>)</span><br><span class="line">&#125;);</span><br><span class="line">event.on(<span class="string">'click'</span>, <span class="function"><span class="keyword">function</span> <span class="title">f2</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f2触发'</span>)</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f3</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'f3触发'</span>);</span><br><span class="line">&#125;</span><br><span class="line">event.emit(<span class="string">'click'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">event.once(<span class="string">'once'</span>, f3);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">event.emit(<span class="string">'once'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(event.eventPool);</span><br><span class="line">--------------------------------------------------------------</span><br><span class="line">f1触发</span><br><span class="line">f2触发</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ] &#125;</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ],</span><br><span class="line">  once: [ [<span class="built_in">Function</span>: _cb] ] &#125;</span><br><span class="line">f3触发</span><br><span class="line">&#123; <span class="attr">click</span>: [ [<span class="built_in">Function</span>: f1], [<span class="built_in">Function</span>: f2] ] &#125;</span><br></pre></td></tr></table></figure>
     </div>
     <div>
       
@@ -340,7 +355,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-单例模式"><span class="nav-text">1.单例模式</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-单例模式"><span class="nav-text">1.单例模式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-JS观察者模式"><span class="nav-text">2.JS观察者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#完整代码"><span class="nav-text">完整代码</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -356,7 +371,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">19</span>
+          <span class="site-state-item-count">21</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -420,13 +435,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">319k</span>
+    <span title="Symbols count total">325k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">4:50</span>
+    <span title="Reading time total">4:56</span>
 </div>
 
 <!--
