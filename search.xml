@@ -179,7 +179,225 @@
 <p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/23.png" alt="4845448-4b270d197649b733"></p>
 <p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/24.png" alt></p>
 <h2 id="5-浏览器解析渲染页面"><a href="#5-浏览器解析渲染页面" class="headerlink" title="5.浏览器解析渲染页面"></a>5.浏览器解析渲染页面</h2><p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/25.png" alt></p>
-<h3 id="回流和重绘"><a href="#回流和重绘" class="headerlink" title="回流和重绘"></a>回流和重绘</h3><h2 id="6-关闭TCP连接"><a href="#6-关闭TCP连接" class="headerlink" title="6.关闭TCP连接"></a>6.关闭TCP连接</h2><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><h2 id="DNS缓存"><a href="#DNS缓存" class="headerlink" title="DNS缓存"></a>DNS缓存</h2><h3 id="什么是DNS"><a href="#什么是DNS" class="headerlink" title="什么是DNS?"></a>什么是DNS?</h3><p>全称 Domain Name System ,即域名系统。</p>
+<p>浏览器渲染过程大体分为如下三部分：</p>
+<h3 id="1-浏览器会解析三个东西："><a href="#1-浏览器会解析三个东西：" class="headerlink" title="1.浏览器会解析三个东西："></a>1.浏览器会解析三个东西：</h3><ul>
+<li><p>一是HTML/SVG/XHTML，HTML字符串描述了一个页面的结构，浏览器会把HTML结构字符串解析转换DOM树形结构。</p>
+</li>
+<li><p>二是CSS，解析CSS会产生CSS规则树，它和DOM结构比较像。</p>
+</li>
+<li><p>三是Javascript脚本，等到Javascript 脚本文件加载后， 通过 DOM API 和 CSSOM API 来操作 DOM Tree 和 CSS Rule Tree。</p>
+</li>
+</ul>
+<h3 id="2-解析完成后，浏览器引擎会通过DOM-Tree和CSS-Rule-Tree来构造Rendering-Tree。"><a href="#2-解析完成后，浏览器引擎会通过DOM-Tree和CSS-Rule-Tree来构造Rendering-Tree。" class="headerlink" title="2.解析完成后，浏览器引擎会通过DOM Tree和CSS Rule Tree来构造Rendering Tree。"></a>2.解析完成后，浏览器引擎会通过DOM Tree和CSS Rule Tree来构造Rendering Tree。</h3><ul>
+<li>Rendering Tree 渲染树并不等同于DOM树，渲染树只会包括需要显示的节点和这些节点的样式信息。</li>
+<li>CSS 的 Rule Tree主要是为了完成匹配并把CSS Rule附加上Rendering Tree上的每个Element（也就是每个Frame）。</li>
+<li>然后，计算每个Frame 的位置，这又叫layout和reflow过程。</li>
+</ul>
+<h3 id="3-最后通过调用操作系统Native-GUI的API绘制。"><a href="#3-最后通过调用操作系统Native-GUI的API绘制。" class="headerlink" title="3.最后通过调用操作系统Native GUI的API绘制。"></a>3.最后通过调用操作系统Native GUI的API绘制。</h3><h3 id="构建DOM"><a href="#构建DOM" class="headerlink" title="构建DOM"></a>构建DOM</h3><p>浏览器会遵守一套步骤将HTML 文件转换为 DOM 树。宏观上，可以分为几个步骤：</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/26.png" alt></p>
+<ul>
+<li><p>浏览器从磁盘或网络读取HTML的原始字节，并根据文件的指定编码（例如 UTF-8）将它们转换成字符串。在网络中传输的内容其实都是 0 和 1 这些字节数据。当浏览器接收到这些字节数据以后，它会将这些字节数据转换为字符串，也就是我们写的代码。</p>
+</li>
+<li><p>将字符串转换成Token，例如：<code>&lt;html&gt;</code>、<code>&lt;body&gt;</code>等。<strong>Token中会标识出当前Token是“开始标签”或是“结束标签”亦或是“文本”等信息</strong>。事实上，这就是Token要标识“起始标签”和“结束标签”等标识的作用。例如“title”Token的起始标签和结束标签之间的节点肯定是属于“head”的子节点。 </p>
+<p>  <img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/27.png" alt></p>
+<p>  上图给出了节点之间的关系，例如：“Hello”Token位于“title”开始标签与“title”结束标签之间，表明“Hello”Token是“title”Token的子节点。同理“title”Token是“head”Token的子节点。</p>
+</li>
+<li><p>生成节点对象并构建DOM</p>
+<p>  事实上，构建DOM的过程中，不是等所有Token都转换完成后再去生成节点对象，而是一边生成Token一边消耗Token来生成节点对象。换句话说，每个Token被生成后，会立刻消耗这个Token创建出节点对象。<strong>注意：带有结束标签标识的Token不会创建节点对象。</strong></p>
+</li>
+</ul>
+<p>接下来我们举个例子，假设有段HTML文本：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Web page parsing<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h1</span>&gt;</span>Web page parsing<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">p</span>&gt;</span>This is an example Web page.<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>上面这段HTML会解析成这样：</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/28.png" alt></p>
+<h3 id="构建CSSOM"><a href="#构建CSSOM" class="headerlink" title="构建CSSOM"></a>构建CSSOM</h3><p>DOM会捕获页面的内容，但浏览器还需要知道页面如何展示，所以需要构建CSSOM。</p>
+<p>构建CSSOM的过程与构建DOM的过程非常相似，当浏览器接收到一段CSS，浏览器首先要做的是识别出Token，然后构建节点并生成CSSOM。 </p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/29.png" alt></p>
+<p> 在这一过程中，浏览器会确定下每一个节点的样式到底是什么，并且这一过程其实是很消耗资源的。因为样式你可以自行设置给某个节点，也可以通过继承获得。在这一过程中，浏览器得递归CSSOM树，然后确定具体的元素到底是什么样式。</p>
+<p><strong>注意：CSS匹配HTML元素是一个相当复杂和有性能问题的事情。所以，DOM树要小，CSS尽量用id和class，千万不要过渡层叠下去</strong>。</p>
+<h3 id="构建渲染树"><a href="#构建渲染树" class="headerlink" title="构建渲染树"></a>构建渲染树</h3><p>当我们生成 DOM 树和 CSSOM 树以后，就需要将这两棵树组合为渲染树。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/30.png" alt></p>
+<p>在这一过程中，不是简单的将两者合并就行了。<strong>渲染树只会包括需要显示的节点和这些节点的样式信息</strong>，如果某个节点是 <code>display: none</code> 的，那么就不会在渲染树中显示。</p>
+<p>我们或许有个疑惑：<strong>浏览器如果渲染过程中遇到JS文件怎么处理</strong>？</p>
+<p>渲染过程中，如果遇到<code>&lt;script&gt;</code>就停止渲染，执行JS代码。因为浏览器有GUI渲染线程与JS引擎线程，为了防止渲染出现不可预期的结果，这两个线程是互斥的关系。JavaScript的加载、解析与执行会阻塞DOM的构建，也就是说，在构建DOM时，HTML解析器若遇到了JavaScript，那么它会暂停构建DOM，将控制权移交给JavaScript引擎，等JavaScript引擎运行完毕，浏览器再从中断的地方恢复DOM构建。</p>
+<p>也就是说，如果你想首屏渲染的越快，就越不应该在首屏就加载JS文件，这也是都建议将script标签放在body标签底部的原因。当然在当下，并不是说script标签必须放在底部，因为你可以给script标签添加defer或者 async属性（下文会介绍这两者的区别）。</p>
+<p><strong>JS文件不只是阻塞DOM的构建，它会导致CSSOM也阻塞DOM的构建</strong>。</p>
+<p>原本DOM和CSSOM的构建是互不影响，井水不犯河水，但是一旦引入了JavaScript，CSSOM也开始阻塞DOM的构建，只有CSSOM构建完毕后，DOM再恢复DOM构建。</p>
+<p>这是什么情况？</p>
+<p>这是因为JavaScript不只是可以改DOM，它还可以更改样式，也就是它可以更改CSSOM。因为不完整的CSSOM是无法使用的，如果JavaScript想访问CSSOM并更改它，那么在执行JavaScript时，必须要能拿到完整的CSSOM。所以就导致了一个现象，如果浏览器尚未完成CSSOM的下载和构建，而我们却想在此时运行脚本，那么浏览器将延迟脚本执行和DOM构建，直至其完成CSSOM的下载和构建。也就是说，<strong>在这种情况下，浏览器会先下载和构建CSSOM，然后再执行JavaScript，最后在继续构建DOM</strong>。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/31.png" alt></p>
+<h3 id="布局与绘制"><a href="#布局与绘制" class="headerlink" title="布局与绘制"></a>布局与绘制</h3><p>当浏览器生成渲染树以后，就会根据渲染树来进行布局（也可以叫做回流）。这一阶段浏览器要做的事情是要弄清楚各个节点在页面中的确切位置和大小。通常这一行为也被称为“自动重排”。</p>
+<p>布局流程的输出是一个“盒模型”，它会精确地捕获每个元素在视口内的确切位置和尺寸，所有相对测量值都将转换为屏幕上的绝对像素。</p>
+<p>布局完成后，浏览器会立即发出“Paint Setup”和“Paint”事件，将渲染树转换成屏幕上的像素。</p>
+<h3 id="JS中的三种加载模式"><a href="#JS中的三种加载模式" class="headerlink" title="JS中的三种加载模式"></a>JS中的三种加载模式</h3><p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/32.png" alt></p>
+<ul>
+<li><p>正常模式：</p>
+  <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>  这种情况下JS会阻塞浏览器，浏览器必须等待 index.js 加载和执行完毕才能去做其它事情。</p>
+</li>
+<li><p>async 模式：</p>
+  <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">async</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>  async模式下，JS不会阻塞浏览器做任何其它的事情。它的加载是异步的，当它加载结束，JS脚本会<strong>立即执行</strong>。</p>
+</li>
+<li><p>defer 模式：</p>
+  <figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">defer</span> <span class="attr">src</span>=<span class="string">"index.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>  defer模式下，JS的加载是异步的，执行是<strong>被推迟的</strong>。等整个文档解析完成、DOMContentLoaded事件即将被触发时，被标记了defer的JS文件才会开始依次执行。</p>
+</li>
+</ul>
+<p>从应用的角度来说，一般当我们的脚本与DOM元素和其它脚本之间的依赖关系不强时，我们会选用async；当脚本依赖于DOM元素和其它脚本的执行结果时，我们会选用defer。</p>
+<h3 id="基于渲染流程的-CSS-优化建议"><a href="#基于渲染流程的-CSS-优化建议" class="headerlink" title="基于渲染流程的 CSS 优化建议"></a>基于渲染流程的 CSS 优化建议</h3><p>CSS引擎查找样式表，对每条规则都按从右到左的顺序去匹配。 看如下规则：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#myList</span>  <span class="selector-tag">li</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样的写法其实很常见。大家平时习惯了从左到右阅读的文字阅读方式，会本能地以为浏览器也是从左到右匹配 CSS 选择器的，因此会推测这个选择器并不会费多少力气：#myList 是一个id选择器，它对应的元素只有一个，查找起来应该很快。定位到了myList元素，等于是缩小了范围后再去查找它后代中的li元素，没毛病。</p>
+<p>事实上，<strong>CSS选择符是从右到左进行匹配的</strong>。我们这个看似“没毛病”的选择器，实际开销相当高：浏览器必须遍历页面上每个li元素，并且每次都要去确认这个li元素的父元素id是不是myList。</p>
+<p>经典的通配符：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line">* &#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>入门CSS的时候，不少同学拿通配符清除默认样式（我曾经也是通配符用户的一员）。但这个家伙很恐怖，它会匹配所有元素，所以浏览器必须去遍历每一个元素！</p>
+<p>这样一看，一个小小的CSS选择器，也有不少的门道！好的CSS选择器书写习惯，可以为我们带来非常可观的性能提升。根据上面的分析，我们至少可以总结出如下性能提升的方案：</p>
+<ul>
+<li><p>避免使用通配符，只对需要用到的元素进行选择。</p>
+</li>
+<li><p>关注可以通过继承实现的属性，避免重复匹配重复定义。</p>
+</li>
+<li><p>少用标签选择器。如果可以，用类选择器替代，举个🌰：</p>
+<p>  错误示范：</p>
+  <figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#myList</span> <span class="selector-tag">li</span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  课代表：</p>
+  <figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.myList_li</span> &#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>不要画蛇添足，id和class选择器不应该被多余的标签选择器拖后腿。举个🌰：</p>
+<p>  错误示范</p>
+  <figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-class">.myList</span><span class="selector-id">#title</span></span><br></pre></td></tr></table></figure>
+
+<p>  课代表</p>
+  <figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-id">#title</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>减少嵌套。后代选择器的开销是最高的，因此我们应该尽量将选择器的深度降到最低（最高不要超过三层），尽可能使用类来关联每一个标签元素。</p>
+</li>
+</ul>
+<h3 id="DOM为什么这么慢？"><a href="#DOM为什么这么慢？" class="headerlink" title="DOM为什么这么慢？"></a>DOM为什么这么慢？</h3><p><strong>因为收了“过路费”</strong></p>
+<blockquote>
+<p>把 DOM 和 JavaScript 各自想象成一个岛屿，它们之间用收费桥梁连接。——《高性能 JavaScript》</p>
+</blockquote>
+<p>JS 是很快的，在JS中修改DOM对象也是很快的。在JS的世界里，一切是简单的、迅速的。但DOM操作并非JS 一个人的独舞，而是两个模块之间的协作。</p>
+<p>上一节我们提到，JS 引擎和渲染引擎（浏览器内核）是独立实现的。当我们用JS去操作 DOM 时，本质上是JS 引擎和渲染引擎之间进行了“跨界交流”。这个“跨界交流”的实现并不简单，它依赖了桥接接口作为“桥梁”（如下图）。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/33.png" alt></p>
+<p>过“桥”要收费——这个开销本身就是不可忽略的。我们每操作一次 DOM（不管是为了修改还是仅仅为了访问其值），都要过一次“桥”。过“桥”的次数一多，就会产生比较明显的性能问题。因此“减少 DOM 操作”的建议，并非空穴来风。</p>
+<p>很多时候，我们对 DOM 的操作都不会局限于访问，而是为了修改它。当我们对 DOM 的修改会引发它外观（样式）上的改变时，就会触发<strong>回流</strong>或<strong>重绘</strong>。</p>
+<p>这个过程本质上还是因为我们对 DOM 的修改触发了渲染树（Render Tree）的变化所导致的：</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/34.png" alt></p>
+<ul>
+<li>回流：当我们对 DOM 的修改引发了 DOM 几何尺寸的变化（比如修改元素的宽、高或隐藏元素等）时，浏览器需要重新计算元素的几何属性（其他元素的几何属性和位置也会因此受到影响），然后再将计算的结果绘制出来。这个过程就是回流（也叫重排）。</li>
+<li>重绘：当我们对 DOM 的修改导致了样式的变化、却并未影响其几何属性（比如修改了颜色或背景色）时，浏览器不需重新计算元素的几何属性、直接为该元素绘制新的样式（跳过了上图所示的回流环节）。这个过程叫做重绘。</li>
+</ul>
+<p>由此我们可以看出，<strong>重绘不一定导致回流，回流一定会导致重绘</strong>。硬要比较的话，回流比重绘做的事情更多，带来的开销也更大。但这两个说到底都是吃性能的，所以都不是什么善茬。我们在开发中，要从代码层面出发，尽可能把回流和重绘的次数最小化。</p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>减少 DOM 操作：少交“过路费”、避免过度渲染</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>DOM操作测试<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>此时我有一个假需求——我想往 container 元素里写10000句一样的话。如果我这么做：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">var</span> count=<span class="number">0</span>;count&lt;<span class="number">10000</span>;count++)&#123; </span><br><span class="line">  <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>).innerHTML+=<span class="string">'&lt;span&gt;我是一个小测试&lt;/span&gt;'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码有两个明显的可优化点。</p>
+<ol>
+<li><p><strong>过路费交太多了</strong>。我们每一次循环都调用 DOM 接口重新获取了一次 container 元素，相当于每次循环都交了一次过路费。前后交了 10000 次过路费，但其中 9999 次过路费都可以用<strong>缓存变量</strong>的方式节省下来：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 只获取一次container</span></span><br><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> count=<span class="number">0</span>;count&lt;<span class="number">10000</span>;count++)&#123; </span><br><span class="line">  container.innerHTML += <span class="string">'&lt;span&gt;我是一个小测试&lt;/span&gt;'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>不必要的 DOM 更改太多了</strong>。我们的 10000 次循环里，修改了 10000 次 DOM 树。我们前面说过，对 DOM 的修改会引发渲染树的改变、进而去走一个（可能的）回流或重绘的过程，而这个过程的开销是很“贵”的。这么贵的操作，我们竟然重复执行了 N 多次！其实我们可以通过<strong>就事论事</strong>的方式节省下来不必要的渲染：</p>
+ <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line"><span class="keyword">let</span> content = <span class="string">''</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> count=<span class="number">0</span>;count&lt;<span class="number">10000</span>;count++)&#123; </span><br><span class="line">  <span class="comment">// 先对内容进行操作</span></span><br><span class="line">  content += <span class="string">'&lt;span&gt;我是一个小测试&lt;/span&gt;'</span></span><br><span class="line">&#125; </span><br><span class="line"><span class="comment">// 内容处理好了,最后再触发DOM的更改</span></span><br><span class="line">container.innerHTML = content</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<blockquote>
+<p>DocumentFragment 接口表示一个没有父级文件的最小文档对象。它被当做一个轻量版的 Document 使用，用于存储已排好版的或尚未打理好格式的XML片段。因为 DocumentFragment 不是真实 DOM 树的一部分，它的变化不会引起 DOM 树的重新渲染的操作（reflow），且不会导致性能等问题。</p>
+</blockquote>
+<p>在我们上面的例子里，字符串变量 content 就扮演着一个 DOM Fragment 的角色。其实无论字符串变量也好，DOM Fragment 也罢，它们本质上都作为脱离了真实 DOM 树的<strong>容器</strong>出现，用于缓存批量化的 DOM 操作。</p>
+<p>前面我们直接用 innerHTML 去拼接目标内容，这样做固然有用，但却不够优雅。相比之下，DOM Fragment 可以帮助我们用更加结构化的方式去达成同样的目的，从而在维持性能的同时，保住我们代码的可拓展和可维护性。我们现在用 DOM Fragment 来改写上面的例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line"><span class="comment">// 创建一个DOM Fragment对象作为容器</span></span><br><span class="line"><span class="keyword">let</span> content = <span class="built_in">document</span>.createDocumentFragment()</span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> count=<span class="number">0</span>;count&lt;<span class="number">10000</span>;count++)&#123;</span><br><span class="line">  <span class="comment">// span此时可以通过DOM API去创建</span></span><br><span class="line">  <span class="keyword">let</span> oSpan = <span class="built_in">document</span>.createElement(<span class="string">"span"</span>)</span><br><span class="line">  oSpan.innerHTML = <span class="string">'我是一个小测试'</span></span><br><span class="line">  <span class="comment">// 像操作真实DOM一样操作DOM Fragment对象</span></span><br><span class="line">  content.appendChild(oSpan)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 内容处理好了,最后再触发真实DOM的更改</span></span><br><span class="line">container.appendChild(content)</span><br></pre></td></tr></table></figure>
+
+<p>我们运行这段代码，可以得到与前面两种写法相同的运行结果。<br>可以看出，DOM Fragment 对象允许我们像操作真实 DOM 一样去调用各种各样的 DOM API，我们的代码质量因此得到了保证。并且它的身份也非常纯粹：当我们试图将其 append 进真实 DOM 时，它会在乖乖交出自身缓存的所有后代节点后<strong>全身而退</strong>，完美地完成一个容器的使命，而不会出现在真实的 DOM 结构中。这种结构化、干净利落的特性，使得 DOM Fragment 作为经典的性能优化手段大受欢迎，这一点在 jQuery、Vue 等优秀前端框架的源码中均有体现。</p>
+<h3 id="渲染的时机"><a href="#渲染的时机" class="headerlink" title="渲染的时机"></a>渲染的时机</h3><p>大家现在思考一个这样的问题：假如我想要在异步任务里进行DOM更新，我该把它包装成micro还是macro呢？</p>
+<p>我们先假设它是一个macro任务，比如我在script脚本中用setTimeout来处理它：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// task是一个用于修改DOM的回调</span></span><br><span class="line">setTimeout(task, <span class="number">0</span>)</span><br></pre></td></tr></table></figure>
+
+<p>现在task被推入的macro队列。但因为script脚本本身是一个macro任务，所以本次执行完script脚本之后，下一个步骤就要去处理micro队列了，再往下就去执行了一次render，对不对？</p>
+<p>但本次render我的目标task其实并没有执行，想要修改的DOM也没有修改，因此这一次的render其实是一次无效的render。</p>
+<p>macro不ok，我们转向micro试试看。我用Promise来把task包装成是一个micro任务：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Promise</span>.resolve().then(task)</span><br></pre></td></tr></table></figure>
+
+<p>那么我们结束了对script脚本的执行，是不是紧接着就去处理micro-task队列了？micro-task处理完，DOM 修改好了，紧接着就可以走render流程了——不需要再消耗多余的一次渲染，不需要再等待一轮事件循环，直接为用户呈现最即时的更新结果。</p>
+<p>因此，我们更新DOM的时间点，应该尽可能靠近渲染的时机。<strong>当我们需要在异步任务中实现DOM修改时，把它包装成micro任务是相对明智的选择</strong>。</p>
+<h3 id="回流与重绘"><a href="#回流与重绘" class="headerlink" title="回流与重绘"></a>回流与重绘</h3><p>回流(reflow)</p>
+<p>当<code>Render Tree</code>中部分或全部元素的尺寸、结构、或某些属性发生改变时，浏览器重新渲染部分或全部文档的过程称为回流。</p>
+<p>会导致回流的操作：</p>
+<ul>
+<li><p>最“贵”的操作：改变 DOM 元素的几何属性</p>
+<p>  这个改变几乎可以说是“牵一发动全身”——当一个DOM元素的几何属性发生变化时，所有和它相关的节点（比如父子节点、兄弟节点等）的几何属性都需要进行重新计算，它会带来巨大的计算量。</p>
+<p>  常见的几何属性有 width、height、padding、margin、left、top、border 等等。</p>
+</li>
+<li><p>“价格适中”的操作：改变 DOM 树的结构</p>
+<p>  这里主要指的是节点的增减、移动等操作。浏览器引擎布局的过程，顺序上可以类比于树的前序遍历——它是一个从上到下、从左到右的过程。通常在这个过程中，当前元素不会再影响其前面已经遍历过的元素。</p>
+</li>
+<li><p>最容易被忽略的操作：获取一些特定属性的值</p>
+<p>  当你要用到像这样的属性：offsetTop、offsetLeft、 offsetWidth、offsetHeight、scrollTop、scrollLeft、scrollWidth、scrollHeight、clientTop、clientLeft、clientWidth、clientHeight 时，你就要注意了！</p>
+<p>  “像这样”的属性，到底是像什么样？——这些值有一个共性，就是需要通过<strong>即时计算</strong>得到。因此浏览器为了获取这些值，也会进行回流。</p>
+</li>
+</ul>
+<p>重绘(Repaint)</p>
+<p>当页面中元素样式的改变并不影响它在文档流中的位置时（例如：<code>color</code>、<code>background-color</code>、<code>visibility</code>等），浏览器会将新样式赋予给元素并重新绘制它，这个过程称为重绘。</p>
+<h3 id="如何规避回流与重绘"><a href="#如何规避回流与重绘" class="headerlink" title="如何规避回流与重绘"></a>如何规避回流与重绘</h3><p>CSS</p>
+<ul>
+<li>避免使用<code>table</code>布局。</li>
+<li>尽可能在<code>DOM</code>树的最末端改变<code>class</code>。</li>
+<li>避免设置多层内联样式。</li>
+<li>将动画效果应用到<code>position</code>属性为<code>absolute</code>或<code>fixed</code>的元素上。</li>
+<li>避免使用<code>CSS</code>表达式（例如：<code>calc()</code>）。</li>
+</ul>
+<p>JavaScript</p>
+<ul>
+<li>避免频繁操作样式，最好一次性重写<code>style</code>属性，或者将样式列表定义为<code>class</code>并一次性更改<code>class</code>属性。</li>
+<li>避免频繁操作<code>DOM</code>，创建一个<code>documentFragment</code>，在它上面应用所有<code>DOM操作</code>，最后再把它添加到文档中。</li>
+<li>也可以先为元素设置<code>display: none</code>，操作结束后再把它显示出来。因为在<code>display</code>属性为<code>none</code>的元素上进行的<code>DOM</code>操作不会引发回流和重绘。</li>
+<li>避免频繁读取会引发回流/重绘的属性，如果确实需要多次使用，就用一个变量缓存起来。</li>
+<li>对具有复杂动画的元素使用绝对定位，使它脱离文档流，否则会引起父元素及后续元素频繁回流。</li>
+</ul>
+<h4 id="1-将导致回流与重绘的元素缓存起来，避免频繁改动"><a href="#1-将导致回流与重绘的元素缓存起来，避免频繁改动" class="headerlink" title="1.将导致回流与重绘的元素缓存起来，避免频繁改动"></a>1.将导致回流与重绘的元素缓存起来，避免频繁改动</h4><p>有时我们想要通过多次计算得到一个元素的布局位置，我们可能会这样做：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-id">#el</span> &#123;</span></span><br><span class="line">      width: 100px;</span><br><span class="line">      height: 100px;</span><br><span class="line">      background-color: yellow;</span><br><span class="line">      position: absolute;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"el"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="actionscript">  <span class="comment">// 获取el元素</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> el = <span class="built_in">document</span>.getElementById(<span class="string">'el'</span>)</span></span><br><span class="line"><span class="actionscript">  <span class="comment">// 这里循环判定比较简单，实际中或许会拓展出比较复杂的判定需求</span></span></span><br><span class="line"><span class="javascript">  <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++) &#123;</span></span><br><span class="line"><span class="actionscript">      el.style.top  = el.offsetTop  + <span class="number">10</span> + <span class="string">"px"</span>;</span></span><br><span class="line"><span class="actionscript">      el.style.left = el.offsetLeft + <span class="number">10</span> + <span class="string">"px"</span>;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这样做，每次循环都需要获取多次“敏感属性”，是比较糟糕的。我们可以将其以 JS 变量的形式缓存起来，待计算完毕再提交给浏览器发出重计算请求：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 缓存offsetLeft与offsetTop的值</span></span><br><span class="line"><span class="keyword">const</span> el = <span class="built_in">document</span>.getElementById(<span class="string">'el'</span>) </span><br><span class="line"><span class="keyword">let</span> offLeft = el.offsetLeft, offTop = el.offsetTop</span><br><span class="line"></span><br><span class="line"><span class="comment">// 在JS层面进行计算</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>;i&lt;<span class="number">10</span>;i++) &#123;</span><br><span class="line">  offLeft += <span class="number">10</span></span><br><span class="line">  offTop  += <span class="number">10</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 一次性将计算结果应用到DOM上</span></span><br><span class="line">el.style.left = offLeft + <span class="string">"px"</span></span><br><span class="line">el.style.top = offTop  + <span class="string">"px"</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-避免逐条改变样式，使用类名去合并样式"><a href="#2-避免逐条改变样式，使用类名去合并样式" class="headerlink" title="2.避免逐条改变样式，使用类名去合并样式"></a>2.避免逐条改变样式，使用类名去合并样式</h4><p>比如我们可以把这段单纯的代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line">container.style.width = <span class="string">'100px'</span></span><br><span class="line">container.style.height = <span class="string">'200px'</span></span><br><span class="line">container.style.border = <span class="string">'10px solid red'</span></span><br><span class="line">container.style.color = <span class="string">'red'</span></span><br></pre></td></tr></table></figure>
+
+<p>优化成一个有 class 加持的样子：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"en"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"ie=edge"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>Document<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.basic_style</span> &#123;</span></span><br><span class="line">      width: 100px;</span><br><span class="line">      height: 200px;</span><br><span class="line">      border: 10px solid red;</span><br><span class="line">      color: red;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"container"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="javascript">  <span class="keyword">const</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span></span><br><span class="line"><span class="actionscript">  container.classList.add(<span class="string">'basic_style'</span>)</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>前者每次单独操作，都去触发一次渲染树更改，从而导致相应的回流与重绘过程。</p>
+<p>合并之后，等于我们将所有的更改一次性发出，用一个style请求解决掉了。</p>
+<h4 id="3-将-DOM-“离线”"><a href="#3-将-DOM-“离线”" class="headerlink" title="3.将 DOM “离线”"></a>3.将 DOM “离线”</h4><p>我们上文所说的回流和重绘，都是在“该元素位于页面上”的前提下会发生的。一旦我们给元素设置 display: none，将其从页面上“拿掉”，那么我们的后续操作，将无法触发回流与重绘——这个将元素“拿掉”的操作，就叫做 DOM 离线化。</p>
+<p>仍以我们上文的代码片段为例：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line">container.style.width = <span class="string">'100px'</span></span><br><span class="line">container.style.height = <span class="string">'200px'</span></span><br><span class="line">container.style.border = <span class="string">'10px solid red'</span></span><br><span class="line">container.style.color = <span class="string">'red'</span></span><br><span class="line">...（省略了许多类似的后续操作）</span><br></pre></td></tr></table></figure>
+
+<p>离线化后就是这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line">container.style.display = <span class="string">'none'</span></span><br><span class="line">container.style.width = <span class="string">'100px'</span></span><br><span class="line">container.style.height = <span class="string">'200px'</span></span><br><span class="line">container.style.border = <span class="string">'10px solid red'</span></span><br><span class="line">container.style.color = <span class="string">'red'</span></span><br><span class="line">...（省略了许多类似的后续操作）</span><br><span class="line">container.style.display = <span class="string">'block'</span></span><br></pre></td></tr></table></figure>
+
+<p>有的同学会问，拿掉一个元素再把它放回去，这不也会触发一次昂贵的回流吗？这话不假，但我们把它拿下来了，后续不管我操作这个元素多少次，每一步的操作成本都会非常低。当我们只需要进行很少的 DOM 操作时，DOM 离线化的优越性确实不太明显。一旦操作频繁起来，这“拿掉”和“放回”的开销都将会是非常值得的。</p>
+<h4 id="4-Flush-队列：浏览器并没有那么简单"><a href="#4-Flush-队列：浏览器并没有那么简单" class="headerlink" title="4.Flush 队列：浏览器并没有那么简单"></a>4.Flush 队列：浏览器并没有那么简单</h4><p>以我们现在的知识基础，理解上面的优化操作并不难。那么现在我问大家一个问题：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line">container.style.width = <span class="string">'100px'</span></span><br><span class="line">container.style.height = <span class="string">'200px'</span></span><br><span class="line">container.style.border = <span class="string">'10px solid red'</span></span><br><span class="line">container.style.color = <span class="string">'red'</span></span><br></pre></td></tr></table></figure>
+
+<p>这段代码里，浏览器进行了多少次的回流或重绘呢？</p>
+<p>“width、height、border是几何属性，各触发一次回流；color只造成外观的变化，会触发一次重绘。”——如果你立刻这么想了，说明你是个能力不错的同学，认真阅读了前面的内容。那么我们现在立刻跑一跑这段代码，看看浏览器怎么说：</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/35.png" alt></p>
+<p>这里为大家截取有“Layout”和“Paint”出镜的片段（这个图是通过 Chrome 的 Performance 面板得到的，后面会教大家用这个东西）。我们看到浏览器只进行了一次回流和一次重绘——和我们想的不一样啊，为啥呢？</p>
+<p>因为现代浏览器是很聪明的。浏览器自己也清楚，如果每次 DOM 操作都即时地反馈一次回流或重绘，那么性能上来说是扛不住的。于是它自己缓存了一个 flush 队列，把我们触发的回流与重绘任务都塞进去，待到队列里的任务多起来、或者达到了一定的时间间隔，或者“不得已”的时候，再将这些任务一口气出队。因此我们看到，上面就算我们进行了 4 次 DOM 更改，也只触发了一次 Layout 和一次 Paint。</p>
+<p>大家这里尤其小心这个“不得已”的时候。前面我们在介绍回流的“导火索”的时候，提到过有一类属性很特别，它们有很强的“即时性”。当我们访问这些属性时，浏览器会为了获得此时此刻的、最准确的属性值，而提前将 flush 队列的任务出队——这就是所谓的“不得已”时刻。具体是哪些属性值，我们已经在“最容易被忽略的操作”这个小模块介绍过了，此处不再赘述。</p>
+<h2 id="6-关闭TCP连接"><a href="#6-关闭TCP连接" class="headerlink" title="6.关闭TCP连接"></a>6.关闭TCP连接</h2><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><h2 id="DNS缓存"><a href="#DNS缓存" class="headerlink" title="DNS缓存"></a>DNS缓存</h2><h3 id="什么是DNS"><a href="#什么是DNS" class="headerlink" title="什么是DNS?"></a>什么是DNS?</h3><p>全称 Domain Name System ,即域名系统。</p>
 <blockquote>
 <p>万维网上作为域名和IP地址相互映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。DNS协议运行在UDP协议之上，使用端口号53。</p>
 </blockquote>
@@ -506,6 +724,54 @@
 <li><p>删除IndexedDB—-<code>window.indexedDB.deleteDatabase(indexdb)</code></p>
 </li>
 </ol>
+<h1 id="HTTP和HTTPS"><a href="#HTTP和HTTPS" class="headerlink" title="HTTP和HTTPS"></a>HTTP和HTTPS</h1><h1 id="XSS和CSRF"><a href="#XSS和CSRF" class="headerlink" title="XSS和CSRF"></a>XSS和CSRF</h1><h1 id="TCP和UDP"><a href="#TCP和UDP" class="headerlink" title="TCP和UDP"></a>TCP和UDP</h1><h1 id="Cookie和Session"><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h1><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>cookie: 登录网站，第一天输入用户名密码登录了，第二天再打开很多情况下就直接打开了。这个时候用到的一个机制就是cookie。</p>
+<p>session: session一个场景是购物车，添加了商品之后客户端处可以知道添加了哪些商品，而服务器端如何判别呢，所以也需要存储一些信息就用到了session。</p>
+<h2 id="cookie-1"><a href="#cookie-1" class="headerlink" title="cookie"></a>cookie</h2><p>服务器通过设置<code>set-cookie</code>这个响应头，将cookie信息返回给浏览器，浏览器将响应头中的cookie信息保存在本地，当下次向服务器发送HTTP请求时，浏览器会自动将保存的这些cookie信息添加到请求头中。</p>
+<p>通过cookie，服务器就会识别出浏览器，从而保证返回的数据是这个用户的。</p>
+<ul>
+<li>通过<code>set-cookie</code>设置</li>
+<li>下次请求会自动带上</li>
+<li>键值对，可设置多个</li>
+</ul>
+<h3 id="cookie属性"><a href="#cookie属性" class="headerlink" title="cookie属性"></a>cookie属性</h3><ul>
+<li>max-age<ul>
+<li>过期时间有多长</li>
+<li>默认在浏览器关闭时失效</li>
+</ul>
+</li>
+<li>expires<ul>
+<li>到哪个时间点过期</li>
+</ul>
+</li>
+<li>secure<ul>
+<li>表示这个cookie只会在https的时候才会发送</li>
+</ul>
+</li>
+<li>HttpOnly<ul>
+<li>设置后无法通过在js中使用document.cookie访问</li>
+<li>保障安全，防止攻击者盗用用户cookie</li>
+</ul>
+</li>
+<li>domain<ul>
+<li>表示该cookie对于哪个域是有效的。</li>
+</ul>
+</li>
+</ul>
+<h2 id="session"><a href="#session" class="headerlink" title="session"></a>session</h2><ul>
+<li>存放在服务器的一种用来存放用户数据的类似HashTable的结构</li>
+<li>浏览器第一次发送请求时，服务器自动生成了HashTable和SessionID来唯一标识这个hash表，并将sessionID存放在cookie中通过响应发送到浏览器。浏览器第二次发送请求会将前一次服务器响应中的sessionID随着cookie发送到服务器上，服务器从请求中提取sessionID，并和保存的所有sessionID进行对比，找到这个用户对应的hash表。<ul>
+<li>一般这个值是有时间限制的，超时后销毁，默认30min</li>
+</ul>
+</li>
+<li>当用户在应用程序的web页面间挑转时，存储在session对象中的变量不会丢失而是在整个用户会话中一直存在下去。</li>
+<li>session依赖于cookie，因为sessionID是存放在cookie中的。</li>
+</ul>
+<h2 id="sesssion与cookie的区别"><a href="#sesssion与cookie的区别" class="headerlink" title="sesssion与cookie的区别"></a>sesssion与cookie的区别</h2><ul>
+<li>cookie存在客户端，session存在于服务端。</li>
+<li>cookie在客户端中存放，容易伪造，不如session安全</li>
+<li>session会消耗大量服务器资源，cookie在每次HTTP请求中都会带上，影响网络性能</li>
+<li>域的支持范围不一样，比方说a.com的Cookie在a.com下都能用，而<a href="http://www.a.com的Session在api.a.com下都不能用" target="_blank" rel="noopener">www.a.com的Session在api.a.com下都不能用</a></li>
+</ul>
 ]]></content>
   </entry>
   <entry>
@@ -3929,6 +4195,25 @@
 
 
 
+
+<h1 id="14-懒加载"><a href="#14-懒加载" class="headerlink" title="14.懒加载"></a>14.懒加载</h1><p>Lazy-Load，翻译过来是“懒加载”。它是针对图片加载时机的优化：在一些图片量比较大的网站（比如电商网站首页，或者团购网站、小游戏首页等），如果我们尝试在用户打开页面的时候，就把所有的图片资源加载完毕，那么很可能会造成白屏、卡顿等现象，因为图片真的太多了，一口气处理这么多任务，浏览器做不到啊！</p>
+<p>但我们再想，用户真的需要这么多图片吗？不对，用户点开页面的瞬间，呈现给他的只有屏幕的一部分（我们称之为首屏）。只要我们可以在页面打开的时候把首屏的图片资源加载出来，用户就会认为页面是没问题的。至于下面的图片，我们完全可以等用户下拉的瞬间再即时去请求、即时呈现给他。这样一来，性能的压力小了，用户的体验却没有变差——这个延迟加载的过程，就是 Lazy-Load。</p>
+<p>在懒加载的实现中，有两个关键的数值：一个是<strong>当前可视区域的高度</strong>，另一个是<strong>元素距离可视区域顶部的高度</strong>。</p>
+<p><strong>当前可视区域的高度</strong>， 在和现代浏览器及 IE9 以上的浏览器中，可以用 window.innerHeight 属性获取。在低版本 IE 的标准模式中，可以用 document.documentElement.clientHeight 获取，这里我们兼容两种情况：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> viewHeight = <span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight</span><br></pre></td></tr></table></figure>
+
+<p>而<strong>元素距离可视区域顶部的高度</strong>，我们这里选用 getBoundingClientRect() 方法来获取返回元素的大小及其相对于视口的位置。对此 MDN 给出了非常清晰的解释：</p>
+<blockquote>
+<p>该方法的返回值是一个 DOMRect 对象，这个对象是由该元素的 getClientRects() 方法返回的一组矩形的集合, 即：是与该元素相关的 CSS 边框集合 。</p>
+</blockquote>
+<blockquote>
+<p>DOMRect 对象包含了一组用于描述边框的只读属性——left、top、right 和 bottom，单位为像素。除了 width 和 height 外的属性都是相对于视口的左上角位置而言的。</p>
+</blockquote>
+<p>其中需要引起我们注意的就是 left、top、right 和 bottom，它们对应到元素上是这样的：</p>
+<p><img src="/2020/01/23/JS%E9%83%A8%E5%88%86API%E5%AE%9E%E7%8E%B0/8.png" alt></p>
+<p>可以看出，top 属性代表了元素距离可视区域顶部的高度，正好可以为我们所用！</p>
+<p>Lazy-Load 方法开工啦！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">  <span class="comment">// 获取所有的图片标签</span></span><br><span class="line">  <span class="keyword">const</span> imgs = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'img'</span>)</span><br><span class="line">  <span class="comment">// 获取可视区域的高度</span></span><br><span class="line">  <span class="keyword">const</span> viewHeight = <span class="built_in">window</span>.innerHeight || <span class="built_in">document</span>.documentElement.clientHeight</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">lazyload</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>, len = imgs.length; i &lt; len; i++) &#123;</span><br><span class="line">      <span class="comment">// 用可视区域高度减去元素顶部距离可视区域顶部的高度</span></span><br><span class="line">      <span class="keyword">let</span> distance = viewHeight - imgs[i].getBoundingClientRect().top</span><br><span class="line">      <span class="comment">// 如果可视区域高度大于等于元素顶部距离可视区域顶部的高度，说明元素露出</span></span><br><span class="line">      <span class="keyword">if</span> (distance &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">// 给元素写入真实的src，展示图片</span></span><br><span class="line">        imgs[i].src = imgs[i].getAttribute(<span class="string">'data-src'</span>)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  lazyload();</span><br><span class="line">  <span class="comment">// 监听Scroll事件</span></span><br><span class="line">  <span class="built_in">window</span>.addEventListener(<span class="string">'scroll'</span>, lazyload, <span class="literal">false</span>);</span><br><span class="line">&lt;<span class="regexp">/script&gt;</span></span><br></pre></td></tr></table></figure>
 
 ]]></content>
   </entry>
