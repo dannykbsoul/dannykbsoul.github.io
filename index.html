@@ -191,6 +191,289 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Zhou Jun">
+      <meta itemprop="description" content="FOCUS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZJ's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/" class="post-title-link" itemprop="url">GoWhere项目总结</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-03-13 10:32:32" itemprop="dateCreated datePublished" datetime="2020-03-13T10:32:32+08:00">2020-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-14 21:56:01" itemprop="dateModified" datetime="2020-03-14T21:56:01+08:00">2020-03-14</time>
+              </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1-多页应用-vs-单页应用"><a href="#1-多页应用-vs-单页应用" class="headerlink" title="1.多页应用 vs 单页应用"></a>1.多页应用 vs 单页应用</h2><p><strong>多页应用</strong></p>
+<p>每一次的页面的跳转，后端都要返回一个新的HTML文件。</p>
+<p>优点：首屏会非常快，SEO效果好，每次只发送了一次HTTP请求。</p>
+<p>缺点：页面切换慢，每次跳转页面都要发送HTTP请求，所以网络不好的情况下，会有明显的卡顿情况。</p>
+<p><strong>单页应用</strong></p>
+<p>如果做到不请求HTML，页面也会变呢？JS会感知到url的变化，JS动态的把当前页面的内容清除掉，再把下一个页面的内容挂载到页面上。页面跳转是通过JS渲染实现。</p>
+<p>优点：页面切换快</p>
+<p>缺点：首屏时间稍慢，SEO差，首屏除了要请求一个HTML，还要发送一次JS请求。</p>
+<p>适配移动端，禁止用户通过手势缩放页面</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">content</span>=<span class="string">"width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>reset.css是为了消除不同的浏览器在默认样式上不同表现，使得项目在所有浏览器上的表现一致。</p>
+<p>移动端1px边框</p>
+<p>原因：<br>我们做移动端页面时一般都会设置meta标签viewport的content=width=device-width，<br>这里就是把html视窗大小设置等于设备的大小，大多数手机的屏幕设备宽度都差不多，<br>以iphoneX为例，屏幕宽度375px。</p>
+<p>而UI给设计图的时候基本上都是给的二倍图甚至三倍图，假设设计图是750px的二倍图，在750px上设计了1px的边框，要拿到375px宽度的手机来显示，就相当于缩小了一倍，所以1px的边框要以0.5px来呈现才符合预期效果，然而css里最低只支持1px大小，不足1px就以1px显示，所以你看到的就显得边框较粗，实际上只是设计图整体缩小了，而边框粗细没有跟着缩小导致的。（ps：ios较新版已经支持0.5px了，这里暂且忽略）</p>
+<p>简而言之就是：多倍的设计图设计了1px的边框，在手机上缩小呈现时，由于css最低只支持显示1px大小，导致边框太粗的效果。</p>
+<p>移动端300ms点击事件延迟的问题</p>
+<p><strong>由于移动端会有双击缩放的这个操作，因此浏览器在click之后要等待300ms，看用户有没有下一次点击，也就是这次操作是不是双击。</strong></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">npm install fastclick --save</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> fastClick <span class="keyword">from</span> <span class="string">'fastclick'</span></span><br><span class="line"></span><br><span class="line">fastClick.attach(<span class="built_in">document</span>.body)</span><br></pre></td></tr></table></figure>
+
+
+
+<p>路由就是根据网址的不同，返回不同的内容给用户</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 显示的是当前路由地址所对应的内容 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">router-view</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>stylus</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">npm install stylus --save</span><br><span class="line">npm install stylus-loader --save</span><br></pre></td></tr></table></figure>
+
+
+
+<p>scoped：只对当前的组件有效</p>
+<p>移动端布局一般采用rem的布局</p>
+<p>rem是一个相对单位，1rem等于html元素上字体设置的大小。我们只要设置html上font-size的大小，就可以改变rem所代表的大小。</p>
+<p>1rem=html font-size=50px</p>
+<p>在二倍图上的86px，实际上是我们要写成43px</p>
+<p>iconfont的引入，全局main.js下需要引入</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//标签放在span中，内容用十六进制的字符串</span><br><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"iconfont"</span>&gt;</span><span class="symbol">&amp;#xe624;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>css全局变量，比如背景色，在项目中多处用到，如果我需要改变的话，不需要一个个的去修改</p>
+<p>在assets文件夹下创建varibles.styl的文件</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$bgColor = #00bcd4</span><br></pre></td></tr></table></figure>
+
+<p>然后在你需要用到的地方引入，后面直接写变量就行了</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">'../../../assets/varibles.styl'</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>@import</p>
+<p><code>@import</code> 用于从其他样式表导入样式规则，告诉 CSS 引擎引入一个外部样式表。</p>
+<p>如果在css里面也想简化路径的话，需要在@符号前加~</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">'~@/assets/varibles.styl'</span></span><br></pre></td></tr></table></figure>
+
+<p>或者说我们可以在webpack.base.conf.js里面自定义配置路径别名。</p>
+<p><img src="/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/1.png" alt></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@<span class="keyword">import</span> <span class="string">'~styles/varibles.styl'</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p><strong>简单来说，BFC就是一个独立不干扰外界也不受外界干扰的盒子</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;style lang="stylus" scoped&gt;</span><br><span class="line"><span class="selector-class">.wrapper</span> &gt;&gt;&gt; <span class="selector-class">.swiper-pagination-bullet-active</span></span><br><span class="line">  <span class="selector-tag">background-color</span>: <span class="selector-id">#fff</span></span><br><span class="line"><span class="selector-class">.wrapper</span></span><br><span class="line">  // overflow: hidden</span><br><span class="line">  // width: 100%</span><br><span class="line">  // height: 0</span><br><span class="line">  // padding-bottom: 31.25%</span><br><span class="line">  <span class="selector-tag">width</span>: 100%</span><br><span class="line">  <span class="selector-tag">height</span>: 31<span class="selector-class">.25vw</span></span><br><span class="line">  <span class="selector-class">.swiper-img</span></span><br><span class="line">    <span class="selector-tag">width</span>: 100%</span><br><span class="line">&lt;/style&gt;</span><br></pre></td></tr></table></figure>
+
+<p>使用&gt;&gt;&gt;可以让wrapper下的指定类的样式，样式穿透，不受scoped的限制</p>
+<p><img src="/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/2.png" alt></p>
+<p>对于图标的轮播图，需要对数据进行分页处理</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">swiper</span> <span class="attr">:options</span>=<span class="string">"swiperOption"</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">swiper-slide</span> <span class="attr">v-for</span>=<span class="string">"(page, index) of pages"</span> <span class="attr">:key</span>=<span class="string">"index"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"icon"</span> <span class="attr">v-for</span>=<span class="string">"item of page"</span> <span class="attr">:key</span>=<span class="string">"item.id"</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"icon-img"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">img</span> <span class="attr">class</span>=<span class="string">"icon-img-content"</span> <span class="attr">:src</span>=<span class="string">"item.imgUrl"</span> /&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">"icon-desc"</span>&gt;</span>&#123;&#123; item.desc &#125;&#125;<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">swiper-slide</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">swiper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">computed: &#123;</span><br><span class="line">    pages() &#123;</span><br><span class="line">      <span class="keyword">const</span> pages = [];</span><br><span class="line">      <span class="keyword">this</span>.iconList.forEach(<span class="function">(<span class="params">item, index</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> page = <span class="built_in">Math</span>.floor(index / <span class="number">8</span>);</span><br><span class="line">        <span class="keyword">if</span> (pages[page]) pages[page].push(item);</span><br><span class="line">        <span class="keyword">else</span> pages[page] = [item];</span><br><span class="line">      &#125;);</span><br><span class="line">      <span class="keyword">return</span> pages;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>利用computed计算数据以及缓存特性，可以对数据进行分页展示</p>
+<p>对于文字过于多想要<code>...</code>显示的话</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">overflow</span>: <span class="selector-tag">hidden</span></span><br><span class="line"><span class="selector-tag">white-space</span>: <span class="selector-tag">nowrap</span></span><br><span class="line"><span class="selector-tag">text-overflow</span>: <span class="selector-tag">ellipsis</span></span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class = "border-bottom"</span><br></pre></td></tr></table></figure>
+
+<p>1像素的边框</p>
+<p><img src="/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/3.png" alt></p>
+<p>vuex中getters的作用类似于组件中的computed，当我们需要根据state里面的数据算出新的数据，我们可以借助getters来避免数据的冗余</p>
+<p>刷新页面以后swiper的默认显示是在最后一张图，而不是第一张图，主要是swiper一开始是空数组，后面ajax才请求到了数据。</p>
+<p>解决方案：可以在swiper上添加v-if，如果数组的长度为空，那么不渲染swiper组件，可以用computed计算属性。避免在模版中写逻辑。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;swiper :options=<span class="string">"swiperOption"</span> v-<span class="keyword">if</span>=<span class="string">"showSwiper"</span>&gt;</span><br><span class="line"></span><br><span class="line">computed: &#123;</span><br><span class="line">    showSwiper() &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">this</span>.list.length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p>alphabet组件和list组件属于同级，但是需要联动，那么可以通过父组件city传递，alphabet组件emit，city组件接受到emit过来的事件，然后在city组件向list组件传递值，list组件watch传递过来的变化。从而实现非父子之间的传值</p>
+<p>手指在alphabet上拖动，如何让列表也随之变化。</p>
+<p>可以根据(手指距离顶部的距离-第一个字母距离顶部的距离)/俩个字母之间距离，便可以知道此时是在第几个字母，然后触发事件。但是可以看出此时的事件触发频率太高了，可以通过防抖实现性能优化，每次执行都是在最后一次触发事件的16ms后触发，如果16ms内再次出发了事件，那么重新计时。</p>
+<p>使用keep-alive优化网页性能</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">keep-alive</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">router-view</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">keep-alive</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>路由的内容被加载过一次之后，我就把路由中的内容放到内存之中，下次再进这个路由，不需要重新执行钩子函数，只需要从内存中重新拿出来就好了。</p>
+<p>但是会存在问题，比如说我从首页进入选择城市页面，选择了另一个城市，此时返回首页，由于有keep-alive的存在，不会根据新的城市从而首页改变，还是从缓存中拿，那么可以借助activated钩子函数实现，activated钩子是在页面重新被显示的时候执行。</p>
+
+      
+    </div>
+    <div>
+      
+    </div>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/13/CSS%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Zhou Jun">
+      <meta itemprop="description" content="FOCUS">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="ZJ's BLOG">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/13/CSS%E9%A1%B5%E9%9D%A2%E5%B8%83%E5%B1%80/" class="post-title-link" itemprop="url">CSS页面布局</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-03-13 10:05:00 / Modified: 10:20:43" itemprop="dateCreated datePublished" datetime="2020-03-13T10:05:00+08:00">2020-03-13</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>637</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="1-什么是标签语义化？"><a href="#1-什么是标签语义化？" class="headerlink" title="1.什么是标签语义化？"></a>1.什么是标签语义化？</h2><p>用正确的标签做正确的事情！</p>
+<ul>
+<li>HTML 语义化就是让页面的内容结构化，便于对浏览器、搜索引擎解析；</li>
+<li>在没有样式 CSS 情况下也以一种文档格式显示，并且是容易阅读的；</li>
+<li>搜索引擎的爬虫依赖于标记来确定上下文和各个关键字的权重，利于 SEO；</li>
+<li>使阅读源代码的人对网站更容易将网站分块，便于阅读维护理解。</li>
+</ul>
+<p>比如，</p>
+<ul>
+<li>标题可以用 <code>&lt;h1&gt;</code> ~ <code>&lt;h6&gt;</code>；</li>
+<li>边栏用 <code>&lt;aside&gt;</code>；</li>
+<li>头部用 <code>&lt;header&gt;</code>；</li>
+<li>主体内容用 <code>&lt;main&gt;</code>；</li>
+<li>页脚用 <code>&lt;footer&gt;</code>；</li>
+</ul>
+<p>等等。</p>
+<h2 id="2-前端需要注意哪些-SEO？"><a href="#2-前端需要注意哪些-SEO？" class="headerlink" title="2.前端需要注意哪些 SEO？"></a>2.前端需要注意哪些 SEO？</h2><p><strong>1. 合理的 title、description、keywords</strong>：</p>
+<ul>
+<li>搜索对着三项的权重逐个减小，title 值强调重点即可，重要关键词出现不要超过 2 次，而且要靠前，不同页面 title 要有所不同；</li>
+<li>description 把页面内容高度概括，长度合适，不可过分堆砌关键词，不同页面 description 有所不同；</li>
+<li>keywords 列举出重要关键词即可。</li>
+</ul>
+<p><strong>2. 语义化的 HTML 代码，符合 W3C 规范</strong>：语义化代码让搜索引擎容易理解网页；</p>
+<p><strong>3. 重要内容 HTML 代码放在最前</strong>：搜索引擎抓取 HTML 顺序是从上到下，有的搜索引擎对抓取长度有限制，保证重要内容一定会被抓取；</p>
+<p><strong>4. 重要内容不要用  输出</strong>：爬虫不会执行 JS 获取内容；</p>
+<p><strong>5. 少用 iframe</strong>：搜索引擎不会抓取 iframe 中的内容；</p>
+<p><strong>6. 非装饰性图片必须加 alt；</strong></p>
+<p><strong>7. 提高网站速度</strong>：网站速度是搜索引擎排序的一个重要指标。</p>
+
+      
+    </div>
+    <div>
+      
+    </div>
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -701,10 +984,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-08 18:11:18 / Modified: 22:02:27" itemprop="dateCreated datePublished" datetime="2020-03-08T18:11:18+08:00">2020-03-08</time>
+              <time title="Created: 2020-03-08 18:11:18" itemprop="dateCreated datePublished" datetime="2020-03-08T18:11:18+08:00">2020-03-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-14 11:04:31" itemprop="dateModified" datetime="2020-03-14T11:04:31+08:00">2020-03-14</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -712,7 +1001,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.2k</span>
+              <span>4.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -1309,195 +1598,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/TS%E5%85%A5%E9%97%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Zhou Jun">
-      <meta itemprop="description" content="FOCUS">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZJ's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/01/TS%E5%85%A5%E9%97%A8/" class="post-title-link" itemprop="url">TS入门</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-03-01 09:38:31" itemprop="dateCreated datePublished" datetime="2020-03-01T09:38:31+08:00">2020-03-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-05 18:11:05" itemprop="dateModified" datetime="2020-03-05T18:11:05+08:00">2020-03-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/TypeScript/" itemprop="url" rel="index">
-                    <span itemprop="name">TypeScript</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>20k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>19 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><strong>定义</strong></p>
-<p>​    TypeScript is a <code>typed</code>(静态类型，不同于JS的动态类型) superset of JavaScript that <code>compiles to plain JavaScript</code>(TS不能直接运行，需要先编译成JS).Any browser. Any host. Any OS. Open source.</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/01/TS%E5%85%A5%E9%97%A8/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    <div>
-      
-    </div>
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/26/Edition-Distance/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Zhou Jun">
-      <meta itemprop="description" content="FOCUS">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="ZJ's BLOG">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/02/26/Edition-Distance/" class="post-title-link" itemprop="url">Edition Distance</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2020-02-26 22:17:06" itemprop="dateCreated datePublished" datetime="2020-02-26T22:17:06+08:00">2020-02-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-27 22:59:06" itemprop="dateModified" datetime="2020-02-27T22:59:06+08:00">2020-02-27</time>
-              </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.2k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>​    缘起：前段时间，看dom diff算法那块的时候，看到了列表对比那块用到了edit distance算法，例如<code>p, ul, div</code> 的顺序换成了 <code>div, p, ul</code>。这个该怎么对比？如果按照同层级进行顺序对比的话，它们都会被替换掉。如 <code>p</code> 和<code>div</code>的<code>tagName</code>不同，<code>p</code>会被<code>div</code>所替代。最终，三个节点都会被替换，这样<code>DOM</code>开销就非常大。而实际上是不需要替换节点，而只需要经过节点移动就可以达到，我们只需知道怎么进行移动。</p>
-<p>​    将这个问题抽象出来其实就是字符串的最小编辑距离问题（<code>Edition Distance</code>），最常见的解决方法是 <code>Levenshtein Distance</code> , <code>Levenshtein Distance</code> 是一个度量两个字符序列之间差异的字符串度量标准，两个单词之间的 <code>Levenshtein Distance</code> 是将一个单词转换为另一个单词所需的单字符编辑（插入、删除或替换）的最小数量。<code>Levenshtein Distance</code> 是1965年由苏联数学家 Vladimir Levenshtein 发明的。<code>Levenshtein Distance</code> 也被称为编辑距离（<code>Edit Distance</code>），通过<strong>动态规划</strong>求解，时间复杂度为 <code>O(M*N)</code>。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/02/26/Edition-Distance/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-    <div>
-      
-    </div>
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1570,7 +1670,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1634,13 +1734,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">382k</span>
+    <span title="Symbols count total">387k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">5:47</span>
+    <span title="Reading time total">5:52</span>
 </div>
 
 <!--

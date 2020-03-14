@@ -31,7 +31,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png">
 <meta property="article:published_time" content="2020-03-08T10:11:18.000Z">
-<meta property="article:modified_time" content="2020-03-08T14:02:27.380Z">
+<meta property="article:modified_time" content="2020-03-14T03:04:31.132Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png">
@@ -217,10 +217,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-08 18:11:18 / Modified: 22:02:27" itemprop="dateCreated datePublished" datetime="2020-03-08T18:11:18+08:00">2020-03-08</time>
+              <time title="Created: 2020-03-08 18:11:18" itemprop="dateCreated datePublished" datetime="2020-03-08T18:11:18+08:00">2020-03-08</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-03-14 11:04:31" itemprop="dateModified" datetime="2020-03-14T11:04:31+08:00">2020-03-14</time>
+              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -228,7 +234,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.2k</span>
+              <span>4.9k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -317,6 +323,30 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">HTTP/<span class="number">1.1</span> <span class="number">200</span> OK</span><br><span class="line"><span class="built_in">Date</span>: Mon, <span class="number">01</span> Dec <span class="number">2008</span> <span class="number">01</span>:<span class="number">15</span>:<span class="number">39</span> GMT</span><br><span class="line">Server: Apache/<span class="number">2.0</span><span class="number">.61</span> (Unix)</span><br><span class="line">Access-Control-Allow-Origin: http:<span class="comment">//api.bob.com</span></span><br><span class="line">Access-Control-Allow-Methods: GET, POST, PUT</span><br><span class="line">Access-Control-Allow-Headers: X-Custom-Header</span><br><span class="line">Content-Type: text/html; charset=utf<span class="number">-8</span></span><br><span class="line">Content-Encoding: gzip</span><br><span class="line">Content-Length: <span class="number">0</span></span><br><span class="line">Keep-Alive: timeout=<span class="number">2</span>, max=<span class="number">100</span></span><br><span class="line">Connection: Keep-Alive</span><br><span class="line">Content-Type: text/plain</span><br></pre></td></tr></table></figure>
 
 <p>一旦服务器通过了”预检”请求，以后每次浏览器正常的CORS请求，就都跟简单请求一样，会有一个Origin头信息字段。服务器的回应，也都会有一个Access-Control-Allow-Origin头信息字段。</p>
+<p>Koa-parser</p>
+<ul>
+<li>URL编码 application/x-www-form-urlencoded</li>
+<li>JSON编码 application/json</li>
+</ul>
+<p>URL编码方式适合处理简单的键值对数据，并且很多框架的Ajax中的Content-Type默认值都是它，但是对于复杂的嵌套对象就不太好处理了，这时就需要JSON编码方式大显身手了。通过客户端JSON.stringify编码和服务端JSON.parse解码。除了上述两种字符串编码方式，koa-bodyparser还支持不采用任何字符串编码方式的普通字符串。</p>
+<p>  三种字符串编码的处理方式由【co-body】模块提供，koa-bodyparser中通过判断当前Content-Type类型，调用不同的处理方式，将获取到的结果挂载在ctx.request.body。</p>
+<ol>
+<li><p>如果需要支持 cookies</p>
+<ul>
+<li>Access-Control-Allow-Origin 不能设置为 *</li>
+<li>并且 Access-Control-Allow-Credentials 需要设置为 true</li>
+<li>(注意前端请求需要设置 withCredentials = true)</li>
+</ul>
+</li>
+<li><p>当 method = OPTIONS 时, 属于预检(复杂请求), 当为预检时, 可以直接返回空响应体, 对应的 http 状态码为 204</p>
+</li>
+<li><p>通过 Access-Control-Max-Age 可以设置预检结果的缓存, 单位(秒)</p>
+</li>
+<li><p>通过 Access-Control-Allow-Headers 设置需要支持的跨域请求头</p>
+</li>
+<li><p>通过 Access-Control-Allow-Methods 设置需要支持的跨域请求方法</p>
+</li>
+</ol>
 
     </div>
     <div>
@@ -422,7 +452,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">21</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -486,13 +516,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">382k</span>
+    <span title="Symbols count total">387k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">5:47</span>
+    <span title="Reading time total">5:52</span>
 </div>
 
 <!--
