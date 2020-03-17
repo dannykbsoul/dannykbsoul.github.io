@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>webpack整理</title>
+    <url>/2020/03/15/webpack%E6%95%B4%E7%90%86/</url>
+    <content><![CDATA[<h2 id="一、Webpack初探"><a href="#一、Webpack初探" class="headerlink" title="一、Webpack初探"></a>一、Webpack初探</h2><p><strong>webpack</strong> is a module bundler</p>
+<blockquote>
+<p>模块打包工具，能够识别任何模块引入的语法</p>
+</blockquote>
+<p>npm npx</p>
+<p>npm全称：node.js package manager，是一款node.js的包管理工具。<br>npx全称: node.js package execute，是一个node.js的包执行工具。</p>
+<h3 id="包管理工具"><a href="#包管理工具" class="headerlink" title="包管理工具"></a>包管理工具</h3><h4 id="npm"><a href="#npm" class="headerlink" title="npm"></a>npm</h4><p>  在这里我们把java和node.js来做一下等价，那么npm在node.js作用就相当于maven在java中作用。npm会读取package.json中列出来的依赖包，然后自动安装这些依赖包。 </p>
+<h3 id="包执行工具"><a href="#包执行工具" class="headerlink" title="包执行工具"></a>包执行工具</h3><h4 id="npx"><a href="#npx" class="headerlink" title="npx"></a>npx</h4><p>  当我们在开发项目使用到gulp时，可以打开终端并cd到当前项目路径下并执行以下命令来运行gulp。 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;.&#x2F;node_modules&#x2F;.bin&#x2F;gulp&#96;</span><br></pre></td></tr></table></figure>
+
+<p>  每次运行gulp都要输入这么多东西好麻烦，所以我们可以把上面这行代码写到package.json中，如下图所示。<br> <img src="/2020/03/15/webpack%E6%95%B4%E7%90%86/1.png" alt="img"> </p>
+<p>  之后在终端里只需要运行以下代码就可以执行gulp了。 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;npm run gulp&#96;</span><br></pre></td></tr></table></figure>
+
+<p>  但是如果定义很多条script命令的话，如下图所示。<br> <img src="/2020/03/15/webpack%E6%95%B4%E7%90%86/2.png" alt="img"> </p>
+<p>  我们要写很多图中红框部分重复的代码”./node_modules/.bin/“。 </p>
+<p>  这个时候npx的作用就体现出来了，它会自动帮我们搜索程序所在的路径，此时就不需要去手动定义程序的路径了，效果如下图。 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#96;.&#x2F;node_modules&#x2F;.bin&#x2F;gulp&#96;&#96;可以替换为&#96;&#96;npx gulp&#96;</span><br></pre></td></tr></table></figure>
+
+<p>  所以package.json就可以变成下图所示的样子。<br> <img src="/2020/03/15/webpack%E6%95%B4%E7%90%86/3.png" alt="img">  </p>
+<p>  此时npx自动帮我们找到了gulp所在的路径。当然这只是npx一个最基础的功能。</p>
+<h3 id="webpack-config-js"><a href="#webpack-config-js" class="headerlink" title="webpack.config.js"></a>webpack.config.js</h3><p><code>webpack.config.js</code>自定义打包配置，运行<code>npx webpack</code>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  mode: <span class="string">'development'</span>,</span><br><span class="line">  entry: &#123;</span><br><span class="line">    main: <span class="string">'./src/index.js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><code>entry</code>打包入口文件，<code>output</code>打包输出文件。mode为development时，bundle.js是不被压缩的JS代码，如果mode为production时，bundle.js是一段压缩的JS代码。</p>
+<p>如果不是webpack.config.js命名的话，需要运行<code>npx webpack —config xxx</code>，xxx为自定义的配置文件名。</p>
+<p>我们可以在package.json下的scripts中简化命令：</p>
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "bundle": "webpack"</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样可以直接运行<code>npm run bundle</code>进行打包，上面语句的webpack和npx webpack是一样的原理，都是先去工程目录下的node_modules去查找webpack。</p>
+<p>综上：</p>
+<p>webpack有三种方式运行</p>
+<ol>
+<li>全局安装情况下，直接<code>webpack index.js</code></li>
+<li>局部安装情况下<ul>
+<li><code>npx webpack index.js</code></li>
+<li>package.json的scripts下配置，<code>npm run bundle</code></li>
+</ul>
+</li>
+</ol>
+<p>webpack-cli帮助我们可以在命令行内使用webpack命令。</p>
+<h2 id="二、Webpack核心概念"><a href="#二、Webpack核心概念" class="headerlink" title="二、Webpack核心概念"></a>二、Webpack核心概念</h2><h3 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h3><blockquote>
+<p>webpack enables use of <strong>loaders</strong> to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js.</p>
+</blockquote>
+<p>由于webpack无法识别非js结尾的模块，所以需要loader来让webpack识别。其实就是一个打包方案。比如vue中经常有模块化的操作，<code>import Header from &#39;./header.vue&#39;</code></p>
+<p>那么webpack如何识别以vue结尾的模块呢？该去如何打包呢？这时就需要用到loader</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [&#123;</span><br><span class="line">      test: <span class="regexp">/\.jpg$/</span>,</span><br><span class="line">      use: &#123;</span><br><span class="line">        loader: <span class="string">'file-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    &#123;</span><br><span class="line">      test: <span class="regexp">/\.vue$/</span>,</span><br><span class="line">      use: &#123;</span><br><span class="line">        loader: <span class="string">'vue-loader'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="file-loader"><a href="#file-loader" class="headerlink" title="file-loader"></a>file-loader</h4><blockquote>
+<p>Emits the file into the output folder and returns the (relative) URL</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">		rules: [&#123;</span><br><span class="line">			test: <span class="regexp">/\.(jpg|png|gif)$/</span>,</span><br><span class="line">			use: &#123;</span><br><span class="line">				loader: <span class="string">'file-loader'</span>,</span><br><span class="line">				options: &#123;</span><br><span class="line">					<span class="comment">//placeholder 占位符</span></span><br><span class="line">					name: <span class="string">'[name]_[hash].[ext]'</span>,</span><br><span class="line">					outputPath: <span class="string">'images/'</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的配置就是将以jpg、png、gif结尾的文件进行打包，输出的文件名字通过占位符拼接，放到了输出文件夹的images目录下。</p>
+<h4 id="url-loader"><a href="#url-loader" class="headerlink" title="url-loader"></a>url-loader</h4><blockquote>
+<p>A loader for webpack which transforms files into base64 URIs.</p>
+<p>Works like the file loader, but can return a data URL if the file is smaller than a limit</p>
+</blockquote>
+<p>当文件的大小比较小的时候推荐使用url-loader，这样的话可以节约http请求，但是如果你的文件比较大，就会造成bundle.js文件也会变大，页面无法快速的显示出来。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">		rules: [&#123;</span><br><span class="line">			test: <span class="regexp">/\.(jpg|png|gif)$/</span>,</span><br><span class="line">			use: &#123;</span><br><span class="line">				loader: <span class="string">'url-loader'</span>,</span><br><span class="line">				options: &#123;</span><br><span class="line">					<span class="comment">//placeholder 占位符</span></span><br><span class="line">					name: <span class="string">'[name]_[hash].[ext]'</span>,</span><br><span class="line">					outputPath: <span class="string">'images/'</span>,</span><br><span class="line">					limit: <span class="number">2048</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>limit用来限制文件的大小，如果小于limit的值，直接以base64的形式打包到js文件中。</p>
+<h4 id="css-loader"><a href="#css-loader" class="headerlink" title="css-loader"></a>css-loader</h4><p>分析各css文件的关系，合并成一个css文件</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  <span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.css$/i</span>,</span><br><span class="line">        use: [</span><br><span class="line">          <span class="string">'style-loader'</span>,</span><br><span class="line">          &#123;</span><br><span class="line">            loader: <span class="string">'css-loader'</span>,</span><br><span class="line">            options: &#123;</span><br><span class="line">              importLoaders: <span class="number">2</span>,</span><br><span class="line">              <span class="comment">// 0 =&gt; no loaders (default);</span></span><br><span class="line">              <span class="comment">// 1 =&gt; postcss-loader;</span></span><br><span class="line">              <span class="comment">// 2 =&gt; postcss-loader, sass-loader</span></span><br><span class="line">               modules: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">          &#125;,</span><br><span class="line">          <span class="string">'postcss-loader'</span>,</span><br><span class="line">          <span class="string">'sass-loader'</span>,</span><br><span class="line">        ],</span><br><span class="line">      &#125;,</span><br><span class="line">    ],</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>当执行到css-loader的时候，发现import了scss，此时loader是重新从下往上执行一遍呢，还是直接执行style-loader呢？我们可以通过<code>importLoaders</code>设置，因为import的scss也要处理，所以还要执行一遍sass-loader和postcss-loader。</p>
+<p>modules:true  开启css模块化，可以使用<code>import style from &#39;./index.scss&#39;;</code>这样的语法，可以让当前模块里的样式和其他模块里的样式不会有任何的耦合。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> avatar <span class="keyword">from</span> <span class="string">'./avatar.jpg'</span>;</span><br><span class="line"><span class="keyword">import</span> <span class="string">'./index.scss'</span>;</span><br><span class="line"><span class="keyword">import</span> createAvatar <span class="keyword">from</span> <span class="string">'./createAvatar'</span>;</span><br><span class="line"></span><br><span class="line">createAvatar();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> img = <span class="keyword">new</span> Image();</span><br><span class="line">img.src = avatar;</span><br><span class="line">img.classList.add(<span class="string">'avatar'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> root = <span class="built_in">document</span>.getElementById(<span class="string">'root'</span>);</span><br><span class="line">root.append(img);</span><br></pre></td></tr></table></figure>
+
+<p>如上例子，如果modules:false ，此时createAvatar里的样式和当前模块里的样式都共享了同一个样式index.scss。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	test: <span class="regexp">/\.(eot|ttf|svg)$/</span>,</span><br><span class="line">	use: &#123;</span><br><span class="line">		loader: <span class="string">'file-loader'</span></span><br><span class="line">	&#125; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>打包字体文件</p>
+<h4 id="style-loader"><a href="#style-loader" class="headerlink" title="style-loader"></a>style-loader</h4><p>把打包好的css挂载到html的<head></head></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">		rules: [&#123;</span><br><span class="line">			test: <span class="regexp">/\.css$/</span>,</span><br><span class="line">			use: [<span class="string">'style-loader'</span>,<span class="string">'css-loader'</span>,<span class="string">'sass-loader'</span>]</span><br><span class="line">		&#125;]</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>loader是从下到上，从右到左的顺序执行。比如上面的配置文件，执行顺序sass-loader -&gt; css-loader -&gt; style-loader。</p>
+<h4 id="postcss-loader"><a href="#postcss-loader" class="headerlink" title="postcss-loader"></a>postcss-loader</h4><p>自动加浏览器内核前缀，提高css兼容性。</p>
+]]></content>
+  </entry>
+  <entry>
     <title>GoWhere项目总结</title>
     <url>/2020/03/13/GoWhere%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<h2 id="1-多页应用-vs-单页应用"><a href="#1-多页应用-vs-单页应用" class="headerlink" title="1.多页应用 vs 单页应用"></a>1.多页应用 vs 单页应用</h2><p><strong>多页应用</strong></p>
