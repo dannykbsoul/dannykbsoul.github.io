@@ -222,7 +222,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-16 14:21:18" itemprop="dateModified" datetime="2020-03-16T14:21:18+08:00">2020-03-16</time>
+                <time title="Modified: 2020-03-17 23:48:40" itemprop="dateModified" datetime="2020-03-17T23:48:40+08:00">2020-03-17</time>
               </span>
 
           <br>
@@ -231,14 +231,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4k</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
+              <span>10 mins.</span>
             </span>
 
         </div>
@@ -291,7 +291,8 @@
 </li>
 </ol>
 <p>webpack-cli帮助我们可以在命令行内使用webpack命令。</p>
-<h2 id="二、Webpack核心概念"><a href="#二、Webpack核心概念" class="headerlink" title="二、Webpack核心概念"></a>二、Webpack核心概念</h2><h3 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h3><blockquote>
+<p>chunk的含义：打包生成的每个文件都是一个chunk，打包生成很多个js文件，就有很多个chunk。</p>
+<h2 id="二、Webpack核心概念"><a href="#二、Webpack核心概念" class="headerlink" title="二、Webpack核心概念"></a>二、Webpack核心概念</h2><h3 id="1-loader"><a href="#1-loader" class="headerlink" title="1.loader"></a>1.loader</h3><blockquote>
 <p>webpack enables use of <strong>loaders</strong> to preprocess files. This allows you to bundle any static resource way beyond JavaScript. You can easily write your own loaders using Node.js.</p>
 </blockquote>
 <p>由于webpack无法识别非js结尾的模块，所以需要loader来让webpack识别。其实就是一个打包方案。比如vue中经常有模块化的操作，<code>import Header from &#39;./header.vue&#39;</code></p>
@@ -328,6 +329,142 @@
 
 <p>loader是从下到上，从右到左的顺序执行。比如上面的配置文件，执行顺序sass-loader -&gt; css-loader -&gt; style-loader。</p>
 <h4 id="postcss-loader"><a href="#postcss-loader" class="headerlink" title="postcss-loader"></a>postcss-loader</h4><p>自动加浏览器内核前缀，提高css兼容性。</p>
+<h3 id="2-plugin"><a href="#2-plugin" class="headerlink" title="2.plugin"></a>2.plugin</h3><p><strong>可以在webpack运行到某个时刻的时候，帮你做一些事情</strong></p>
+<h4 id="html-webpack-plugin"><a href="#html-webpack-plugin" class="headerlink" title="html-webpack-plugin"></a>html-webpack-plugin</h4><p>htmlWebpackPlugin会在打包结束后，自动生成一个html文件，并把打包生成的js自动引入到这个html文件中。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> HtmlWebpackPlugin = <span class="built_in">require</span>(<span class="string">'html-webpack-plugin'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	mode: <span class="string">'development'</span>,</span><br><span class="line">	entry: &#123;</span><br><span class="line">		main: <span class="string">'./src/index.js'</span></span><br><span class="line">	&#125;</span><br><span class="line">	output: &#123;</span><br><span class="line">		filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	plugins: [<span class="keyword">new</span> HtmlWebpackPlugin(&#123;</span><br><span class="line">		template: <span class="string">'src/index.html'</span></span><br><span class="line">	&#125;)]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>template是生成html文件的模版。</p>
+<h4 id="clean-webpack-plugin"><a href="#clean-webpack-plugin" class="headerlink" title="clean-webpack-plugin"></a>clean-webpack-plugin</h4><blockquote>
+<p>By default, this plugin will remove all files inside webpack’s <code>output.path</code> directory, as well as all unused webpack assets after every successful rebuild.</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> &#123; CleanWebpackPlugin &#125; = <span class="built_in">require</span>(<span class="string">'clean-webpack-plugin'</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	mode: <span class="string">'development'</span>,</span><br><span class="line">	entry: &#123;</span><br><span class="line">		main: <span class="string">'./src/index.js'</span></span><br><span class="line">	&#125;</span><br><span class="line">	output: &#123;</span><br><span class="line">		filename: <span class="string">'dist.js'</span>,</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	&#125;,</span><br><span class="line">	plugins: [</span><br><span class="line">		<span class="keyword">new</span> CleanWebpackPlugin()</span><br><span class="line">	]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>clean-webpack-plugin在打包之前先会被运行的，html-webpack-plugin在打包之后运行。</p>
+<h3 id="3-Entry和Output基础配置"><a href="#3-Entry和Output基础配置" class="headerlink" title="3.Entry和Output基础配置"></a>3.Entry和Output基础配置</h3><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	mode: <span class="string">'development'</span>,</span><br><span class="line">	entry: &#123;</span><br><span class="line">		main: <span class="string">'./src/index.js'</span></span><br><span class="line">	&#125;,</span><br><span class="line">	output: &#123;</span><br><span class="line">		filename: <span class="string">'dist.js'</span>,</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>上述的entry的写法，相当于<code>entry: &#39;./src/index.js&#39;</code>，意思是打包这个指定的文件，默认的文件名是main.js，如果你不想用默认的文件名，直接将entry写成对象的形式就可以了，其中键名是默认的输出文件名。如果下面的output中指定了filename，则以output中的为准。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	mode: <span class="string">'development'</span>,</span><br><span class="line">	entry: &#123;</span><br><span class="line">		main: <span class="string">'./src/index.js'</span>,</span><br><span class="line">		sub: <span class="string">'./src/index.js'</span></span><br><span class="line">	&#125;</span><br><span class="line">	output: &#123;</span><br><span class="line">		filename: <span class="string">'bundle.js'</span>,</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>报错：<code>Conflict: Multiple chunks emit assets to the same filename bundle.js (chunks main and sub)</code></p>
+<p>可以看出，如果entry有两个及以上的chunk，不能输出到一个文件名中，会报错，或者可以干脆不在output里面指定filename。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	mode: <span class="string">'development'</span>,</span><br><span class="line">	entry: &#123;</span><br><span class="line">		main: <span class="string">'./src/index.js'</span>,</span><br><span class="line">		sub: <span class="string">'./src/index.js'</span></span><br><span class="line">	&#125;</span><br><span class="line">	output: &#123;</span><br><span class="line">    	publicPath: <span class="string">'http://cdn.com.cn'</span>,</span><br><span class="line">		filename: <span class="string">'[name].js'</span>,</span><br><span class="line">		path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>用占位符可以指定文件名，此时占位符上的name是上面entry对象的键名。</p>
+<p>通过在output中配置<code>publicPath</code>，这样最终被html文件引用的js文件名前面都会加上这个地址。</p>
+<p><img src="/2020/03/15/webpack%E6%95%B4%E7%90%86/4.png" alt></p>
+<p>所以如果我们项目后台用html，而静态资源放到了cdn上，那么这时就要用到output里面的<code>publicPath</code></p>
+<blockquote>
+<p>path：用来存放打包后文件的输出目录</p>
+<p>publicPath：生成最终的styles时，webpack默认会把publicPath的配置添加到图片URL，字体的路径上</p>
+</blockquote>
+<h3 id="4-SourceMap配置"><a href="#4-SourceMap配置" class="headerlink" title="4.SourceMap配置"></a>4.SourceMap配置</h3><p>mode是development模式下，默认配置了sourcemap。<code>devtool: &#39;source-map&#39;</code></p>
+<p>打过过后的文件夹中有一个<code>main.js.map</code>，内容是文件之间的映射关系。</p>
+<ul>
+<li><p>SourceMap是一个映射关系，它知道你打包过后文件里的代码和源文件里的代码之间的映射关系，找bug。</p>
+</li>
+<li><p>eval： 使用eval包裹模块代码</p>
+</li>
+<li><p>source-map： 产生.map文件</p>
+</li>
+<li><p>cheap：不包含列信息，也不包含loader的sourcemap</p>
+</li>
+<li><p>module： 包含loader的sourcemap（比如jsx to js ，babel的sourcemap）</p>
+</li>
+<li><p>inline：将.map作为DataURI嵌入，不单独生成.map文件。</p>
+</li>
+</ul>
+<ol>
+<li><p><code>inline-source-map</code> - A SourceMap is added as a DataUrl to the bundle.</p>
+<blockquote>
+<p>包含inline关键字的配置项也会产生.map文件，但是这个map文件是经过base64编码作为DataURI嵌入，不单独生成.map文件</p>
+</blockquote>
+</li>
+<li><p><code>cheap-source-map</code> - A SourceMap without column-mappings ignoring loader Source Maps.</p>
+<blockquote>
+<p>当使用<code>cheap-inline-source-map</code>的时候，性能会提升。</p>
+<ul>
+<li>因为这里的映射关系只精确到哪一行，具体在哪一列不做映射，所以性能会比较好。</li>
+<li>映射只针对业务代码，而不会管引入的第三方模块的代码映射，比如loader这些</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>inline-cheap-source-map</code> - Similar to <code>cheap-source-map</code> but SourceMap is added as a DataUrl to the bundle.</p>
+</li>
+<li><p><code>cheap-module-source-map</code> - A SourceMap without column-mappings that simplifies loader Source Maps to a single mapping per line.</p>
+<blockquote>
+<p>不仅要映射业务代码，第三方的模块也要映射。</p>
+</blockquote>
+</li>
+<li><p><code>inline-cheap-module-source-map</code> - Similar to <code>cheap-module-source-map</code> but SourceMap is added as a DataUrl to the bundle.</p>
+</li>
+<li><p><code>eval</code>，打包速度最快的一种方式，通过eval这种js执行形式来生成sourcemap的对应关系。</p>
+</li>
+</ol>
+<p>最佳实践：</p>
+<ol>
+<li>mode:’development’ <code>cheap-module-eval-source-map</code>，提示出来的错误比较全面，同时打包速度也比较快</li>
+<li>mode:’production’ <code>cheap-module-source-map</code> <strong>带<code>inline</code><em>与</em><code>eval</code>的不能用于生产环境是因为这两者生成的SourceMap是内嵌在构建完成的js代码中的，会在生产环境直接暴露源代码。</strong></li>
+</ol>
+<h3 id="5-WebpackDevServer"><a href="#5-WebpackDevServer" class="headerlink" title="5.WebpackDevServer"></a>5.WebpackDevServer</h3><p><strong>为什么要使用webpack-dev-server？</strong></p>
+<blockquote>
+<p>要发ajax请求文件必须是以http协议打开，file协议打开的文件不能发送ajax请求</p>
+</blockquote>
+<p>webpack中有几个不同的选项，可以帮助你在代码发生变化后自动编译代码</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">"scripts": &#123;</span><br><span class="line">    "watch": "webpack --watch",</span><br><span class="line">    "start": "webpack-dev-server",</span><br><span class="line">    "server": "node server.js"</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>“watch”: “webpack –watch”</p>
+<p>  添加watch，这样webpack会监控所打包文件的变化，一旦发生变化，那么会自动帮我们执行打包。每次打包完都要重新刷新浏览器，比较麻烦。</p>
+</li>
+<li><p>“start”: “webpack-dev-server”</p>
+  <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">devServer: &#123;</span><br><span class="line">    contentBase: './dist',</span><br><span class="line">    open: true</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>  服务器起在contentBase指定的那个文件夹下，那么想要访问代码其实就是在起的那个服务器下面去访问代码。打包文件发生变化，浏览器上的变化无需刷新便可以展示。</p>
+<p>  open: true 在启动webpackdevserver的时候，会帮我们自动打开浏览器访问服务器的地址。</p>
+</li>
+</ul>
+<p><strong>如何自己实现webpack-dev-server?</strong></p>
+<p>“server”: “node server.js”</p>
+<p>可以通过webpackDevMiddleware配合express自己写这样的server(简单版，需要手动刷新浏览器变化)</p>
+<p><em>在node中使用webpack</em></p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> express = <span class="built_in">require</span>(<span class="string">'express'</span>);</span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"><span class="keyword">const</span> webpackDevMiddleware = <span class="built_in">require</span>(<span class="string">'webpack-dev-middleware'</span>);</span><br><span class="line"><span class="keyword">const</span> config = <span class="built_in">require</span>(<span class="string">'./webpack.config.js'</span>);</span><br><span class="line"><span class="keyword">const</span> compile = webpack(config);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> app = express();</span><br><span class="line"></span><br><span class="line">app.use(</span><br><span class="line">  webpackDevMiddleware(compile, &#123;&#125;)</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">app.listen(<span class="number">3000</span>, () =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'server is running'</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-HotModuleReplacement"><a href="#6-HotModuleReplacement" class="headerlink" title="6.HotModuleReplacement"></a>6.HotModuleReplacement</h3><p>一个带有热更新功能的webpack.config.js文件的配置如下：</p>
+<ol>
+<li>引入webpack库</li>
+<li>使用<code>new webpack.HotModuleReplacementPlugin()</code></li>
+<li>设置<code>devServer</code>选项中的<code>hot</code>字段为<code>true</code></li>
+</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> path = <span class="built_in">require</span>(<span class="string">'path'</span>);</span><br><span class="line"><span class="keyword">const</span> webpack = <span class="built_in">require</span>(<span class="string">'webpack'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">  entry: &#123;</span><br><span class="line">    app: <span class="string">'./src/index.js'</span></span><br><span class="line">  &#125;,</span><br><span class="line">  devtool: <span class="string">'inline-source-map'</span>,</span><br><span class="line">  devServer: &#123;</span><br><span class="line">    contentBase: <span class="string">'./dist'</span>,</span><br><span class="line">    hot: <span class="literal">true</span></span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    <span class="keyword">new</span> webpack.HotModuleReplacementPlugin()</span><br><span class="line">  ],</span><br><span class="line">  output: &#123;</span><br><span class="line">    filename: <span class="string">'[name].bundle.js'</span>,</span><br><span class="line">    path: path.resolve(__dirname, <span class="string">'dist'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>Hot Module Replacement (HMR) exchanges, adds, or removes modules while an application is running, without a full reload. This can significantly speed up development in a few ways:</p>
+<ul>
+<li>Retain application state which is lost during a full reload.</li>
+<li>Save valuable development time by only updating what’s changed.</li>
+<li>Instantly update the browser when modifications are made to CSS/JS in the source code, which is almost comparable to changing styles directly in the browser’s dev tools.</li>
+</ul>
+<p>HMR能会在应用程序运行过程中替换、添加或删除模块，而无需重新加载整个页面。</p>
+<p>hot和hotOnly的区别是在某些模块不支持热更新的情况下，前者会自动刷新页面，后者不会刷新页面，而是在控制台输出热更新失败。</p>
+<p>本质上如果想实现HMR功能，页面上就一定要写下面的代码，但是由于一些loader等文件帮我们实现了这个代码，所以我们不用自己手动写。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> number <span class="keyword">from</span> <span class="string">'./number'</span></span><br><span class="line">number()</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(<span class="built_in">module</span>.hot) &#123;</span><br><span class="line"><span class="built_in">module</span>.hot.accept(<span class="string">'./number.js'</span>, () =&gt; &#123;      </span><br><span class="line"> 	<span class="built_in">document</span>.body.removeChild(<span class="built_in">document</span>.getElementById(<span class="string">'number'</span>))</span><br><span class="line">    number()</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-babel"><a href="#7-babel" class="headerlink" title="7.babel"></a>7.babel</h3><p>Babel是一个JavaScript编译器，Babel是一个工具链，主要用于将ECMAScript 2015+版本的代码转换为向后兼容的JavaScript语法，以便能够运行在当前和旧版本的浏览器或其他环境中。</p>
+<ol>
+<li><p>npm install –save-dev babel-loader @babel/core</p>
+</li>
+<li><p>npm install @babel/preset-env –save-dev</p>
+<p> 包含了所有ES6转换为ES5的翻译规则which enables transforms for ES2015+</p>
+</li>
+<li><p>npm install –save @babel/polyfill</p>
+<p> Babel默认只转换新的JavaScript句法（syntax），而不转换新的API，比如Iterator、Generator、Set、Maps、Proxy、Reflect、Symbol、Promise等全局对象，以及一些定义在全局对象上的方法（比如<code>Object.assign</code>）都不会转码。</p>
+<p> 举例来说，ES6在<code>Array</code>对象上新增了<code>Array.from</code>方法。Babel就不会转码这个方法。如果想让这个方法运行，必须使用<code>babel-polyfill</code>，为当前环境提供一个垫片。</p>
+<p> <code>import &#39;@babel/polyfill&#39;;</code></p>
+</li>
+</ol>
+<p>webpack.config.js</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">	exclude: <span class="regexp">/node_modules/</span>,</span><br><span class="line">	loader: <span class="string">'babel-loader'</span>,</span><br><span class="line">	options: &#123;</span><br><span class="line">        presets: [</span><br><span class="line">            [<span class="string">'@babel/preset-env'</span>, &#123;</span><br><span class="line">                targets: &#123;</span><br><span class="line">                    chrome: <span class="string">"67"</span></span><br><span class="line">                &#125;,</span><br><span class="line">                useBuiltIns: <span class="string">'usage'</span></span><br><span class="line">            &#125;]</span><br><span class="line">        ]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用useBuiltIns配置参数，使得打包过程中根据业务代码的需求注入polyfill里面对应的内容，代码体积明显变小。targets配置参数，是告诉babel，我的代码需要运行在什么版本浏览器上，你可以根据需要注入所需要的内容。</p>
 
       
     </div>
@@ -1787,13 +1924,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">391k</span>
+    <span title="Symbols count total">398k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">5:56</span>
+    <span title="Reading time total">6:02</span>
 </div>
 
 <!--
