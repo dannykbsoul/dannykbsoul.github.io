@@ -378,9 +378,8 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2020-03-19 09:33:04 / Modified: 11:34:39" itemprop="dateCreated datePublished" datetime="2020-03-19T09:33:04+08:00">2020-03-19</time>
+              <time title="Created: 2020-03-19 09:33:04" itemprop="dateCreated datePublished" datetime="2020-03-19T09:33:04+08:00">2020-03-19</time>
             </span>
 
           <br>
@@ -389,7 +388,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.5k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -428,7 +427,7 @@
 <li><p>控制包文件的大小</p>
 <p> <code>TreeShaking</code>：可以删除项目中未被引用的代码<br> <code>懒加载</code>：实现按需加载，多写异步代码，提高页面的代码使用率</p>
 </li>
-<li><p><code>thread-loader</code>和<code>happypack</code>可以可以利用node中的多进程， 同时利用多个CPO对项目打包；对多页面应用，使用<code>parallel-webpack</code>可以实现对多个页面一起打包</p>
+<li><p><code>thread-loader</code>和<code>happypack</code>可以可以利用node中的多进程，同时利用多个CPO对项目打包；对多页面应用，使用<code>parallel-webpack</code>可以实现对多个页面一起打包。因为Node是单线程运行的，所以Webpack在打包的过程中也是单线程的，特别是在执行Loader的时候，这样会导致等待的情况。HappyPack可以将Loader的同步执行转换为并行的</p>
 </li>
 <li><p>合理使用sourceMap:用对<code>devtool</code>配置，在开发模式建议用<code>cheap-module-eval-source-map</code>；在生产模式建议用<code>cheap-module-source-map</code></p>
 </li>
