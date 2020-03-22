@@ -22,17 +22,16 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="流程1.根据域名,进行DNS域名解析URL一般包括几大部分：  protocol，协议头，譬如有http，ftp等 host，主机域名或IP地址 port，端口号 path，目录路径 query，即查询参数 fragment，即#后的hash值，一般用来定位到某个位置   2.拿到解析的IP地址，建立TCP连接3.向IP地址，发送HTTP请求 SSL(Secure Sockets Layer 安全">
+  <meta name="description" content="从输入url到页面加载发生了什么？">
 <meta property="og:type" content="article">
 <meta property="og:title" content="从输入URL到页面加载发生了什么?">
 <meta property="og:url" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/index.html">
 <meta property="og:site_name" content="ZJ&#39;s BLOG">
-<meta property="og:description" content="流程1.根据域名,进行DNS域名解析URL一般包括几大部分：  protocol，协议头，譬如有http，ftp等 host，主机域名或IP地址 port，端口号 path，目录路径 query，即查询参数 fragment，即#后的hash值，一般用来定位到某个位置   2.拿到解析的IP地址，建立TCP连接3.向IP地址，发送HTTP请求 SSL(Secure Sockets Layer 安全">
+<meta property="og:description" content="从输入url到页面加载发生了什么？">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/11.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/12.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/13.png">
-<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/14.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/15.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/16.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/17.png">
@@ -64,8 +63,17 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/8.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/9.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/10.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/37.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/36.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/38.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/39.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/40.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/41.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/42.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/43.png">
+<meta property="og:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/44.png">
 <meta property="article:published_time" content="2020-03-08T10:33:24.000Z">
-<meta property="article:modified_time" content="2020-03-11T13:34:06.528Z">
+<meta property="article:modified_time" content="2020-03-08T10:33:24.000Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/11.png">
@@ -254,13 +262,6 @@
 
               <time title="Created: 2020-03-08 18:33:24" itemprop="dateCreated datePublished" datetime="2020-03-08T18:33:24+08:00">2020-03-08</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-11 21:34:06" itemprop="dateModified" datetime="2020-03-11T21:34:06+08:00">2020-03-11</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -268,14 +269,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>31k</span>
+              <span>42k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>28 mins.</span>
+              <span>38 mins.</span>
             </span>
 
         </div>
@@ -287,7 +288,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><h2 id="1-根据域名-进行DNS域名解析"><a href="#1-根据域名-进行DNS域名解析" class="headerlink" title="1.根据域名,进行DNS域名解析"></a>1.根据域名,进行DNS域名解析</h2><p>URL一般包括几大部分：</p>
+        <p>从输入url到页面加载发生了什么？<a id="more"></a></p>
+<h1 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h1><h2 id="1-根据域名-进行DNS域名解析"><a href="#1-根据域名-进行DNS域名解析" class="headerlink" title="1.根据域名,进行DNS域名解析"></a>1.根据域名,进行DNS域名解析</h2><p>URL一般包括几大部分：</p>
 <ul>
 <li><code>protocol</code>，协议头，譬如有http，ftp等</li>
 <li><code>host</code>，主机域名或IP地址</li>
@@ -304,7 +306,7 @@
 <p>https端口号443</p>
 <blockquote>
 <p>http请求报文是由三部分组成:<code>请求行</code>、<code>请求报头</code>和<code>请求正文</code></p>
-<p>请求正文:    当使用POST, PUT等方法时，通常需要客户端向服务器传递数据。这些数据就储存在请求正文中。在请求包头中有一些与请求正文相关的信息，例如: 现在的Web应用通常采用Rest架构，请求的数据格式一般为json。这时就需要设置Content-Type: application/json。</p>
+<p>请求正文:    当使用POST, PUT等方法时，通常需要客户端向服务器传递数据。这些数据就储存在请求正文中。在请求报头中有一些与请求正文相关的信息，例如: 现在的Web应用通常采用Rest架构，请求的数据格式一般为json。这时就需要设置Content-Type: application/json。</p>
 </blockquote>
 <blockquote>
 <p>get和post的区别:</p>
@@ -325,62 +327,43 @@
 <li><p>1xx：指示信息–表示请求已接收，继续处理。</p>
 <blockquote>
 <p><code>100 Continue</code>：该状态码说明服务器收到了请求的初始部分，并且请客户端继续发送。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
 <p><code>101(切换协议)</code> 请求者已要求服务器切换协议，服务器已确认并准备切换。</p>
 </blockquote>
-<ul>
+</li>
 <li><p>2xx：成功–表示请求已被成功接收、理解、接受。</p>
 <blockquote>
 <p><code>200(成功)</code>服务器已成功处理了请求。通常，这表示服务器提供了请求的网页。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
 <p><code>201(已创建)</code>请求成功并且服务器创建了新的资源。</p>
 <p><code>202(已接受)</code>服务器已接受请求，但尚未处理。</p>
 <p><code>204(无内容)</code>服务器成功处理了请求，但没有返回任何内容。等同于请求执行成功，但是没有数据，浏览器不用刷新页面也不用导向新的页面。</p>
 <p><code>206(部分内容)</code>服务器成功处理了部分 GET 请求。</p>
 </blockquote>
-<ul>
+</li>
 <li><p>3xx：重定向–要完成请求必须进行更进一步的操作。</p>
 <blockquote>
 <p><code>301(永久移动)</code>请求的网页已永久移动到新位置。 服务器返回此响应（对 GET 或HEAD请求的响应）时，会自动将请求者转到新位置。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
 <p><code>302(临时移动)</code>服务器目前从不同位置的网页响应请求，但请求者应继续使用原有位置来进行以后的请求。</p>
 <p><code>304(未修改)</code>自从上次请求后，请求的网页未修改过，请客户端使用本地缓存。 服务器返回此响应时，不会返回网页内容。</p>
 <p>浏览器需要向服务器询问一次，如果服务器端认为没有内容更新，直接返回304状态码，无需返回body内容，浏览器就会直接取缓存内容输出，这样省掉了没必要的数据传输，也就提升了访问速度。</p>
 </blockquote>
-<ul>
+</li>
 <li><p>4xx：客户端错误–请求有语法错误或请求无法实现。</p>
 <blockquote>
 <p><code>400(错误请求)</code>服务器不理解请求的语法。</p>
-</blockquote>
-</li>
-</ul>
-<blockquote>
-<p><code>401(未授权)</code>请求要求身份验证。 对于需要登录的网页，服务器可能返回此响应。</p>
+<p><code>401(未授权)</code>请求要求身份验证。对于需要登录的网页，服务器可能返回此响应。</p>
 <p><code>402</code> 该状态码是为了将来可能的需求而预留的。</p>
 <p><code>403(禁止)</code>服务器拒绝请求。</p>
 <p><code>404(未找到)</code>服务器找不到请求的网页。</p>
 </blockquote>
-<ul>
+</li>
 <li><p>5xx：服务器端错误–服务器未能实现合法的请求。</p>
 <blockquote>
 <p><code>500(服务器内部错误)</code>服务器遇到错误，无法完成请求。</p>
+<p><code>503(服务不可用)</code>服务器目前无法使用（由于超载或停机维护）。通常，这只是暂时状态。</p>
 </blockquote>
 </li>
 </ul>
-<blockquote>
-<p><code>503(服务不可用)</code>服务器目前无法使用（由于超载或停机维护）。通常，这只是暂时状态。</p>
 </blockquote>
-</blockquote>
-<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/14.png" alt></p>
 <p>cookie以及优化:</p>
 <blockquote>
 <p>一般来说，cookie是不允许存放敏感信息的（千万不要明文存储用户名、密码），因为非常不安全，如果一定要强行存储，首先，一定要在cookie中设置httponly（这样就无法通过js操作了），另外可以考虑rsa等非对称加密（因为实际上，浏览器本地也是容易被攻克的，并不安全）<br>另外，由于在同域名的资源请求时，浏览器会默认带上本地的cookie，针对这种情况，在某些场景下是需要优化的。</p>
@@ -681,14 +664,12 @@
 <p>这里为大家截取有“Layout”和“Paint”出镜的片段（这个图是通过 Chrome 的 Performance 面板得到的，后面会教大家用这个东西）。我们看到浏览器只进行了一次回流和一次重绘——和我们想的不一样啊，为啥呢？</p>
 <p>因为现代浏览器是很聪明的。浏览器自己也清楚，如果每次 DOM 操作都即时地反馈一次回流或重绘，那么性能上来说是扛不住的。于是它自己缓存了一个 flush 队列，把我们触发的回流与重绘任务都塞进去，待到队列里的任务多起来、或者达到了一定的时间间隔，或者“不得已”的时候，再将这些任务一口气出队。因此我们看到，上面就算我们进行了 4 次 DOM 更改，也只触发了一次 Layout 和一次 Paint。</p>
 <p>大家这里尤其小心这个“不得已”的时候。前面我们在介绍回流的“导火索”的时候，提到过有一类属性很特别，它们有很强的“即时性”。当我们访问这些属性时，浏览器会为了获得此时此刻的、最准确的属性值，而提前将 flush 队列的任务出队——这就是所谓的“不得已”时刻。具体是哪些属性值，我们已经在“最容易被忽略的操作”这个小模块介绍过了，此处不再赘述。</p>
-<h2 id="6-关闭TCP连接"><a href="#6-关闭TCP连接" class="headerlink" title="6.关闭TCP连接"></a>6.关闭TCP连接</h2><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><h2 id="DNS缓存"><a href="#DNS缓存" class="headerlink" title="DNS缓存"></a>DNS缓存</h2><h3 id="什么是DNS"><a href="#什么是DNS" class="headerlink" title="什么是DNS?"></a>什么是DNS?</h3><p>全称 Domain Name System ,即域名系统。</p>
+<h2 id="6-关闭TCP连接"><a href="#6-关闭TCP连接" class="headerlink" title="6.关闭TCP连接"></a>6.关闭TCP连接</h2><h1 id="缓存"><a href="#缓存" class="headerlink" title="缓存"></a>缓存</h1><h2 id="1-DNS缓存"><a href="#1-DNS缓存" class="headerlink" title="1.DNS缓存"></a>1.DNS缓存</h2><h3 id="什么是DNS"><a href="#什么是DNS" class="headerlink" title="什么是DNS?"></a>什么是DNS?</h3><p>全称 Domain Name System ,即域名系统。</p>
 <blockquote>
 <p>万维网上作为域名和IP地址相互映射的一个分布式数据库，能够使用户更方便的访问互联网，而不用去记住能够被机器直接读取的IP数串。DNS协议运行在UDP协议之上，使用端口号53。</p>
 </blockquote>
 <h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>简单的说,通过域名,最终得到该域名对应的IP地址的过程叫做域名解析（或主机名解析）。</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">www.dnscache.com (域名)  - DNS解析 -&gt; <span class="number">11.222</span><span class="number">.33</span><span class="number">.444</span> (IP地址)</span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
 
 <p>有dns的地方,就有缓存。浏览器、操作系统、Local DNS、根域名服务器，它们都会对DNS结果做一定程度的缓存。</p>
 <p>DNS查询过程如下:</p>
@@ -698,13 +679,13 @@
 <li>如果本地hosts文件不存在映射关系，则查找本地DNS服务器(ISP服务器,或者自己手动设置的DNS服务器),如果存在,域名到此解析完成。</li>
 <li>如果本地DNS服务器还没找到的话,它就会向根服务器发出请求,进行递归查询。</li>
 </ol>
-<h2 id="CDN缓存"><a href="#CDN缓存" class="headerlink" title="CDN缓存"></a>CDN缓存</h2><h3 id="什么是CDN"><a href="#什么是CDN" class="headerlink" title="什么是CDN?"></a>什么是CDN?</h3><p>全称 Content Delivery Network,即内容分发网络。</p>
+<h2 id="2-CDN缓存"><a href="#2-CDN缓存" class="headerlink" title="2.CDN缓存"></a>2.CDN缓存</h2><h3 id="什么是CDN"><a href="#什么是CDN" class="headerlink" title="什么是CDN?"></a>什么是CDN?</h3><p>全称 Content Delivery Network,即内容分发网络。</p>
 <blockquote>
 <p>10年前，还没有火车票代售点一说，12306.cn更是无从说起。那时候火车票还只能在火车站的售票大厅购买，而我所在的小县城并不通火车，火车票都要去市里的火车站购买，而从我家到县城再到市里，来回就是4个小时车程，简直就是浪费生命。后来就好了，小县城里出现了火车票代售点，甚至乡镇上也有了代售点，可以直接在代售点购买火车票，方便了不少，全市人民再也不用在一个点苦逼的排队买票了。</p>
 </blockquote>
 <p>简单的理解CDN就是这些代售点(缓存服务器)的承包商,他为买票者提供了便利,帮助他们在最近的地方(最近的CDN节点)用最短的时间(最短的请求时间)买到票(拿到资源),这样去火车站售票大厅排队的人也就少了。也就减轻了售票大厅的压力(起到分流作用,减轻服务器负载压力)。</p>
 <p>用户在浏览网站的时候，CDN会选择一个离用户最近的CDN边缘节点来响应用户的请求，这样海南移动用户的请求就不会千里迢迢跑到北京电信机房的服务器（假设源站部署在北京电信机房）上了。</p>
-<h3 id="CDN缓存-1"><a href="#CDN缓存-1" class="headerlink" title="CDN缓存"></a>CDN缓存</h3><p>关于CDN缓存,在浏览器本地缓存失效后,浏览器会向CDN边缘节点发起请求。类似浏览器缓存,CDN边缘节点也存在着一套缓存机制。CDN边缘节点缓存策略因服务商不同而不同，但一般都会遵循http标准协议，通过http响应头中的</p>
+<h3 id="CDN缓存"><a href="#CDN缓存" class="headerlink" title="CDN缓存"></a>CDN缓存</h3><p>关于CDN缓存,在浏览器本地缓存失效后,浏览器会向CDN边缘节点发起请求。类似浏览器缓存,CDN边缘节点也存在着一套缓存机制。CDN边缘节点缓存策略因服务商不同而不同，但一般都会遵循http标准协议，通过http响应头中的</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-control: max-age   <span class="comment">//后面会提到</span></span><br></pre></td></tr></table></figure>
 
 <p>的字段来设置CDN边缘节点数据缓存时间。</p>
@@ -713,7 +694,7 @@
 <li>CDN节点解决了跨运营商和跨地域访问的问题，访问延时大大降低。</li>
 <li>大部分请求在CDN边缘节点完成，CDN起到了分流作用，减轻了源服务器的负载。</li>
 </ol>
-<h2 id="浏览器缓存-http缓存"><a href="#浏览器缓存-http缓存" class="headerlink" title="浏览器缓存(http缓存)"></a>浏览器缓存(http缓存)</h2><p>对于一个数据请求来说，可以分为发起网络请求、后端处理、浏览器响应三个步骤。浏览器缓存可以帮助我们在第一和第三步骤中优化性能。比如说直接使用缓存而不发起请求，或者发起了请求但后端存储的数据和前端一致，那么就没有必要再将数据回传回来，这样就减少了响应数据。</p>
+<h2 id="3-浏览器缓存-http缓存"><a href="#3-浏览器缓存-http缓存" class="headerlink" title="3.浏览器缓存(http缓存)"></a>3.浏览器缓存(http缓存)</h2><p>对于一个数据请求来说，可以分为发起网络请求、后端处理、浏览器响应三个步骤。浏览器缓存可以帮助我们在第一和第三步骤中优化性能。比如说直接使用缓存而不发起请求，或者发起了请求但后端存储的数据和前端一致，那么就没有必要再将数据回传回来，这样就减少了响应数据。</p>
 <h3 id="缓存位置"><a href="#缓存位置" class="headerlink" title="缓存位置"></a>缓存位置</h3><p>从缓存位置上来说分为四种，并且各自有优先级，当依次查找缓存且都没有命中的时候，才会去请求网络。</p>
 <ol>
 <li><p><strong>Service Worker</strong></p>
@@ -752,7 +733,7 @@
 </ol>
 <p>如果以上四种缓存都没有命中的话，那么只能发起请求来获取资源了。</p>
 <p>那么为了性能上的考虑，大部分的接口都应该选择好缓存策略，<strong>通常浏览器缓存策略分为两种：强缓存和协商缓存，并且缓存策略都是通过设置HTTP Header来实现的</strong>。</p>
-<h3 id="缓存过程分析"><a href="#缓存过程分析" class="headerlink" title="缓存过程分析"></a>缓存过程分析</h3><p>浏览器发起HTTP请求 – 服务器响应该请求，<strong>那么浏览器怎么确定一个资源该不该缓存，如何去缓存呢</strong>？浏览器第一次向服务器发起该请求后拿到请求结果后，将请求结果和缓存标识存入浏览器缓存，<strong>浏览器对于缓存的处理是根据第一次请求资源时返回的响应头来确定的</strong>。</p>
+<h3 id="缓存过程分析"><a href="#缓存过程分析" class="headerlink" title="缓存过程分析"></a>缓存过程分析</h3><p>浏览器与服务器通信的方式为应答模式，即是：浏览器发起HTTP请求 – 服务器响应该请求。那么浏览器第一次向服务器发起该请求后拿到请求结果，会根据响应报文中HTTP头的缓存标识，决定是否缓存结果，是则将请求结果和缓存标识存入浏览器缓存中，简单的过程如下图：</p>
 <p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/3.png" alt></p>
 <ul>
 <li>浏览器每次发起请求，都会先在浏览器缓存中查找该请求的结果以及缓存标识</li>
@@ -1008,7 +989,652 @@
 <li><p>删除IndexedDB—-<code>window.indexedDB.deleteDatabase(indexdb)</code></p>
 </li>
 </ol>
-<h1 id="HTTP和HTTPS"><a href="#HTTP和HTTPS" class="headerlink" title="HTTP和HTTPS"></a>HTTP和HTTPS</h1><h1 id="XSS和CSRF"><a href="#XSS和CSRF" class="headerlink" title="XSS和CSRF"></a>XSS和CSRF</h1><h1 id="TCP和UDP"><a href="#TCP和UDP" class="headerlink" title="TCP和UDP"></a>TCP和UDP</h1><h1 id="Cookie和Session"><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h1><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>cookie: 登录网站，第一天输入用户名密码登录了，第二天再打开很多情况下就直接打开了。这个时候用到的一个机制就是cookie。</p>
+<h1 id="HTTP和HTTPS"><a href="#HTTP和HTTPS" class="headerlink" title="HTTP和HTTPS"></a>HTTP和HTTPS</h1><h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><p>HTTP是Hyper Text Transfer Protocol（超文本传输协议）的缩写。它是一个应用层协议，由请求和响应构成，是一个标准的客户端服务器模型。HTTP是一个无状态的协议。</p>
+<h3 id="1-HTTP协议的特点"><a href="#1-HTTP协议的特点" class="headerlink" title="1.HTTP协议的特点"></a>1.HTTP协议的特点</h3><ul>
+<li>无连接<ul>
+<li>限制每次连接只处理一个请求</li>
+</ul>
+</li>
+<li>无状态<ul>
+<li>协议对于事务处理没有记忆能力。</li>
+</ul>
+</li>
+<li>简单快速<ul>
+<li>客户向服务器请求服务时，只需传送请求方法和路径。</li>
+</ul>
+</li>
+<li>灵活<ul>
+<li>HTTP允许传输任意类型的数据对象。正在传输的类型由Content-Type加以标记。</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-请求报文"><a href="#2-请求报文" class="headerlink" title="2.请求报文"></a>2.请求报文</h3><ul>
+<li>请求行<ul>
+<li>请求类型</li>
+<li>要访问的资源</li>
+<li>HTTP协议版本号</li>
+</ul>
+</li>
+<li>请求头<ul>
+<li>用来说明服务器要使用的附加信息（一些键值对）</li>
+<li>例如：User-Agent、 Accept、Content-Type、Connection</li>
+</ul>
+</li>
+<li>空行<ul>
+<li>分割请求头与请求体</li>
+</ul>
+</li>
+<li>请求体<ul>
+<li>可以添加任意的其他数据</li>
+</ul>
+</li>
+</ul>
+<h3 id="3-响应报文"><a href="#3-响应报文" class="headerlink" title="3.响应报文"></a>3.响应报文</h3><ul>
+<li>状态行<ul>
+<li>状态码</li>
+<li>状态消息</li>
+<li>HTTP协议版本号</li>
+</ul>
+</li>
+<li>消息报头<ul>
+<li>说明客户端要使用的一些附加信息</li>
+<li>如：Content-Type、charset、响应的时间</li>
+</ul>
+</li>
+<li>响应正文<ul>
+<li>返回给客户端的文本信息</li>
+</ul>
+</li>
+</ul>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/37.png" alt></p>
+<h3 id="4-HTTP-方法"><a href="#4-HTTP-方法" class="headerlink" title="4.HTTP 方法"></a>4.HTTP 方法</h3><ul>
+<li>GET<ul>
+<li>获取资源</li>
+</ul>
+</li>
+<li>POST<ul>
+<li>传输资源</li>
+</ul>
+</li>
+<li>PUT<ul>
+<li>更新资源</li>
+</ul>
+</li>
+<li>DELETE<ul>
+<li>删除资源</li>
+</ul>
+</li>
+<li>HEAD<ul>
+<li>获取报文首部</li>
+</ul>
+</li>
+</ul>
+<h3 id="5-Post-和-Get-的区别"><a href="#5-Post-和-Get-的区别" class="headerlink" title="5.Post 和 Get 的区别"></a>5.Post 和 Get 的区别</h3><ul>
+<li>GET在浏览器回退时是无害的，而POST会再次提交</li>
+<li>Get请求能缓存，Post不能</li>
+<li>Post相对Get相对安全一些，因为Get请求都包含在URL中，而且会被浏览器保存记录，Post不会。但是再抓包的情况下都是一样的。</li>
+<li>Post 可以通过 request body来传输比 Get 更多的数据</li>
+<li>URL有长度限制，会影响 Get 请求，但是这个长度限制是浏览器规定的</li>
+<li>Post 支持更多的编码类型且不对数据类型限制</li>
+</ul>
+<p>先引入副作用和幂等的概念。 副作用指对服务器上的资源做改变，搜索是无副作用的，注册是副作用的。 幂等指发送 M 和 N 次请求（两者不相同且都大于 1），服务器上资源的状态一致，比如注册 10 个和 11 个帐号是不幂等的，对文章进行更改 10 次和 11 次是幂等的。 在规范的应用场景上说，Get 多用于无副作用，幂等的场景，例如搜索关键字。Post 多用于副作用，不幂等的场景，例如注册。</p>
+<h3 id="6-常见状态码"><a href="#6-常见状态码" class="headerlink" title="6.常见状态码"></a>6.常见状态码</h3><h4 id="1XX-指示信息"><a href="#1XX-指示信息" class="headerlink" title="1XX 指示信息"></a>1XX 指示信息</h4><p>表示请求已接收，继续处理</p>
+<h4 id="2XX-成功"><a href="#2XX-成功" class="headerlink" title="2XX 成功"></a>2XX 成功</h4><ul>
+<li><strong>200</strong> OK</li>
+<li>204 No content，表示请求成功，但响应报文不含实体的主体部分</li>
+<li>205 Reset Content，表示请求成功，但响应报文不含实体的主体部分，但是与 204 响应不同在于要求请求方重置内容</li>
+<li><strong>206</strong> Partial Content，进行范围请求</li>
+</ul>
+<h4 id="3XX-重定向"><a href="#3XX-重定向" class="headerlink" title="3XX 重定向"></a>3XX 重定向</h4><ul>
+<li><strong>301</strong> 永久性重定向，表示资源已被分配了新的 URL</li>
+<li><strong>302</strong> 临时性重定向，表示资源临时被分配了新的 URL</li>
+<li>303 表示资源存在着另一个 URL，应使用 GET 方法获取资源</li>
+<li><strong>304</strong> 未修改，重定位到浏览器。自从上次请求后，请求的网页未修改过。服务器返回此响应时，不会返回网页内容。如果网页自请求者上次请求后再也没有更改过，您应将服务器配置为返回此响应（称为 If-Modified-Since HTTP 标头）。服务器可以告诉 Googlebot 自从上次抓取后网页没有变更，进而节省带宽和开销。</li>
+<li>307 临时重定向，和302含义类似，但是期望客户端保持请求方法不变向新的地址发出请求</li>
+</ul>
+<h4 id="4XX-客户端错误"><a href="#4XX-客户端错误" class="headerlink" title="4XX 客户端错误"></a>4XX 客户端错误</h4><ul>
+<li><strong>404</strong> 在服务器上没有找到请求的资源</li>
+<li><strong>403</strong> forbidden，表示对请求资源的访问被服务器拒绝</li>
+<li>400 请求报文存在语法错误</li>
+<li>401 表示发送的请求需要有通过 HTTP 认证的认证信息</li>
+</ul>
+<h4 id="5XX-服务器错误"><a href="#5XX-服务器错误" class="headerlink" title="5XX 服务器错误"></a>5XX 服务器错误</h4><ul>
+<li><strong>500</strong> 表示服务器端在执行请求时发生了错误</li>
+<li>501 表示服务器不支持当前请求所需要的某个功能</li>
+<li><strong>503</strong> 表明服务器暂时处于超负载或正在停机维护，无法处理请求</li>
+</ul>
+<h3 id="7-HTTP持久连接（HTTP1-1支持）"><a href="#7-HTTP持久连接（HTTP1-1支持）" class="headerlink" title="7.HTTP持久连接（HTTP1.1支持）"></a>7.HTTP持久连接（HTTP1.1支持）</h3><p>HTTP协议采用“请求-应答”模式，并且HTTP是基于TCP进行连接的。普通模式（非keep-alive）时，每个请求或应答都需要建立一个连接，完成之后立即断开。</p>
+<p>当使用<code>Conection: keep-alive</code>模式（又称持久连接、连接重用）时，keep-alive使客户端道服务器端连接持续有效，即不关闭底层的TCP连接，当出现对服务器的后继请求时，keep-alive功能避免重新建立连接。</p>
+<h3 id="8-HTTP管线化-（HTTP1-1支持）"><a href="#8-HTTP管线化-（HTTP1-1支持）" class="headerlink" title="8.HTTP管线化 （HTTP1.1支持）"></a>8.HTTP管线化 （HTTP1.1支持）</h3><p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/36.png" alt></p>
+<p>管线化后，请求和响应不再是依次交替的了。他可以支持一次性发送多个请求，并一次性接收多个响应。串行化单线程处理，如果前面一旦有某请求超时，后续请求只能被阻塞，也就是常说的线头阻塞。</p>
+<ul>
+<li>管线化机制通过持久连接完成，仅HTTP/1.1支持此技术</li>
+</ul>
+<ul>
+<li>只有get与head请求可以进行管线化，POST有限制</li>
+<li>初次创建连接时不应该启动管线机制，因为对方（服务器）不一定支持HTTP/1.1版本的协议</li>
+<li>管线化不会影响响应到来的顺序，即响应返回的顺序并未改变</li>
+</ul>
+<h3 id="9-HTTP数据协商"><a href="#9-HTTP数据协商" class="headerlink" title="9.HTTP数据协商"></a>9.HTTP数据协商</h3><p>在客户端向服务端发送请求的时候，客户端会申明可以接受的数据格式和数据相关的一些限制是什么样的；服务端在接受到这个请求时他会根据这个信息进行判断到底返回怎样的数据。</p>
+<h4 id="请求"><a href="#请求" class="headerlink" title="请求"></a>请求</h4><ul>
+<li>Accept<ul>
+<li>在请求中使用Accept可申明想要的数据格式</li>
+</ul>
+</li>
+<li>Accept-Encoding<ul>
+<li>告诉服务端使用什么的方式来进行压缩</li>
+<li>例如：gzip、deflate、br</li>
+</ul>
+</li>
+<li>Accept-Language<ul>
+<li>描述语言信息</li>
+</ul>
+</li>
+<li>User-Agent<ul>
+<li>用来描述客户端浏览器相关信息</li>
+<li>可以用来区分PC端页面和移动端页面</li>
+</ul>
+</li>
+</ul>
+<h4 id="响应"><a href="#响应" class="headerlink" title="响应"></a>响应</h4><ul>
+<li>Content-Type<ul>
+<li>对应Accept，从请求中的Accept支持的数据格式中选一种来返回</li>
+</ul>
+</li>
+<li>Content-Encoding<ul>
+<li>对应 Accept-Encoding，指服务端到底使用的是那种压缩方式</li>
+</ul>
+</li>
+<li>Content-Language<ul>
+<li>对应Accept-Language</li>
+</ul>
+</li>
+</ul>
+<h4 id="form-表单中enctype数据类型"><a href="#form-表单中enctype数据类型" class="headerlink" title="form 表单中enctype数据类型"></a>form 表单中enctype数据类型</h4><p>enctype 属性规定在将表单数据发送到服务器之前如何对其进行编码。</p>
+<p>默认是对表单数据以 “application/x-www-form-urlencoded” 进行编码。这意味着在发送前对所有字符进行编码（把 “+” 转换为空格，把特殊字符转换为 ASCII 十六进制值）。</p>
+<ul>
+<li><code>application/x-www-form-urlencoded</code><ul>
+<li>key=value&amp;key=value 格式</li>
+</ul>
+</li>
+<li><code>multipart/form-data</code><ul>
+<li>用于提交文件</li>
+<li>multipart表示请求是由多个部分组成（因为上传文件的时候文件不能以字符串形式提交，需要单独分出来）</li>
+<li>boundary 用来分隔不同部分</li>
+</ul>
+</li>
+<li><code>text/plain</code></li>
+</ul>
+<h3 id="10-HTTP-Redirect-重定向"><a href="#10-HTTP-Redirect-重定向" class="headerlink" title="10.HTTP Redirect 重定向"></a>10.HTTP Redirect 重定向</h3><ul>
+<li>302 暂时重定向<ul>
+<li>浏览器每次访问都要先去目标网址访问，再重定向到新的网址</li>
+</ul>
+</li>
+<li>301 永久重定向<ul>
+<li>当浏览器收到的HTTP状态码为301时，下次访问对应网址就直接调整到新的网址，不会再访问原网址</li>
+</ul>
+</li>
+</ul>
+<h2 id="HTTP2"><a href="#HTTP2" class="headerlink" title="HTTP2"></a>HTTP2</h2><p>HTTP 2.0 相比于 HTTP 1.X，可以说是大幅度提高了 web 的性能。</p>
+<p>HTTP2采用<code>二进制格式传输</code>，取代了HTTP1.x的文本格式，二进制格式解析更高效。 <code>多路复用</code>代替了HTTP1.x的序列和阻塞机制，所有的相同域名请求都通过同一个TCP连接并发完成。</p>
+<h3 id="1-二进制传输"><a href="#1-二进制传输" class="headerlink" title="1.二进制传输"></a>1.二进制传输</h3><p>HTTP 2.0 中所有加强性能的核心点在于此。在之前的 HTTP 版本中，我们是通过文本的方式传输数据。在 HTTP 2.0 中引入了新的编码机制，所有传输的数据都会被分割，并采用二进制格式编码。</p>
+<h3 id="2-多路复用"><a href="#2-多路复用" class="headerlink" title="2.多路复用"></a>2.多路复用</h3><p>HTTP1.x中，并发多个请求需要多个TCP连接，浏览器为了控制资源会有6-8个TCP连接都限制。 HTTP2中</p>
+<ul>
+<li>同域名下所有通信都在单个连接上完成，消除了因多个 TCP 连接而带来的延时和内存消耗。</li>
+<li>单个连接上可以并行交错的请求和响应，之间互不干扰</li>
+</ul>
+<p>在 HTTP 2.0 中，有两个非常重要的概念，分别是帧（frame）和流（stream）。</p>
+<p>帧代表着最小的数据单位，每个帧会标识出该帧属于哪个流，流也就是多个帧组成的数据流。</p>
+<p><strong>多路复用，就是在一个 TCP 连接中可以存在多条流。</strong> 换句话说，也就是可以发送多个请求，对端可以通过帧中的标识知道属于哪个请求。通过这个技术，可以避免 HTTP 旧版本中的队头阻塞问题，极大的提高传输性能。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/38.png" alt></p>
+<h3 id="3-Header-压缩"><a href="#3-Header-压缩" class="headerlink" title="3.Header 压缩"></a>3.Header 压缩</h3><p>在 HTTP 1.X 中，我们使用文本的形式传输 header，在 header 携带 cookie 的情况下，可能每次都需要重复传输几百到几千的字节。</p>
+<p>在 HTTP 2.0 中，使用了 d压缩格式对传输的 header 进行编码，减少了 header 的大小。并在两端维护了索引表，用于记录出现过的 header ，后面在传输过程中就可以传输已经记录过的 header 的键名，对端收到数据后就可以通过键名找到对应的值。</p>
+<h3 id="4-服务端-Push"><a href="#4-服务端-Push" class="headerlink" title="4.服务端 Push"></a>4.服务端 Push</h3><p>在 HTTP 2.0 中，服务端可以在客户端某个请求后，主动推送其他资源。</p>
+<p>可以想象以下情况，某些资源客户端是一定会请求的，这时就可以采取服务端 push 的技术，提前给客户端推送必要的资源，这样就可以相对减少一点延迟时间。当然在浏览器兼容的情况下你也可以使用 prefetch。</p>
+<h3 id="5-HTTP首部"><a href="#5-HTTP首部" class="headerlink" title="5.HTTP首部"></a>5.HTTP首部</h3><table>
+<thead>
+<tr>
+<th>通用字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Cache-Control</td>
+<td>控制缓存的行为</td>
+</tr>
+<tr>
+<td>Connection</td>
+<td>浏览器想要优先使用的连接类型，比如 <code>keep-alive</code></td>
+</tr>
+<tr>
+<td>Date</td>
+<td>创建报文时间</td>
+</tr>
+<tr>
+<td>Pragma</td>
+<td>报文指令</td>
+</tr>
+<tr>
+<td>Via</td>
+<td>代理服务器相关信息</td>
+</tr>
+<tr>
+<td>Transfer-Encoding</td>
+<td>传输编码方式</td>
+</tr>
+<tr>
+<td>Upgrade</td>
+<td>要求客户端升级协议</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td>在内容中可能存在错误</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>请求字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accept</td>
+<td>能正确接收的媒体类型</td>
+</tr>
+<tr>
+<td>Accept-Charset</td>
+<td>能正确接收的字符集</td>
+</tr>
+<tr>
+<td>Accept-Encoding</td>
+<td>能正确接收的编码格式列表</td>
+</tr>
+<tr>
+<td>Accept-Language</td>
+<td>能正确接收的语言列表</td>
+</tr>
+<tr>
+<td>Expect</td>
+<td>期待服务端的指定行为</td>
+</tr>
+<tr>
+<td>From</td>
+<td>请求方邮箱地址</td>
+</tr>
+<tr>
+<td>Host</td>
+<td>服务器的域名</td>
+</tr>
+<tr>
+<td>If-Match</td>
+<td>两端资源标记比较</td>
+</tr>
+<tr>
+<td>If-Modified-Since</td>
+<td>本地资源未修改返回 304（比较时间）</td>
+</tr>
+<tr>
+<td>If-None-Match</td>
+<td>本地资源未修改返回 304（比较标记）</td>
+</tr>
+<tr>
+<td>User-Agent</td>
+<td>客户端信息</td>
+</tr>
+<tr>
+<td>Max-Forwards</td>
+<td>限制可被代理及网关转发的次数</td>
+</tr>
+<tr>
+<td>Proxy-Authorization</td>
+<td>向代理服务器发送验证信息</td>
+</tr>
+<tr>
+<td>Range</td>
+<td>请求某个内容的一部分</td>
+</tr>
+<tr>
+<td>Referer</td>
+<td>表示浏览器所访问的前一个页面</td>
+</tr>
+<tr>
+<td>TE</td>
+<td>传输编码方式</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>响应字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Accept-Ranges</td>
+<td>是否支持某些种类的范围</td>
+</tr>
+<tr>
+<td>Age</td>
+<td>资源在代理缓存中存在的时间</td>
+</tr>
+<tr>
+<td>ETag</td>
+<td>资源标识</td>
+</tr>
+<tr>
+<td>Location</td>
+<td>客户端重定向到某个 URL</td>
+</tr>
+<tr>
+<td>Proxy-Authenticate</td>
+<td>向代理服务器发送验证信息</td>
+</tr>
+<tr>
+<td>Server</td>
+<td>服务器名字</td>
+</tr>
+<tr>
+<td>WWW-Authenticate</td>
+<td>获取资源需要的验证信息</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>实体字段</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Allow</td>
+<td>资源的正确请求方式</td>
+</tr>
+<tr>
+<td>Content-Encoding</td>
+<td>内容的编码格式</td>
+</tr>
+<tr>
+<td>Content-Language</td>
+<td>内容使用的语言</td>
+</tr>
+<tr>
+<td>Content-Length</td>
+<td>request body 长度</td>
+</tr>
+<tr>
+<td>Content-Location</td>
+<td>返回数据的备用地址</td>
+</tr>
+<tr>
+<td>Content-MD5</td>
+<td>Base64加密格式的内容 MD5检验值</td>
+</tr>
+<tr>
+<td>Content-Range</td>
+<td>内容的位置范围</td>
+</tr>
+<tr>
+<td>Content-Type</td>
+<td>内容的媒体类型</td>
+</tr>
+<tr>
+<td>Expires</td>
+<td>内容的过期时间</td>
+</tr>
+<tr>
+<td>Last_modified</td>
+<td>内容的最后修改时间</td>
+</tr>
+</tbody></table>
+<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>http默认采用80作为通讯端口，对于传输采用不加密的方式，https默认采用443，对于传输的数据进行加密传输。</p>
+<h3 id="密码学基础"><a href="#密码学基础" class="headerlink" title="密码学基础"></a>密码学基础</h3><p>明文： 明文指的是未被加密过的原始数据。</p>
+<p>密文：明文被某种加密算法加密之后，会变成密文，从而确保原始数据的安全。密文也可以被解密，得到原始的明文。</p>
+<p>密钥：密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。密钥分为对称密钥与非对称密钥，分别应用在对称加密和非对称加密上。</p>
+<h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密又叫做私钥加密，即信息的发送方和接收方使用同一个密钥去加密和解密数据。对称加密的特点是算法公开、加密和解密速度快，适合于对大数据量进行加密，常见的对称加密算法有DES、3DES、TDEA、Blowfish、RC5和IDEA。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">其加密过程如下：明文 + 加密算法 + 私钥 &#x3D;&gt; 密文</span><br><span class="line">解密过程如下：密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</span><br></pre></td></tr></table></figure>
+
+<p>对称加密中用到的密钥叫做私钥，私钥表示个人私有的密钥，即该密钥不能被泄露。</p>
+<p>其加密过程中的私钥与解密过程中用到的私钥是同一个密钥，这也是称加密之所以称之为“对称”的原因。由于对称加密的算法是公开的，所以一旦私钥被泄露，那么密文就很容易被破解，所以对称加密的缺点是密钥安全管理困难。</p>
+<h3 id="非对称加密"><a href="#非对称加密" class="headerlink" title="非对称加密"></a>非对称加密</h3><p>非对称加密也叫做公钥加密。非对称加密与对称加密相比，其安全性更好。对称加密的通信双方使用相同的密钥，如果一方的密钥遭泄露，那么整个通信就会被破解。而非对称加密使用一对密钥，即公钥和私钥，且二者成对出现。私钥被自己保存，不能对外泄露。公钥指的是公共的密钥，任何人都可以获得该密钥。用公钥或私钥中的任何一个进行加密，用另一个进行解密。</p>
+<ul>
+<li><strong>被公钥加密过的密文只能被私钥解密</strong>，过程如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">明文 + 加密算法 + 公钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 私钥 &#x3D;&gt; 明文</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>被私钥加密过的密文只能被公钥解密</strong>，过程如下：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">明文 + 加密算法 + 私钥 &#x3D;&gt; 密文， 密文 + 解密算法 + 公钥 &#x3D;&gt; 明文</span><br></pre></td></tr></table></figure>
+
+<p>由于加密和解密使用了两个不同的密钥，这就是非对称加密“非对称”的原因。 非对称加密的缺点是加密和解密花费时间长、速度慢，只适合对少量数据进行加密。 在非对称加密中使用的主要算法有：RSA、Elgamal、Rabin、D-H、ECC（椭圆曲线加密算法）等。</p>
+<h3 id="HTTPS通信过程"><a href="#HTTPS通信过程" class="headerlink" title="HTTPS通信过程"></a>HTTPS通信过程</h3><p><strong>HTTPS协议 = HTTP协议 + SSL/TLS协议</strong>，在HTTPS数据传输的过程中，需要用SSL/TLS对数据进行加密和解密，需要用HTTP对加密后的数据进行传输，由此可以看出HTTPS是由HTTP和SSL/TLS一起合作完成的。</p>
+<p><strong>SSL</strong>的全称是Secure Sockets Layer，即安全套接层协议，是为网络通信提供安全及数据完整性的一种安全协议。SSL协议在1994年被Netscape发明，后来各个浏览器均支持SSL，其最新的版本是3.0。</p>
+<p><strong>TLS</strong>的全称是Transport Layer Security，即安全传输层协议，最新版本的TLS（Transport Layer Security，传输层安全协议）是IETF（Internet Engineering Task Force，Internet工程任务组）制定的一种新的协议，它建立在SSL 3.0协议规范之上，是SSL 3.0的后续版本。在TLS与SSL3.0之间存在着显著的差别，主要是它们所支持的加密算法不同，所以TLS与SSL3.0不能互操作。虽然TLS与SSL3.0在加密算法上不同，但是在我们理解HTTPS的过程中，我们可以把SSL和TLS看做是同一个协议。</p>
+<p>HTTPS为了兼顾安全与效率，<strong>同时使用了对称加密和非对称加密</strong>。数据是被对称加密传输的，对称加密过程需要客户端的一个密钥，为了确保能把该密钥安全传输到服务器端，采用非对称加密对该密钥进行加密传输，总的来说，<strong>对数据进行对称加密，对称加密所要使用的密钥通过非对称加密传输</strong>。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/39.png" alt></p>
+<p>HTTPS在传输的过程中会涉及到三个密钥：</p>
+<ul>
+<li>服务器端的公钥和私钥，用来进行非对称加密</li>
+<li>客户端生成的随机密钥，用来进行对称加密</li>
+</ul>
+<p>一个HTTPS请求实际上包含了两次HTTP传输，可以细分为8步。</p>
+<ol>
+<li>客户端向服务器发起HTTPS请求，连接到服务器的443端口</li>
+<li>服务器端有一个密钥对，即公钥和私钥，是用来进行非对称加密使用的，服务器端保存着私钥，不能将其泄露，公钥可以发送给任何人。</li>
+<li>服务器将自己的公钥发送给客户端。</li>
+<li>客户端收到服务器端的公钥之后，会对公钥进行检查，验证其合法性，如果发现发现公钥有问题，那么HTTPS传输就无法继续。严格的说，这里应该是验证服务器发送的数字证书的合法性。如果公钥合格，那么客户端会生成一个随机值，这个随机值就是用于进行对称加密的密钥，我们将该密钥称之为client key，即客户端密钥，这样在概念上和服务器端的密钥容易进行区分。然后用服务器的公钥对客户端密钥进行非对称加密，这样客户端密钥就变成密文了，至此，HTTPS中的第一次HTTP请求结束。</li>
+<li>客户端会发起HTTPS中的第二个HTTP请求，将加密之后的客户端密钥发送给服务器。</li>
+<li>服务器接收到客户端发来的密文之后，会用自己的私钥对其进行非对称解密，解密之后的明文就是客户端密钥，然后用客户端密钥对数据进行对称加密，这样数据就变成了密文。</li>
+<li>然后服务器将加密后的密文发送给客户端。</li>
+<li>客户端收到服务器发送来的密文，用客户端密钥对其进行对称解密，得到服务器发送的数据。这样HTTPS中的第二个HTTP请求结束，整个HTTPS传输完成。</li>
+</ol>
+<h1 id="XSS和CSRF"><a href="#XSS和CSRF" class="headerlink" title="XSS和CSRF"></a>XSS和CSRF</h1><h2 id="XSS跨站脚本攻击"><a href="#XSS跨站脚本攻击" class="headerlink" title="XSS跨站脚本攻击"></a>XSS跨站脚本攻击</h2><p>XSS ( Cross Site Scripting ) 是指恶意攻击者利用网站没有对用户提交数据进行转义处理或者过滤不足的缺点，进而添加一些代码，嵌入到web页面中去。使别的用户访问都会执行相应的嵌入代码。</p>
+<p>从而盗取用户资料、利用用户身份进行某种动作或者对访问者进行病毒侵害的一种攻击方式。</p>
+<h3 id="XSS攻击的危害："><a href="#XSS攻击的危害：" class="headerlink" title="XSS攻击的危害："></a>XSS攻击的危害：</h3><ol>
+<li>获取页面数据</li>
+<li>获取cookie</li>
+<li>劫持前端逻辑</li>
+<li>发送请求</li>
+<li>偷取网站任意数据</li>
+<li>偷取用户资料</li>
+<li>偷取用户密码和登陆态</li>
+<li>欺骗用户</li>
+</ol>
+<h3 id="反射型"><a href="#反射型" class="headerlink" title="反射型"></a>反射型</h3><p>通过url参数直接注入。</p>
+<p>发出请求时，XSS代码出现在URL中，作为输入提交到服务器端，服务端解析后返回，XSS代码随响应内容一起传回给浏览器，最后浏览器执行XSS代码。这个过程像一次反射，故叫做反射型XSS。</p>
+<p><strong>举个例子</strong></p>
+<p>一个链接，里面的query字段中包含一个script标签，这个标签的src就是恶意代码，用户点击了这个链接后会先向服务器发送请求，服务器返回时也携带了这个XSS代码，然后浏览器将查询的结果写入Html，这时恶意代码就被执行了。</p>
+<h3 id="存储型"><a href="#存储型" class="headerlink" title="存储型"></a>存储型</h3><p>存储型XSS会被保存到数据库，在其他用户访问（前端）到这条数据时，这个代码会在访问用户的浏览器端执行。</p>
+<p><strong>举个例子</strong></p>
+<p>比如攻击者在一篇文章的评论中写入了script标签，这个评论被保存数据库，当其他用户看到这篇文章时就会执行这个脚本。</p>
+<h3 id="XSS防御"><a href="#XSS防御" class="headerlink" title="XSS防御"></a>XSS防御</h3><p>对于 XSS 攻击来说，通常有两种方式可以用来防御。</p>
+<ul>
+<li>转义字符</li>
+<li>CSP 内容安全策略</li>
+</ul>
+<h2 id="CSRF跨站请求伪造"><a href="#CSRF跨站请求伪造" class="headerlink" title="CSRF跨站请求伪造"></a>CSRF跨站请求伪造</h2><p>（Cross Site Request Forgy）CSRF中文名为跨站请求伪造。原理就是攻击者构造出一个后端请求地址，诱导用户点击或者通过某些途径自动发起请求。如果用户是在登录状态下的话，后端就以为是用户在操作，从而进行相应的逻辑。</p>
+<p>举个例子，假设网站中有一个通过 <code>GET</code> 请求提交用户评论的接口，那么攻击者就可以在钓鱼网站中加入一个图片，图片的地址就是评论接口</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">"http://www.domain.com/xxx?comment='attack'"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/40.png" alt></p>
+<p>如何防御？</p>
+<ol>
+<li>Get 请求不对数据进行修改</li>
+<li>不让第三方网站访问到用户Cookie</li>
+<li>阻止第三方网站请求接口</li>
+<li>请求时附带验证信息，比如验证码或者Token</li>
+</ol>
+<ul>
+<li>SameSite<ul>
+<li>可以对Cookie设置SameSite属性。该属性表示Cookie不随着跨域请求发送，可以很大程度减少CSRF的攻击，但是该属性目前并不是所有浏览器都兼容。</li>
+</ul>
+</li>
+<li>Token验证<ul>
+<li>cookie是发送时自动带上的，而不会主动带上Token，所以在每次发送时主动发送Token</li>
+</ul>
+</li>
+<li>Referer验证<ul>
+<li>对于需要防范 CSRF 的请求，我们可以通过验证 Referer 来判断该请求是否为第三方网站发起的。</li>
+</ul>
+</li>
+<li>隐藏令牌<ul>
+<li>主动在HTTP头部中添加令牌信息</li>
+</ul>
+</li>
+</ul>
+<p>危害：</p>
+<ul>
+<li>利用用户登录态，用户不知情，完成业务请求</li>
+<li>盗取用户资金，冒充用户发帖背锅，损坏网站名誉</li>
+</ul>
+<h2 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h2><p>所谓SQL注入，就是通过把SQL命令插入到Web表单提交或输入域名或页面请求的查询字符串，后台执行SQL语句时直接把前端传入的字段拿来做SQL查询。</p>
+<h3 id="防御"><a href="#防御" class="headerlink" title="防御"></a>防御</h3><ul>
+<li>永远不要信任用户的输入。</li>
+<li>永远不要使用动态拼装sql</li>
+<li>不要把机密信息直接存放</li>
+</ul>
+<h1 id="TCP和UDP"><a href="#TCP和UDP" class="headerlink" title="TCP和UDP"></a>TCP和UDP</h1><h2 id="UDP-与-TCP-的区别是什么？"><a href="#UDP-与-TCP-的区别是什么？" class="headerlink" title="UDP 与 TCP 的区别是什么？"></a>UDP 与 TCP 的区别是什么？</h2><p><strong>UDP 协议</strong> 是面向无连接的，不需要在正式传递数据之前先连接起双方。 UDP 协议只是数据报文的搬运工，不保证有序且不丢失的传递到对端，并且UDP 协议也没有任何控制流量的算法，总的来说 UDP 相较于 TCP 更加的轻便。一般可以用于直播、即时通讯、即时游戏等。</p>
+<p><strong>TCP</strong> 无论是建立连接还是断开连接都需要先需要进行握手。在传输数据的过程中，通过各种算法保证数据的可靠性，当然带来的问题就是相比 UDP 来说不那么的高效。</p>
+<h2 id="三次握手与四次挥手"><a href="#三次握手与四次挥手" class="headerlink" title="三次握手与四次挥手"></a>三次握手与四次挥手</h2><p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/41.png" alt></p>
+<p>简单的说：</p>
+<ul>
+<li>第一次握手<ul>
+<li>SYN = 1， seq(client) = x</li>
+<li>客户端向服务端发送连接请求报文段。该报文段中包含自身的数据通讯初始序号。请求发送后，客户端便进入 SYN-SENT 状态。</li>
+</ul>
+</li>
+<li>第二次握手<ul>
+<li>SYN = 1，ACK = 1，确认序号 = x+1, seq(server) = y</li>
+<li>服务端收到连接请求报文段后，如果同意连接，则会发送一个应答，该应答中也会包含自身的数据通讯初始序号，发送完成后便进入 SYN-RECEIVED 状态</li>
+</ul>
+</li>
+<li>第三次握手<ul>
+<li>ACK = 1，确认序号 = y+1, seq(client) = x + 1</li>
+<li>客户端收到连接同意的应答后，还要向服务端发送一个确认报文。客户端发完这个报文段后便进入ESTABLISHED 状态，服务端收到这个应答后也进入 ESTABLISHED 状态，此时连接建立成功。</li>
+</ul>
+</li>
+</ul>
+<p>当SYN=1，ACK=0时，表示当前报文段是一个连接请求报文。当SYN=1，ACK=1时，表示当前报文段是一个同意建立连接的应答报文。</p>
+<h3 id="为什么不用两次握手？"><a href="#为什么不用两次握手？" class="headerlink" title="为什么不用两次握手？"></a>为什么不用两次握手？</h3><p>主要是为了防止已经失效的连接请求报文突然又传送到了服务器，从而产生错误。</p>
+<p>假设有这样一种场景, 客户端发送的第一个请求连接并且没有丢失，但是被滞留的时间太长。由于TCP的客户端迟迟没有收到确认报文，以为服务器没有收到，此时重新向服务器发送报文。 而现在第一个请求到达服务端，这个请求已经报废了，但是又会建立连接。</p>
+<p>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/42.png" alt></p>
+<p>TCP 是全双工的，在断开连接时两端都需要发送 FIN 和 ACK。</p>
+<ul>
+<li>第一次挥手<ul>
+<li>若客户端 A 认为数据发送完成，则它需要向服务端 B 发送连接释放请求。</li>
+</ul>
+</li>
+<li>第二次挥手<ul>
+<li>B 收到连接释放请求后，会告诉应用层要释放 TCP 链接。然后会发送 ACK 包，并进入 <strong>CLOSE_WAIT</strong> 状态，表示 A 到 B 的连接已经释放，不接收 A 发的数据了。但是因为 <strong>TCP 连接时双向的</strong>，所以 B 仍旧可以发送数据给 A。</li>
+</ul>
+</li>
+<li>第三次挥手<ul>
+<li>B 如果此时还有没发完的数据会继续发送，完毕后会向 A 发送连接释放请求，然后 B 便进入<strong>LAST-ACK</strong>状态。</li>
+<li>PS：通过延迟确认的技术（通常有时间限制，否则对方会误认为需要重传），可以将第二次和第三次握手合并，延迟 ACK 包的发送。</li>
+</ul>
+</li>
+<li>第四次挥手<ul>
+<li>A 收到释放请求后，向 B 发送确认应答，此时 A 进入 <strong>TIME-WAIT</strong> 状态。该状态会持续 2MSL（最大段生存期，指报文段在网络中生存的时间，超时会被抛弃） 时间，若该时间段内没有 B 的重发请求的话，就进入 <strong>CLOSED</strong> 状态。当 B 收到确认应答后，也便进入 CLOSED 状态。</li>
+</ul>
+</li>
+</ul>
+<h3 id="为什么-A-要进入-TIME-WAIT-状态，等待-2MSL-时间后才进入-CLOSED-状态？"><a href="#为什么-A-要进入-TIME-WAIT-状态，等待-2MSL-时间后才进入-CLOSED-状态？" class="headerlink" title="为什么 A 要进入 TIME-WAIT 状态，等待 2MSL 时间后才进入 CLOSED 状态？"></a>为什么 A 要进入 TIME-WAIT 状态，等待 2MSL 时间后才进入 CLOSED 状态？</h3><p>为了保证 B 能收到 A 的确认应答。若 A 发完确认应答后直接进入 CLOSED 状态，如果确认应答因为网络问题一直没有到达，那么会造成 B 不能正常关闭。</p>
+<h3 id="为什么建立连接是三次握手，关闭连接确是四次挥手呢？"><a href="#为什么建立连接是三次握手，关闭连接确是四次挥手呢？" class="headerlink" title="为什么建立连接是三次握手，关闭连接确是四次挥手呢？"></a>为什么建立连接是三次握手，关闭连接确是四次挥手呢？</h3><p>建立连接的时候， 服务器在LISTEN状态下，收到建立连接请求的SYN报文后，把ACK和SYN放在一个报文里发送给客户端。</p>
+<p>而关闭连接时，服务器收到对方的FIN报文时，仅仅表示对方不再发送数据了但是还能接收数据，而自己也未必全部数据都发送给对方了</p>
+<h2 id="ARQ-（超时重传）协议"><a href="#ARQ-（超时重传）协议" class="headerlink" title="ARQ （超时重传）协议"></a>ARQ （超时重传）协议</h2><p>通过确认和超时机制保证了数据的正确送达，ARQ 协议包含<code>停止等待 ARQ</code> 和<code>连续 ARQ</code></p>
+<h3 id="停止等待-ARQ"><a href="#停止等待-ARQ" class="headerlink" title="停止等待 ARQ"></a>停止等待 ARQ</h3><p><strong>正常传输过程</strong></p>
+<p>只要 A 向 B 发送一段报文，都要停止发送并启动一个定时器，等待对端回应，在定时器时间内接收到对端应答就取消定时器并发送下一段报文。</p>
+<p><strong>当报文丢失或出错：</strong></p>
+<p>报文传输的过程中丢包： 这时候超过定时器设定的时间就会再次发送丢包的数据直到对端响应，所以需要每次都备份发送的数据。</p>
+<p>传输过程中报文出错： 对端会抛弃该报文并等待 A 端重传。</p>
+<p>PS：一般定时器设定的时间都会大于一个 RTT 的平均时间。</p>
+<p><strong>ACK 超时或丢失：</strong></p>
+<p>对端传输的应答也可能出现丢失或超时的情况。那么超过定时器时间 A 端照样会重传报文。这时候 B 端收到相同序号的报文会丢弃该报文并重传应答，直到 A 端发送下一个序号的报文。</p>
+<p>这个协议的缺点就是传输效率低，在良好的网络环境下每次发送报文都得等待对端的 ACK 。</p>
+<h3 id="连续-ARQ"><a href="#连续-ARQ" class="headerlink" title="连续 ARQ"></a>连续 ARQ</h3><p>在连续 ARQ 中，发送端拥有一个发送窗口，可以在没有收到应答的情况下持续发送窗口内的数据，这样相比停止等待 ARQ 协议来说减少了等待时间，提高了效率。</p>
+<h4 id="累计确认"><a href="#累计确认" class="headerlink" title="累计确认"></a>累计确认</h4><p>连续 ARQ 中，接收端会持续不断收到报文。如果和停止等待 ARQ 中接收一个报文就发送一个应答一样，就太浪费资源了。通过累计确认，可以在收到多个报文以后统一回复一个应答报文。报文中的 ACK 可以用来告诉发送端这个序号之前的数据已经全部接收到了，下次请发送这个序号 + 1的数据。</p>
+<p>但是累计确认也有一个弊端。在连续接收报文时，可能会遇到接收到序号 5 的报文后，并未接到序号 6 的报文，然而序号 7 以后的报文已经接收。遇到这种情况时，ACK 只能回复 6，这样会造成发送端重复发送数据。</p>
+<h4 id="滑动窗口"><a href="#滑动窗口" class="headerlink" title="滑动窗口"></a>滑动窗口</h4><p>上面讲到了发送窗口。在 TCP 中，两端都维护着窗口：分别为发送端窗口和接收端窗口。</p>
+<p>发送端窗口包含已发送但未收到应答的数据和可以发送但是未发送的数据。</p>
+<p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/43.png" alt></p>
+<p>发送端窗口是由接收窗口剩余大小决定的。接收方会把当前接收窗口的剩余大小写入应答报文，发送端收到应答后根据该值和当前网络拥塞情况设置发送窗口的大小，所以发送窗口的大小是不断变化的。</p>
+<p>当发送端接收到应答报文后，会随之将窗口进行滑动</p>
+<p><strong>滑动窗口实现了流量控制</strong>。接收方通过报文告知发送方还可以发送多少数据，从而保证接收方能够来得及接收数据。</p>
+<p><strong>Zero 窗口</strong></p>
+<p>在发送报文的过程中，可能会遇到对端出现零窗口的情况。在该情况下，发送端会停止发送数据，并启动 persistent timer 。该定时器会定时发送请求给对端，让对端告知窗口大小。在重试次数超过一定次数后，可能会中断 TCP 链接。</p>
+<h2 id="拥塞处理"><a href="#拥塞处理" class="headerlink" title="拥塞处理"></a>拥塞处理</h2><p>拥塞处理和流量控制不同，后者是作用于接收方，保证接收方来得及接受数据。而前者是作用于网络，防止过多的数据拥塞网络，避免出现网络负载过大的情况。</p>
+<p>拥塞处理包括了四个算法，分别为：慢开始，拥塞避免，快速重传，快速恢复。</p>
+<h3 id="慢开始算法"><a href="#慢开始算法" class="headerlink" title="慢开始算法"></a>慢开始算法</h3><p>慢开始算法，顾名思义，就是在传输开始时将发送窗口从1开始指数级扩大，从而避免一开始就传输大量数据导致网络拥塞。</p>
+<p>慢开始算法步骤具体如下</p>
+<ol>
+<li>连接初始设置拥塞窗口（Congestion Window） 为 1 MSS（一个分段的最大数据量）</li>
+<li>每过一个 RTT (往返时延) 就将窗口大小乘二</li>
+<li>指数级增长肯定不能没有限制的，所以有一个阈值限制，当窗口大小大于阈值时就会启动拥塞避免算法</li>
+</ol>
+<h3 id="拥塞避免算法"><a href="#拥塞避免算法" class="headerlink" title="拥塞避免算法"></a>拥塞避免算法</h3><p><img src="/2020/03/08/%E4%BB%8E%E8%BE%93%E5%85%A5URL%E5%88%B0%E9%A1%B5%E9%9D%A2%E5%8A%A0%E8%BD%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88/44.png" alt></p>
+<p>拥塞避免算法相比简单点，每过一个 RTT 窗口大小只加一，这样能够避免指数级增长导致网络拥塞，慢慢将大小调整到最佳值。</p>
+<p>在传输过程中可能定时器超时的情况，这时候 TCP 会认为网络拥塞了，会马上进行以下步骤：</p>
+<ul>
+<li>将阈值设为当前拥塞窗口的一半</li>
+<li>将拥塞窗口设为 1 MSS</li>
+<li>启动拥塞避免算法</li>
+</ul>
+<p>快速重传一般和快恢复一起出现。一旦接收端收到的报文出现失序的情况，接收端只会回复最后一个顺序正确的报文序号（没有 Sack 的情况下）。如果收到三个重复的 ACK，无需等待定时器超时再重发而是启动快速重传。具体算法分为两种：</p>
+<h3 id="RTT与RTO"><a href="#RTT与RTO" class="headerlink" title="RTT与RTO"></a>RTT与RTO</h3><ul>
+<li><p>RTT</p>
+<p>  (Round Trip Time)</p>
+<ul>
+<li>一个连接的往返时间，即数据发送时刻到接收到确认的时刻的差值。</li>
+</ul>
+</li>
+<li><p>RTO</p>
+<p>  (Retransmission Time Out)</p>
+<ul>
+<li>重传超时时间，即从数据发送时刻算起，超过这个时间便执行重传。</li>
+</ul>
+</li>
+<li><p>RTT和RTO 的关系是</p>
+<ul>
+<li>由于网络波动的不确定性，每个RTT都是动态变化的，所以RTO也应随着RTT动态变化。</li>
+</ul>
+</li>
+</ul>
+<h3 id="TCP-小结"><a href="#TCP-小结" class="headerlink" title="TCP 小结"></a>TCP 小结</h3><p>为什么TCP这么复杂?</p>
+<p>因为既要保证可靠性, 同时又要尽可能提高性能</p>
+<p>保证可靠性的机制</p>
+<ul>
+<li>校验和</li>
+<li>序列号(按序到达)</li>
+<li>确认应答</li>
+<li>超时重传</li>
+<li>连接管理</li>
+<li>流量控制</li>
+<li>拥塞控制</li>
+</ul>
+<p>提高性能的机制</p>
+<ul>
+<li>滑动窗口</li>
+<li>快速重传</li>
+<li>延迟应答</li>
+<li>捎带应答</li>
+</ul>
+<p>定时器</p>
+<ul>
+<li>超时重传定时器</li>
+<li>保活定时器</li>
+<li>TIME_WAIT定时器</li>
+</ul>
+<h3 id="基于-TCP-的应用层协议"><a href="#基于-TCP-的应用层协议" class="headerlink" title="基于 TCP 的应用层协议"></a>基于 TCP 的应用层协议</h3><ul>
+<li>HTTP</li>
+<li>HTTPS</li>
+<li>SSH</li>
+<li>Telnet</li>
+<li>FTP</li>
+<li>SMTP</li>
+</ul>
+<h1 id="Cookie和Session"><a href="#Cookie和Session" class="headerlink" title="Cookie和Session"></a>Cookie和Session</h1><h2 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h2><p>cookie: 登录网站，第一天输入用户名密码登录了，第二天再打开很多情况下就直接打开了。这个时候用到的一个机制就是cookie。</p>
 <p>session: session一个场景是购物车，添加了商品之后客户端处可以知道添加了哪些商品，而服务器端如何判别呢，所以也需要存储一些信息就用到了session。</p>
 <h2 id="cookie-1"><a href="#cookie-1" class="headerlink" title="cookie"></a>cookie</h2><p>服务器通过设置<code>set-cookie</code>这个响应头，将cookie信息返回给浏览器，浏览器将响应头中的cookie信息保存在本地，当下次向服务器发送HTTP请求时，浏览器会自动将保存的这些cookie信息添加到请求头中。</p>
 <p>通过cookie，服务器就会识别出浏览器，从而保证返回的数据是这个用户的。</p>
@@ -1145,7 +1771,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#流程"><span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-根据域名-进行DNS域名解析"><span class="nav-text">1.根据域名,进行DNS域名解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-拿到解析的IP地址，建立TCP连接"><span class="nav-text">2.拿到解析的IP地址，建立TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-向IP地址，发送HTTP请求"><span class="nav-text">3.向IP地址，发送HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-服务器处理请求并返回HTTP报文"><span class="nav-text">4.服务器处理请求并返回HTTP报文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#长连接与短连接"><span class="nav-text">长连接与短连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-2-0"><span class="nav-text">http 2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用HTTP缓存"><span class="nav-text">为什么使用HTTP缓存:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUMMARY"><span class="nav-text">SUMMARY</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-浏览器解析渲染页面"><span class="nav-text">5.浏览器解析渲染页面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-浏览器会解析三个东西："><span class="nav-text">1.浏览器会解析三个东西：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-解析完成后，浏览器引擎会通过DOM-Tree和CSS-Rule-Tree来构造Rendering-Tree。"><span class="nav-text">2.解析完成后，浏览器引擎会通过DOM Tree和CSS Rule Tree来构造Rendering Tree。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-最后通过调用操作系统Native-GUI的API绘制。"><span class="nav-text">3.最后通过调用操作系统Native GUI的API绘制。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建DOM"><span class="nav-text">构建DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建CSSOM"><span class="nav-text">构建CSSOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建渲染树"><span class="nav-text">构建渲染树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布局与绘制"><span class="nav-text">布局与绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS中的三种加载模式"><span class="nav-text">JS中的三种加载模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于渲染流程的-CSS-优化建议"><span class="nav-text">基于渲染流程的 CSS 优化建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM为什么这么慢？"><span class="nav-text">DOM为什么这么慢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-text">优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染的时机"><span class="nav-text">渲染的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回流与重绘"><span class="nav-text">回流与重绘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何规避回流与重绘"><span class="nav-text">如何规避回流与重绘</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-将导致回流与重绘的元素缓存起来，避免频繁改动"><span class="nav-text">1.将导致回流与重绘的元素缓存起来，避免频繁改动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-避免逐条改变样式，使用类名去合并样式"><span class="nav-text">2.避免逐条改变样式，使用类名去合并样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-将-DOM-“离线”"><span class="nav-text">3.将 DOM “离线”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Flush-队列：浏览器并没有那么简单"><span class="nav-text">4.Flush 队列：浏览器并没有那么简单</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-关闭TCP连接"><span class="nav-text">6.关闭TCP连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缓存"><span class="nav-text">缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#DNS缓存"><span class="nav-text">DNS缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是DNS"><span class="nav-text">什么是DNS?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#域名解析"><span class="nav-text">域名解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CDN缓存"><span class="nav-text">CDN缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是CDN"><span class="nav-text">什么是CDN?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CDN缓存-1"><span class="nav-text">CDN缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CDN-优势"><span class="nav-text">CDN 优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#浏览器缓存-http缓存"><span class="nav-text">浏览器缓存(http缓存)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存位置"><span class="nav-text">缓存位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存过程分析"><span class="nav-text">缓存过程分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强缓存"><span class="nav-text">强缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存"><span class="nav-text">协商缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存机制"><span class="nav-text">缓存机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际场景应用缓存策略"><span class="nav-text">实际场景应用缓存策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-频繁变动的资源"><span class="nav-text">1.频繁变动的资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-不常变化的资源"><span class="nav-text">2.不常变化的资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户行为对浏览器缓存的影响"><span class="nav-text">用户行为对浏览器缓存的影响</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储"><span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie"><span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#localStorage"><span class="nav-text">localStorage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionStorage"><span class="nav-text">sessionStorage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionStorage-、localStorage-和-cookie-之间的区别"><span class="nav-text">sessionStorage 、localStorage 和 cookie 之间的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IndexedDB"><span class="nav-text">IndexedDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP和HTTPS"><span class="nav-text">HTTP和HTTPS</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XSS和CSRF"><span class="nav-text">XSS和CSRF</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP和UDP"><span class="nav-text">TCP和UDP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie和Session"><span class="nav-text">Cookie和Session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie-1"><span class="nav-text">cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie属性"><span class="nav-text">cookie属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#session"><span class="nav-text">session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sesssion与cookie的区别"><span class="nav-text">sesssion与cookie的区别</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#流程"><span class="nav-text">流程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-根据域名-进行DNS域名解析"><span class="nav-text">1.根据域名,进行DNS域名解析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-拿到解析的IP地址，建立TCP连接"><span class="nav-text">2.拿到解析的IP地址，建立TCP连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-向IP地址，发送HTTP请求"><span class="nav-text">3.向IP地址，发送HTTP请求</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-服务器处理请求并返回HTTP报文"><span class="nav-text">4.服务器处理请求并返回HTTP报文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#长连接与短连接"><span class="nav-text">长连接与短连接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#http-2-0"><span class="nav-text">http 2.0</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么使用HTTP缓存"><span class="nav-text">为什么使用HTTP缓存:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SUMMARY"><span class="nav-text">SUMMARY</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-浏览器解析渲染页面"><span class="nav-text">5.浏览器解析渲染页面</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-浏览器会解析三个东西："><span class="nav-text">1.浏览器会解析三个东西：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-解析完成后，浏览器引擎会通过DOM-Tree和CSS-Rule-Tree来构造Rendering-Tree。"><span class="nav-text">2.解析完成后，浏览器引擎会通过DOM Tree和CSS Rule Tree来构造Rendering Tree。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-最后通过调用操作系统Native-GUI的API绘制。"><span class="nav-text">3.最后通过调用操作系统Native GUI的API绘制。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建DOM"><span class="nav-text">构建DOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建CSSOM"><span class="nav-text">构建CSSOM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建渲染树"><span class="nav-text">构建渲染树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#布局与绘制"><span class="nav-text">布局与绘制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JS中的三种加载模式"><span class="nav-text">JS中的三种加载模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于渲染流程的-CSS-优化建议"><span class="nav-text">基于渲染流程的 CSS 优化建议</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DOM为什么这么慢？"><span class="nav-text">DOM为什么这么慢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-text">优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#渲染的时机"><span class="nav-text">渲染的时机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#回流与重绘"><span class="nav-text">回流与重绘</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何规避回流与重绘"><span class="nav-text">如何规避回流与重绘</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-将导致回流与重绘的元素缓存起来，避免频繁改动"><span class="nav-text">1.将导致回流与重绘的元素缓存起来，避免频繁改动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-避免逐条改变样式，使用类名去合并样式"><span class="nav-text">2.避免逐条改变样式，使用类名去合并样式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-将-DOM-“离线”"><span class="nav-text">3.将 DOM “离线”</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Flush-队列：浏览器并没有那么简单"><span class="nav-text">4.Flush 队列：浏览器并没有那么简单</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-关闭TCP连接"><span class="nav-text">6.关闭TCP连接</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#缓存"><span class="nav-text">缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-DNS缓存"><span class="nav-text">1.DNS缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是DNS"><span class="nav-text">什么是DNS?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#域名解析"><span class="nav-text">域名解析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-CDN缓存"><span class="nav-text">2.CDN缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是CDN"><span class="nav-text">什么是CDN?</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CDN缓存"><span class="nav-text">CDN缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CDN-优势"><span class="nav-text">CDN 优势</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-浏览器缓存-http缓存"><span class="nav-text">3.浏览器缓存(http缓存)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存位置"><span class="nav-text">缓存位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存过程分析"><span class="nav-text">缓存过程分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#强缓存"><span class="nav-text">强缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#协商缓存"><span class="nav-text">协商缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存机制"><span class="nav-text">缓存机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实际场景应用缓存策略"><span class="nav-text">实际场景应用缓存策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-频繁变动的资源"><span class="nav-text">1.频繁变动的资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-不常变化的资源"><span class="nav-text">2.不常变化的资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用户行为对浏览器缓存的影响"><span class="nav-text">用户行为对浏览器缓存的影响</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#存储"><span class="nav-text">存储</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie"><span class="nav-text">cookie</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#localStorage"><span class="nav-text">localStorage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionStorage"><span class="nav-text">sessionStorage</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sessionStorage-、localStorage-和-cookie-之间的区别"><span class="nav-text">sessionStorage 、localStorage 和 cookie 之间的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IndexedDB"><span class="nav-text">IndexedDB</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP和HTTPS"><span class="nav-text">HTTP和HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP"><span class="nav-text">HTTP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-HTTP协议的特点"><span class="nav-text">1.HTTP协议的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-请求报文"><span class="nav-text">2.请求报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-响应报文"><span class="nav-text">3.响应报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-HTTP-方法"><span class="nav-text">4.HTTP 方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Post-和-Get-的区别"><span class="nav-text">5.Post 和 Get 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-常见状态码"><span class="nav-text">6.常见状态码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1XX-指示信息"><span class="nav-text">1XX 指示信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2XX-成功"><span class="nav-text">2XX 成功</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3XX-重定向"><span class="nav-text">3XX 重定向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4XX-客户端错误"><span class="nav-text">4XX 客户端错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5XX-服务器错误"><span class="nav-text">5XX 服务器错误</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-HTTP持久连接（HTTP1-1支持）"><span class="nav-text">7.HTTP持久连接（HTTP1.1支持）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-HTTP管线化-（HTTP1-1支持）"><span class="nav-text">8.HTTP管线化 （HTTP1.1支持）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-HTTP数据协商"><span class="nav-text">9.HTTP数据协商</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#请求"><span class="nav-text">请求</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#响应"><span class="nav-text">响应</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#form-表单中enctype数据类型"><span class="nav-text">form 表单中enctype数据类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-HTTP-Redirect-重定向"><span class="nav-text">10.HTTP Redirect 重定向</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP2"><span class="nav-text">HTTP2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-二进制传输"><span class="nav-text">1.二进制传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-多路复用"><span class="nav-text">2.多路复用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Header-压缩"><span class="nav-text">3.Header 压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-服务端-Push"><span class="nav-text">4.服务端 Push</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-HTTP首部"><span class="nav-text">5.HTTP首部</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS"><span class="nav-text">HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#密码学基础"><span class="nav-text">密码学基础</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对称加密"><span class="nav-text">对称加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非对称加密"><span class="nav-text">非对称加密</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTPS通信过程"><span class="nav-text">HTTPS通信过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#XSS和CSRF"><span class="nav-text">XSS和CSRF</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#XSS跨站脚本攻击"><span class="nav-text">XSS跨站脚本攻击</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS攻击的危害："><span class="nav-text">XSS攻击的危害：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反射型"><span class="nav-text">反射型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#存储型"><span class="nav-text">存储型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#XSS防御"><span class="nav-text">XSS防御</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CSRF跨站请求伪造"><span class="nav-text">CSRF跨站请求伪造</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL注入"><span class="nav-text">SQL注入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#防御"><span class="nav-text">防御</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP和UDP"><span class="nav-text">TCP和UDP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#UDP-与-TCP-的区别是什么？"><span class="nav-text">UDP 与 TCP 的区别是什么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三次握手与四次挥手"><span class="nav-text">三次握手与四次挥手</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么不用两次握手？"><span class="nav-text">为什么不用两次握手？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么-A-要进入-TIME-WAIT-状态，等待-2MSL-时间后才进入-CLOSED-状态？"><span class="nav-text">为什么 A 要进入 TIME-WAIT 状态，等待 2MSL 时间后才进入 CLOSED 状态？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么建立连接是三次握手，关闭连接确是四次挥手呢？"><span class="nav-text">为什么建立连接是三次握手，关闭连接确是四次挥手呢？</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARQ-（超时重传）协议"><span class="nav-text">ARQ （超时重传）协议</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#停止等待-ARQ"><span class="nav-text">停止等待 ARQ</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连续-ARQ"><span class="nav-text">连续 ARQ</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#累计确认"><span class="nav-text">累计确认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#滑动窗口"><span class="nav-text">滑动窗口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥塞处理"><span class="nav-text">拥塞处理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#慢开始算法"><span class="nav-text">慢开始算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拥塞避免算法"><span class="nav-text">拥塞避免算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RTT与RTO"><span class="nav-text">RTT与RTO</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-小结"><span class="nav-text">TCP 小结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#基于-TCP-的应用层协议"><span class="nav-text">基于 TCP 的应用层协议</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Cookie和Session"><span class="nav-text">Cookie和Session</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#应用场景"><span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cookie-1"><span class="nav-text">cookie</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#cookie属性"><span class="nav-text">cookie属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#session"><span class="nav-text">session</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sesssion与cookie的区别"><span class="nav-text">sesssion与cookie的区别</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -1161,14 +1787,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1225,13 +1851,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">413k</span>
+    <span title="Symbols count total">425k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">6:15</span>
+    <span title="Reading time total">6:26</span>
 </div>
 
 <!--

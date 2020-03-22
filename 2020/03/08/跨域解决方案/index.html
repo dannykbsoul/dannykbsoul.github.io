@@ -31,7 +31,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://yoursite.com/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png">
 <meta property="article:published_time" content="2020-03-08T10:11:18.000Z">
-<meta property="article:modified_time" content="2020-03-14T03:04:31.132Z">
+<meta property="article:modified_time" content="2020-03-08T10:11:18.000Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png">
@@ -220,13 +220,6 @@
 
               <time title="Created: 2020-03-08 18:11:18" itemprop="dateCreated datePublished" datetime="2020-03-08T18:11:18+08:00">2020-03-08</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-14 11:04:31" itemprop="dateModified" datetime="2020-03-14T11:04:31+08:00">2020-03-14</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -234,14 +227,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>4.9k</span>
+              <span>6.4k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
+              <span>6 mins.</span>
             </span>
 
         </div>
@@ -270,7 +263,7 @@
 </ul>
 <a id="more"></a>
 
-<h1 id="一、JSONP"><a href="#一、JSONP" class="headerlink" title="一、JSONP"></a>一、JSONP</h1><p><strong>JSONP(JSON with Padding)</strong> 是一种跨域请求方式。主要原理是利用了<code>script</code>标签可以跨域请求的特性，由其 <code>src</code> 属性发送请求到服务器，服务器返回 <code>JavaScript</code>代码，浏览器接受响应，然后就直接执行了，这和通过 <code>script</code> 标签引用外部文件的原理是一样的。</p>
+<h1 id="1-JSONP"><a href="#1-JSONP" class="headerlink" title="1.JSONP"></a>1.JSONP</h1><p><strong>JSONP(JSON with Padding)</strong> 是一种跨域请求方式。主要原理是利用了<code>script</code>标签可以跨域请求的特性，由其 <code>src</code> 属性发送请求到服务器，服务器返回 <code>JavaScript</code>代码，浏览器接受响应，然后就直接执行了，这和通过 <code>script</code> 标签引用外部文件的原理是一样的。</p>
 <p><strong>JSONP</strong>由两部分组成：<code>回调函数</code>和<code>数据</code>，回调函数一般是在浏览器控制，作为参数发往服务器端（当然，你也可以固定回调函数的名字，但客户端和服务器端的名称一定要一致）。当服务器响应时，服务器端就会把该函数和数据拼成字符串返回。 </p>
 <p><strong>JSONP</strong>的请求过程：</p>
 <ul>
@@ -284,17 +277,44 @@
 <p><strong>使用注意</strong></p>
 <p>基于JSONP的实现原理,所以JSONP只能是“GET”请求,不能进行较为复杂的POST和其它请求,所以遇到那种情况,就得参考下面的CORS解决跨域了(所以如今它也基本被淘汰了)</p>
 <p><img src="/2020/03/08/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/1.png" alt></p>
-<h1 id="二、CORS"><a href="#二、CORS" class="headerlink" title="二、CORS"></a>二、CORS</h1><p>CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。</p>
+<p>所以JSONP的原理就是：</p>
+<ul>
+<li>创建一个script标签，这个script标签的src就是请求的地址；</li>
+<li>这个script标签插入到DOM中，浏览器就根据src地址访问服务器资源</li>
+<li>返回的资源是一个文本，但是因为是在script标签中，浏览器会执行它</li>
+<li>而这个文本恰好是函数调用的形式，即函数名（数据），浏览器会把它当作JS代码来执行即调用这个函数</li>
+<li>只要提前约定好这个函数名，并且这个函数存在于window对象中，就可以把数据传递给处理函数。</li>
+</ul>
+<h1 id="2-Hash"><a href="#2-Hash" class="headerlink" title="2.Hash"></a>2.Hash</h1><p>场景：当前页面 A 通过iframe或frame嵌入了跨域的页面 B</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 在A中伪代码如下：</span></span><br><span class="line"><span class="keyword">var</span> B = <span class="built_in">document</span>.getElementsByTagName(<span class="string">'iframe'</span>);</span><br><span class="line">B.src = B.src + <span class="string">'#'</span> + <span class="string">'data'</span>;</span><br><span class="line"><span class="comment">// 在B中的伪代码如下</span></span><br><span class="line"><span class="built_in">window</span>.onhashchange = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> data = <span class="built_in">window</span>.location.hash;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>在A页面中改变B的url中的hash值，B不会刷新，但是B可以用过<code>window.onhashchange</code>事件监听到hash变化。</p>
+<h1 id="3-postMessage"><a href="#3-postMessage" class="headerlink" title="3.postMessage"></a>3.postMessage</h1><p>HTML5</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 窗口A(http:A.com)向跨域的窗口B(http:B.com)发送信息</span></span><br><span class="line">Bwindow.postMessage(<span class="string">'data'</span>, <span class="string">'http://B.com'</span>);</span><br><span class="line"><span class="comment">// 在窗口B中监听</span></span><br><span class="line">Awindow.addEventListener(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span> (<span class="params">event</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(event.origin); <span class="comment">// http://A.com</span></span><br><span class="line">    <span class="built_in">console</span>.log(event.source); <span class="comment">// A 对象window引用</span></span><br><span class="line">    <span class="built_in">console</span>.log(event.data);  <span class="comment">// 数据</span></span><br><span class="line">&#125;, <span class="literal">false</span>);</span><br></pre></td></tr></table></figure>
+
+<p>Bwindow其他窗口的一个引用，比如iframe的contentWindow属性</p>
+<p>通过窗口的origin属性来指定哪些窗口能接收到消息事件。</p>
+<h1 id="4-WebSocket跨域通信"><a href="#4-WebSocket跨域通信" class="headerlink" title="4.WebSocket跨域通信"></a>4.WebSocket跨域通信</h1><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">'wss://echo.websocket.org'</span>);</span><br><span class="line"></span><br><span class="line">ws.onopen = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Connection open ...'</span>);</span><br><span class="line">    ws.send(<span class="string">'Hello WebSockets!'</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ws.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Received Message: '</span>, evt.data);</span><br><span class="line">    ws.close();</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ws.onclose = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'Connection closed.'</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="5-document-domain"><a href="#5-document-domain" class="headerlink" title="5.document.domain"></a>5.document.domain</h1><p>浏览器有一个同源策略，其限制之一是不能通过ajax的方法去请求不同源中的文档。第二个限制是浏览器中不同域的框架之间是不能进行js的交互操作的。不同的框架之间是可以获取window对象的，但却无法获取相应的属性和方法。</p>
+<p>这个时候，document.domain就可以派上用场了，我们只要把<code>http://www.zj.cn/1.html</code>  和 <code>zj.cn/2.html</code> 这两个页面的document.domain都设成相同的域名就可以了。但要注意的是，document.domain的设置是有限制的，我们只能把document.domain设置成自身或更高一级的父域，且主域必须相同。</p>
+<blockquote>
+<p><strong>修改document.domain的方法只适用于不同子域的框架间的交互。</strong></p>
+</blockquote>
+<h1 id="6-CORS"><a href="#6-CORS" class="headerlink" title="6.CORS"></a>6.CORS</h1><p>CORS是一个W3C标准，全称是”跨域资源共享”（Cross-origin resource sharing）。 它允许浏览器向跨源服务器，发出XMLHttpRequest请求，从而克服了AJAX只能同源使用的限制。</p>
 <p>CORS需要浏览器和服务器同时支持。目前，所有浏览器都支持该功能，IE浏览器不能低于IE10。IE8+：IE8/9需要使用XDomainRequest对象来支持CORS。</p>
 <p>浏览器一旦发现AJAX请求跨源，就会自动添加一些附加的头信息，有时还会多出一次附加的请求，但用户不会有感觉。 因此，实现CORS通信的关键是服务器。只要服务器实现了CORS接口，就可以跨源通信。</p>
 <p><strong>两种请求</strong>：</p>
 <ol>
-<li>简单请求<ul>
+<li><p>简单请求</p>
+<ul>
 <li>请求方式为HEAD、POST或者GET</li>
 <li>http头信息不超出以下字段：Accept、Accept-Language、Content-Language、Last-Event-ID、 Content-Type(限于三个值：application/x-www-form-urlencoded、multipart/form-data、text/plain)</li>
 </ul>
 </li>
-<li>非简单请求</li>
+<li><p>非简单请求</p>
+<p> 需要通过<strong>预请求验证</strong>后然后才能发送</p>
+</li>
 </ol>
 <h3 id="简单请求"><a href="#简单请求" class="headerlink" title="简单请求"></a>简单请求</h3><p>在头信息之中，增加一个Origin字段。</p>
 <p><strong>Origin字段用来说明，本次请求来自哪个源（协议 + 域名 + 端口）。服务器根据这个值，决定是否同意这次请求。</strong></p>
@@ -436,7 +456,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#一、JSONP"><span class="nav-text">一、JSONP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#二、CORS"><span class="nav-text">二、CORS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单请求"><span class="nav-text">简单请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非简单请求"><span class="nav-text">非简单请求</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-JSONP"><span class="nav-text">1.JSONP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-Hash"><span class="nav-text">2.Hash</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-postMessage"><span class="nav-text">3.postMessage</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-WebSocket跨域通信"><span class="nav-text">4.WebSocket跨域通信</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-document-domain"><span class="nav-text">5.document.domain</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-CORS"><span class="nav-text">6.CORS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#简单请求"><span class="nav-text">简单请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#非简单请求"><span class="nav-text">非简单请求</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -452,14 +472,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">3</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -516,13 +536,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">413k</span>
+    <span title="Symbols count total">425k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">6:15</span>
+    <span title="Reading time total">6:26</span>
 </div>
 
 <!--
