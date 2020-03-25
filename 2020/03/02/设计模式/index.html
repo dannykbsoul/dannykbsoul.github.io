@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/1.png">
 <meta property="og:image" content="http://yoursite.com/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/2.png">
 <meta property="article:published_time" content="2020-03-02T05:52:45.000Z">
-<meta property="article:modified_time" content="2020-03-10T08:59:02.130Z">
+<meta property="article:modified_time" content="2020-03-02T05:52:45.000Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/1.png">
@@ -221,13 +221,6 @@
 
               <time title="Created: 2020-03-02 13:52:45" itemprop="dateCreated datePublished" datetime="2020-03-02T13:52:45+08:00">2020-03-02</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-03-10 16:59:02" itemprop="dateModified" datetime="2020-03-10T16:59:02+08:00">2020-03-10</time>
-              </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -235,7 +228,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>7.7k</span>
+              <span>8k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -286,6 +279,11 @@
 
 <h2 id="观察者模式与发布-订阅模式的区别是什么？"><a href="#观察者模式与发布-订阅模式的区别是什么？" class="headerlink" title="观察者模式与发布-订阅模式的区别是什么？"></a>观察者模式与发布-订阅模式的区别是什么？</h2><p><img src="/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/1.png" alt="1"></p>
 <p><img src="/2020/03/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/2.png" alt="2"></p>
+<p>《Learning JavaScript Design Patterns》一书这样说:</p>
+<blockquote>
+<p>“While the Observer pattern is useful to be aware of, quite often in the JavaScript world, we’ll find it commonly implemented using a variation known as the Publish/Subscribe pattern.”</p>
+</blockquote>
+<p>发布/订阅模式是观察者模式的一种变形，两者区别在于，<strong>发布/订阅模式在观察者模式的基础上，在目标和观察者之间增加一个调度中心。</strong></p>
 <p><strong>发布者直接触及到订阅者</strong>的操作，叫观察者模式。</p>
 <p><strong>发布者不直接触及到订阅者、而是由统一的第三方来完成实际的通信的操作，叫做发布-订阅模式</strong>。</p>
 <p>观察者模式，解决的其实是模块间的耦合问题，有它在，即便是两个分离的、毫不相关的模块，也可以实现数据通信。但观察者模式仅仅是减少了耦合，<strong>并没有完全地解决耦合问题</strong>——被观察者必须去维护一套观察者的集合，这些观察者必须实现统一的方法供被观察者调用，两者之间还是有着说不清、道不明的关系。</p>
@@ -486,13 +484,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">425k</span>
+    <span title="Symbols count total">432k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">6:26</span>
+    <span title="Reading time total">6:33</span>
 </div>
 
 <!--
