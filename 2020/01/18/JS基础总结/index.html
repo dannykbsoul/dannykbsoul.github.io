@@ -235,7 +235,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>68k</span>
+              <span>67k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -440,7 +440,7 @@
 </ul>
 <h2 id="如何判断一个数据是不是Array"><a href="#如何判断一个数据是不是Array" class="headerlink" title="如何判断一个数据是不是Array"></a>如何判断一个数据是不是Array</h2><ul>
 <li><pre><code>Array.isArray(obj)
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    - ECMAScript 5种的函数，当使用ie8的时候就会出现问题。</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    - ECMAScript5中的函数，当使用ie8的时候就会出现问题。</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
 obj instanceof Array
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">    - 当用来检测在不同的window或iframe里构造的数组时会失败。这是因为每一个iframe都有它自己的执行环境，彼此之间并不共享原型链，所以此时的判断一个对象是否为数组就会失败。此时我们有一个更好的方式去判断一个对象是否为数组。</span><br><span class="line"></span><br><span class="line">-</span><br></pre></td></tr></table></figure>
 Object.prototype.toString.call(obj) == &apos;[object Array]&apos;
@@ -726,9 +726,6 @@ obj.constructor === Array
 <li><p>在创建子类型(例如创建Son的实例)时,不能向超类型(例如Father)的构造函数中传递参数。实际上没有办法在不影响所有对象实例的情况下，给超类型的构造函数传递参数。</p>
 </li>
 </ol>
-<p>因为子类只进行一次原型更改，所以子类的所有实例保存的是同一个父类的值。 当子类对象上进行值修改时，如果是修改的原始类型的值，那么会在实例上新建这样一个值； 但如果是引用类型的话，他就会去修改子类上唯一一个父类实例里面的这个引用类型，这会影响所有子类实例</p>
-<p>有鉴于此, 实践中很少会单独使用原型链。</p>
-<p>为此,下面将有一些尝试以弥补原型链的不足。</p>
 <h4 id="2-借用构造函数"><a href="#2-借用构造函数" class="headerlink" title="2. 借用构造函数"></a>2. 借用构造函数</h4><blockquote>
 <p>基本思想:在子类构造函数中 使用<code>Parent.call(this)</code>的方法继承父类属性。</p>
 <p>原理： 将子类的this使用父类的构造函数跑一遍</p>
