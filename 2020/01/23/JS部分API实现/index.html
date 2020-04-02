@@ -364,6 +364,7 @@
 <li>proto:新创建对象的原型对象</li>
 <li>propertiesObject:可选。要添加到新对象的<strong>可枚举</strong>（新添加的属性是其自身的属性，而不是其原型链上的属性）的属性。</li>
 </ul>
+<p>创建一个新对象，使用现有的对象来提供新创建的对象的<code>__proto__</code></p>
 <h3 id="new-Object-创建的对象纯净么？"><a href="#new-Object-创建的对象纯净么？" class="headerlink" title="new Object()创建的对象纯净么？"></a>new Object()创建的对象纯净么？</h3><p>首先什么是纯净？我们定义一个对象的<code>__proto__</code>属性为空的对象是一个纯净的对象。</p>
 <p>然而new Object()创建出来的是对象<code>__proto__</code>指向Object.prototype，所以不是纯净的。</p>
 <p>我们有必要引出<code>Object.create()</code>，该方法创建一个新对象，使用现有的对象来提供新创建的对象的<code>__proto__</code>。</p>
