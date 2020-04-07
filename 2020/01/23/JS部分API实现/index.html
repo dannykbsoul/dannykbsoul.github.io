@@ -235,7 +235,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>46k</span>
+              <span>45k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -742,9 +742,6 @@
 
 
 
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial</span>(<span class="params">n, res</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> res;</span><br><span class="line">    <span class="keyword">return</span> factorial(n - <span class="number">1</span>, n * res)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">factorial2</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (n == <span class="number">1</span>) <span class="keyword">return</span> n;</span><br><span class="line">    <span class="keyword">return</span> n * factorial2(n - <span class="number">1</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.time(<span class="string">'尾递归'</span>);</span><br><span class="line">factorial(<span class="number">10000</span>, <span class="number">1</span>)</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">'尾递归'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.time(<span class="string">'正常递归'</span>);</span><br><span class="line">factorial2(<span class="number">10000</span>)</span><br><span class="line"><span class="built_in">console</span>.timeEnd(<span class="string">'正常递归'</span>);</span><br><span class="line"><span class="comment">//尾递归: 2.032ms</span></span><br><span class="line"><span class="comment">//正常递归: 0.408ms</span></span><br></pre></td></tr></table></figure>
-
-<p>可以看出<code>尾递归</code>的确提高了性能。</p>
 <h1 id="11-防抖与节流"><a href="#11-防抖与节流" class="headerlink" title="11.防抖与节流"></a>11.防抖与节流</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在前端开发中会遇到一些频繁的事件触发，比如：</p>
 <ol>
 <li>window 的 resize、scroll</li>
@@ -1045,8 +1042,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/01/18/JS%E5%9F%BA%E7%A1%80%E6%80%BB%E7%BB%93/" rel="prev" title="JS基础总结">
-      <i class="fa fa-chevron-left"></i> JS基础总结
+    <a href="/2020/01/10/%E5%89%91%E6%8C%87offer/" rel="prev" title="剑指offer">
+      <i class="fa fa-chevron-left"></i> 剑指offer
     </a></div>
       <div class="post-nav-item">
     <a href="/2020/01/30/ES6%E6%80%BB%E7%BB%93/" rel="next" title="ES6总结">
@@ -1127,14 +1124,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">26</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">2</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1191,13 +1188,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">451k</span>
+    <span title="Symbols count total">379k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">6:50</span>
+    <span title="Reading time total">5:45</span>
 </div>
 
 <!--
