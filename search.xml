@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>实现鼠标拖拽DOM</title>
+    <url>/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>前端路由</title>
     <url>/2020/03/30/%E5%89%8D%E7%AB%AF%E8%B7%AF%E7%94%B1/</url>
     <content><![CDATA[<p>随着ajax的流行，异步数据请求交互运行在不刷新浏览器的情况下进行。而异步交互体验的更高级版本就是SPA——单页应用。单页应用不仅仅是在页面交互是无刷新的，连页面跳转都是无刷新的，为了实现单页应用，所以就有了前端路由。</p>
@@ -3876,100 +3881,6 @@
       <categories>
         <category>algorithm</category>
       </categories>
-  </entry>
-  <entry>
-    <title>vue框架使用与原理</title>
-    <url>/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/</url>
-    <content><![CDATA[<h2 id="1-基本使用"><a href="#1-基本使用" class="headerlink" title="1.基本使用"></a>1.基本使用</h2><p><strong>v-html</strong></p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">v-html</span>=<span class="string">"rawHtml"</span>&gt;</span><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>将整个标签内容替换成rawHtml中的内容，如果标签内还有子元素，会被覆盖。</p>
-<p><code>防止XSS攻击</code></p>
-<p><strong>computed和watch</strong></p>
-<a id="more"></a>
-
-<h2 id="2-原理"><a href="#2-原理" class="headerlink" title="2.原理"></a>2.原理</h2><h3 id="2-1-MVVM"><a href="#2-1-MVVM" class="headerlink" title="2.1.MVVM"></a>2.1.MVVM</h3><p><strong>MVC</strong></p>
-<p>传统的MVC模式就是modul,view,controller三层，但是当初的网页比较简单，前端所需要的数据，一般都能通过后端处理好再发给前端。但是H5的出现让网页开始向app靠拢，为了实现H5的移动端和原生app一样，逐渐的发展为MVVM模式。<br><strong>MVC的缺点</strong> ：</p>
-<ol>
-<li>开发者在代码中大量调用相同的DOM API，处理繁琐，操作冗余，使得代码难以维护。</li>
-<li>大量的DOM 操作使页面渲染性能降低，加载速度变慢，影响用户体验。</li>
-<li>当 Model 频繁发生变化，开发者需要主动更新到View ；当用户的操作导致 Model 发生变化，开发者同样需要将变化的数据同步到Model 中，这样的工作不仅繁琐，而且很难维护复杂多变的数据状态。</li>
-</ol>
-<p><strong>MVVM</strong>简介：<br>MVVM 极大地提高了前端开发效率。MVVM的核心是ViewModel 层，它就像是一个中转站（value converter），负责转换Model中的数据对象来让数据变得更容易管理和使用，该层向上与视图层进行双向数据绑定，向下与Model层通过接口请求进行数据交互，起呈上启下作用。</p>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/2.png" alt></p>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/3.png" alt></p>
-<p>其实可以看出对于前端，只是在view和viewModule层进行编写代码。</p>
-<ul>
-<li><p>view层</p>
-<p>  View 是视图层，也就是用户界面。前端的html和css构建，与viewModel实现数据绑定</p>
-</li>
-<li><p>Model层</p>
-<p>  Model是指数据模型，也就是后端的数据操控，一般前端利用ajax操作进行在viewModule层对其进行数据请求</p>
-</li>
-<li><p>viewModel层</p>
-<p>  在该层所封装的数据类型包括视图的状态（数据）和一些行为，而 Model 层的数据模型是只包含状态的。<br>  由于实现了双向绑定，ViewModel的内容会实时展现在View层，这是激动人心的，因为前端开发者再也不必低效又麻烦地通过操纵DOM去更新视图，MVVM框架已经把最脏最累的一块做好了，我们开发者只需要处理和维护 ViewModel，更新数据视图就会自动得到相应更新，真正实现数据驱动开发。<br>  <strong>视图状态</strong>：这一块展示什么（数据）<br>  <strong>视图行为</strong>：用户发生了什么行为（触发了什么事件），要作什么，执行什么函数</p>
-</li>
-</ul>
-<p><strong>例子</strong></p>
-<p>vue的模板就是view层</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;app&quot;&gt;</span><br><span class="line">    &lt;p&gt;&#123;&#123;message&#125;&#125;&lt;&#x2F;p&gt;</span><br><span class="line">    &lt;button v-on:click&#x3D;&quot;showMessage()&quot;&gt;Click me&lt;&#x2F;button&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br></pre></td></tr></table></figure>
-
-<p>Vue的ViewModel层</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var app &#x3D; new Vue(&#123;</span><br><span class="line">    el: &#39;#app&#39;,</span><br><span class="line">    data: &#123;     &#x2F;&#x2F; 用于描述视图状态（有基于 Model 层数据定义的，也有纯前端定义）</span><br><span class="line">        message: &#39;Hello Vue!&#39;,  &#x2F;&#x2F; 纯前端定义</span><br><span class="line">        server: &#123;&#125;, &#x2F;&#x2F; 存放基于 Model 层数据的二次封装数据</span><br><span class="line">    &#125;,</span><br><span class="line">    methods: &#123;  &#x2F;&#x2F; 用于描述视图行为（完全前端定义）</span><br><span class="line">        showMessage()&#123;</span><br><span class="line">            let vm &#x3D; this;</span><br><span class="line">            alert(vm.message);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;,</span><br><span class="line">    created()&#123;</span><br><span class="line">        let vm &#x3D; this;</span><br><span class="line">        &#x2F;&#x2F; Ajax 获取 Model 层的数据</span><br><span class="line">        ajax(&#123;</span><br><span class="line">            url: &#39;&#x2F;your&#x2F;server&#x2F;data&#x2F;api&#39;,</span><br><span class="line">            success(res)&#123;</span><br><span class="line">                &#x2F;&#x2F; TODO 对获取到的 Model 数据进行转换处理，做二次封装</span><br><span class="line">                vm.server &#x3D; res;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>服务器的model层</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;url&quot;: &quot;&#x2F;your&#x2F;server&#x2F;data&#x2F;api&quot;,</span><br><span class="line">    &quot;res&quot;: &#123;</span><br><span class="line">        &quot;success&quot;: true,</span><br><span class="line">        &quot;name&quot;: &quot;zhou&quot;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/1.png" alt></p>
-<h3 id="2-2-实现双向数据绑定"><a href="#2-2-实现双向数据绑定" class="headerlink" title="2.2.实现双向数据绑定"></a>2.2.实现双向数据绑定</h3><p>Object.defineProperty()</p>
-<p>缺点：</p>
-<ul>
-<li>深度监听，需要递归到底，一次性计算量大</li>
-<li>无法监听新增属性/删除属性(Vue.set、Vue.delete)</li>
-</ul>
-<p>Vue3.0启用proxy()，但是兼容性不好，无法用polyfill</p>
-<h3 id="2-3-vdom和diff"><a href="#2-3-vdom和diff" class="headerlink" title="2.3.vdom和diff"></a>2.3.vdom和diff</h3><h4 id="2-3-1-vdom"><a href="#2-3-1-vdom" class="headerlink" title="2.3.1 vdom"></a>2.3.1 vdom</h4><ul>
-<li><p>用JS模拟DOM结构(vnode)</p>
-</li>
-<li><p>新旧vnode对比，得出最小更新范围，最后更新DOM</p>
-</li>
-<li><p>数据驱动视图模式下，有效控制DOM操作</p>
-</li>
-</ul>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"div1"</span> <span class="attr">class</span>=<span class="string">"container"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>vdom<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span> <span class="attr">style</span>=<span class="string">"font-size: 20px"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">li</span>&gt;</span>a<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>下面是用js模拟的DOM结构：</p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    tag: <span class="string">'div'</span>,</span><br><span class="line">    props: &#123;</span><br><span class="line">        className: <span class="string">'container'</span>,</span><br><span class="line">        id: <span class="string">'div1'</span></span><br><span class="line">    &#125;</span><br><span class="line">    children: [</span><br><span class="line">        &#123;</span><br><span class="line">            tag: <span class="string">'p'</span>,</span><br><span class="line">            children: <span class="string">'vdom'</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            tag <span class="string">'ul'</span>,</span><br><span class="line">            props: &#123;<span class="attr">style</span>: <span class="string">'font-size: 20px'</span>&#125;</span><br><span class="line">            children: [</span><br><span class="line">                &#123;</span><br><span class="line">                    tag: <span class="string">'li'</span></span><br><span class="line">                    children: <span class="string">'a'</span></span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//...</span></span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-<p>vnode =&gt; patch第一次 到空的dom元素 首次渲染 =&gt; newVnode =&gt; patch第二次 新旧对比</p>
-<p>由于虚拟dom有那么多的好处而且现代前端框架中react和vue均不同程度的使用了虚拟dom的技术，因此通过一个简单的 库赖学习虚拟dom技术就十分必要了，至于为什么会选择snabbdom.js这个库呢？原因主要有两个：</p>
-<ol>
-<li>源码简短，总体代码行数不超过500行。</li>
-<li>著名的vue的虚拟dom实现也是参考了snabbdom.js的实现。</li>
-</ol>
-<p><strong>用snabbdom来体验一下</strong></p>
-<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> snabbdom = <span class="built_in">window</span>.snabbdom</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义 patch</span></span><br><span class="line"><span class="keyword">const</span> patch = snabbdom.init([</span><br><span class="line">    snabbdom_class,</span><br><span class="line">    snabbdom_props,</span><br><span class="line">    snabbdom_style,</span><br><span class="line">    snabbdom_eventlisteners</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义 h</span></span><br><span class="line"><span class="keyword">const</span> h = snabbdom.h</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> container = <span class="built_in">document</span>.getElementById(<span class="string">'container'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 生成 vnode</span></span><br><span class="line"><span class="keyword">const</span> vnode = h(<span class="string">'ul#list'</span>, &#123;&#125;, [</span><br><span class="line">    h(<span class="string">'li.item'</span>, &#123;&#125;, <span class="string">'Item 1'</span>),</span><br><span class="line">    h(<span class="string">'li.item'</span>, &#123;&#125;, <span class="string">'Item 2'</span>)</span><br><span class="line">])</span><br><span class="line">patch(container, vnode)</span><br><span class="line"></span><br><span class="line"><span class="built_in">document</span>.getElementById(<span class="string">'btn-change'</span>).addEventListener(<span class="string">'click'</span>, () =&gt; &#123;</span><br><span class="line">    <span class="comment">// 生成 newVnode</span></span><br><span class="line">    <span class="keyword">const</span> newVnode = h(<span class="string">'ul#list'</span>, &#123;&#125;, [</span><br><span class="line">        h(<span class="string">'li.item'</span>, &#123;&#125;, <span class="string">'Item 1'</span>),</span><br><span class="line">        h(<span class="string">'li.item'</span>, &#123;&#125;, <span class="string">'Item B'</span>),</span><br><span class="line">        h(<span class="string">'li.item'</span>, &#123;&#125;, <span class="string">'Item 3'</span>)</span><br><span class="line">    ])</span><br><span class="line">    patch(vnode, newVnode)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/5.png" alt></p>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/6.png" alt></p>
-<p>在页面刷新的时候，发现<code>item1</code>并没有更新。那么是怎么做到的呢？</p>
-<h4 id="2-3-2-diff算法"><a href="#2-3-2-diff算法" class="headerlink" title="2.3.2 diff算法"></a>2.3.2 diff算法</h4><ul>
-<li>diff即对比，是一个广泛的概念，如Linux diff命令、git diff命令</li>
-<li>俩个js对象也可以diff，如<a href="https://github.com/cujojs/jiff" target="_blank" rel="noopener">https://github.com/cujojs/jiff</a></li>
-<li>俩个树做diff，如这里的vdom diff</li>
-</ul>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/7.png" alt></p>
-<p>正常来说俩个树做diff比较的时间复杂度为O(n^3)，如何优化到O(n)？</p>
-<ul>
-<li>只比较同一层级，不跨级比较</li>
-<li>tag不相同，则直接删掉重建，不再深度比较</li>
-<li>tag和key俩者都相同，则认为是相同节点，不再深度比较</li>
-</ul>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/8.png" alt></p>
-<p><img src="/2020/02/20/vue%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%8E%9F%E7%90%86/9.png" alt></p>
-]]></content>
   </entry>
   <entry>
     <title>LRU算法</title>
