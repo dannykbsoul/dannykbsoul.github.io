@@ -22,17 +22,20 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="FOCUS">
+  <meta name="description" content="缘起，前段时间百度面试被问到了这个问题，特来做个总结">
 <meta property="og:type" content="article">
 <meta property="og:title" content="实现鼠标拖拽DOM">
 <meta property="og:url" content="http://yoursite.com/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/index.html">
 <meta property="og:site_name" content="ZJ&#39;s BLOG">
-<meta property="og:description" content="FOCUS">
+<meta property="og:description" content="缘起，前段时间百度面试被问到了这个问题，特来做个总结">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://yoursite.com/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/1.png">
+<meta property="og:image" content="http://yoursite.com/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/2.png">
 <meta property="article:published_time" content="2020-04-15T07:29:10.000Z">
 <meta property="article:modified_time" content="2020-04-15T07:29:10.000Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://yoursite.com/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/1.png">
 
 <link rel="canonical" href="http://yoursite.com/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/">
 
@@ -225,14 +228,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>0</span>
+              <span>2.1k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+              <span>2 mins.</span>
             </span>
 
         </div>
@@ -244,7 +247,59 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        
+        <p>缘起，前段时间百度面试被问到了这个问题，特来做个总结</p>
+<a id="more"></a>
+
+<h2 id="1-相关知识点"><a href="#1-相关知识点" class="headerlink" title="1.相关知识点"></a>1.相关知识点</h2><h3 id="常用的鼠标事件"><a href="#常用的鼠标事件" class="headerlink" title="常用的鼠标事件"></a>常用的鼠标事件</h3><ul>
+<li>click</li>
+<li>dbclick：双击</li>
+<li>mouseenter：当鼠标指针<strong>首次</strong>移动到元素上时触发。<strong>不冒泡</strong></li>
+<li>mouseleave：当鼠标指针移出元素时触发。<strong>不冒泡</strong></li>
+<li>mousedown：当元素上按下鼠标按钮时候触发</li>
+<li>mouseup：当元素上释放鼠标按钮时触发</li>
+<li>mousemove：当鼠标指针在元素内部移动时重复地触发</li>
+<li>mouseover：当鼠标指针移动到元素上时触发</li>
+<li>mouseout：当鼠标指针移出元素时触发</li>
+</ul>
+<h3 id="事件对象"><a href="#事件对象" class="headerlink" title="事件对象"></a>事件对象</h3><p>当触发某个事件时，会产生一个事件对象，这个对象包含着所有与事件有关的信息。会作为参数传递给函数，IE8以及之前的版本event对象是作为window对象的属性存在的。故有了以下常见的写法：<code>function (e) { e = e || window.event; ... }</code> 。事件对象的属性如下：</p>
+<p><img src="/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/1.png" alt="1"></p>
+<p><img src="/2020/04/15/%E5%AE%9E%E7%8E%B0%E9%BC%A0%E6%A0%87%E6%8B%96%E6%8B%BDDOM/2.png" alt="2"></p>
+<p>应用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">stopPro</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> e = e || <span class="built_in">window</span>.event;</span><br><span class="line">  <span class="comment">// 得到事件目标DOM对象</span></span><br><span class="line">  <span class="keyword">let</span> dom = e.target || e.srcElement;</span><br><span class="line">  <span class="comment">// 阻止冒泡</span></span><br><span class="line">  <span class="built_in">window</span>.event ? e.cancelBubble = <span class="literal">true</span> : e.stopPropagation();</span><br><span class="line">  <span class="comment">// 取消默认事件</span></span><br><span class="line">  <span class="built_in">window</span>.event ? e.returnValue = <span class="literal">false</span> : e.preventDefault();</span><br><span class="line">  <span class="comment">// 阻止默认行为(但会继续冒泡)</span></span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="坐标"><a href="#坐标" class="headerlink" title="坐标"></a>坐标</h3><h4 id="事件对象-1"><a href="#事件对象-1" class="headerlink" title="事件对象"></a>事件对象</h4><ul>
+<li>event对象.screenX / screenY ：相对电脑屏幕的坐标，距离左边框和上边框的距离</li>
+<li>event对象.clientX / clientY ：相对浏览器可视区的坐标，同理</li>
+<li>pageX、pageY ： 对于整个页面来说，包括了被卷去的body部分的长度</li>
+<li>offsetX、offsetY ：相对于带有定位的父盒子的x，y坐标</li>
+<li>x、y ：和screenX、screenY一样</li>
+</ul>
+<h4 id="DOM节点"><a href="#DOM节点" class="headerlink" title="DOM节点"></a>DOM节点</h4><ul>
+<li><p>DOM节点.offsetLeft / offsetTop</p>
+<p>  可以获得元素 距离上方或外层元素 的位置，<strong>本质和 style.top 是一样的</strong>。二者区别：offsetTop 返回的是数字，而 style.top 返回的是字符串，除了数字外还带有单位（px）；offsetTop 只读，而 style.top 可读写。同理offsetWidth 与 style.width、offsetHeight 与 style.height</p>
+</li>
+<li><p>DOM节点.clientHeight / clientWidth</p>
+<p>  浏览器中可视区高度。width + padding（不含border）</p>
+</li>
+<li><p>DOM节点.scrollHeight / scrollWidth</p>
+<p>  元素内容真实的宽度，内容不超出盒子高度时为盒子的clientWidth</p>
+</li>
+<li><p>Window视图</p>
+<p>  window.innerWidth / innerHeight：浏览器窗口可视区宽度（不包括浏览器控制台、菜单栏、工具栏） （低版本IE浏览器&lt; IE9不支持）</p>
+</li>
+</ul>
+<h2 id="2-实现"><a href="#2-实现" class="headerlink" title="2.实现"></a>2.实现</h2><p>拖拽无非是鼠标按下点击元素；鼠标移动，元素移动；鼠标抬起，元素停止不动<br>所以这里我们需要绑定三个事件：mousedown、mousemove、mouseup</p>
+<p>整体的思路就是：</p>
+<ol>
+<li>在鼠标移动到当前元素的上方并且按下左键的事件开始</li>
+<li>当鼠标移动的时候，改变元素的位置</li>
+<li>当鼠标左键放开的时候，停止改变元素的位置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;ball&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">#ball&#123;</span><br><span class="line">  background: red;</span><br><span class="line">  width: 40px;</span><br><span class="line">  height: 40px;</span><br><span class="line">  border-radius: 50%;</span><br><span class="line">  cursor: pointer; &#x2F;&#x2F;光标呈现为指示链接的指针（一只手）</span><br><span class="line">  position: absolute;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> ball = <span class="built_in">document</span>.getElementById(<span class="string">'ball'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> startDrag = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">ball.addEventListener(<span class="string">'mousedown'</span>, () =&gt; &#123;</span><br><span class="line">  startDrag = <span class="literal">true</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//将mousemove事件绑定到了元素本身，这意味着当鼠标移出元素所占据的范围的时候，元素会停止移动。这就是小球突然停顿的原因。</span></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'mousemove'</span>, (e) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(!startDrag) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">let</span> x = e.pageX - ball.offsetWidth / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">let</span> y = e.pageY - ball.offsetHeight / <span class="number">2</span>;</span><br><span class="line">  ball.style.left = <span class="string">`<span class="subst">$&#123;x&#125;</span>px`</span>;</span><br><span class="line">  ball.style.top = <span class="string">`<span class="subst">$&#123;y&#125;</span>px`</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">ball.addEventListener(<span class="string">'mouseup'</span>, () =&gt; &#123;</span><br><span class="line">  startDrag = <span class="literal">false</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
     </div>
     <div>
       
@@ -330,6 +385,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-相关知识点"><span class="nav-text">1.相关知识点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用的鼠标事件"><span class="nav-text">常用的鼠标事件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事件对象"><span class="nav-text">事件对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坐标"><span class="nav-text">坐标</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#事件对象-1"><span class="nav-text">事件对象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#DOM节点"><span class="nav-text">DOM节点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-实现"><span class="nav-text">2.实现</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -409,13 +465,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">376k</span>
+    <span title="Symbols count total">378k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">5:41</span>
+    <span title="Reading time total">5:43</span>
 </div>
 
 <!--
