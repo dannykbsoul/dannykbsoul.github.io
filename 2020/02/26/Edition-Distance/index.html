@@ -30,7 +30,7 @@
 <meta property="og:description" content="​    缘起：前段时间，看dom diff算法那块的时候，看到了列表对比那块用到了edit distance算法，例如p, ul, div 的顺序换成了 div, p, ul。这个该怎么对比？如果按照同层级进行顺序对比的话，它们都会被替换掉。如 p 和div的tagName不同，p会被div所替代。最终，三个节点都会被替换，这样DOM开销就非常大。而实际上是不需要替换节点，而只需要经过节点移动就">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2020-02-26T14:17:06.000Z">
-<meta property="article:modified_time" content="2020-02-27T14:59:06.616Z">
+<meta property="article:modified_time" content="2020-02-26T14:17:06.000Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
@@ -218,13 +218,17 @@
 
               <time title="Created: 2020-02-26 22:17:06" itemprop="dateCreated datePublished" datetime="2020-02-26T22:17:06+08:00">2020-02-26</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-02-27 22:59:06" itemprop="dateModified" datetime="2020-02-27T22:59:06+08:00">2020-02-27</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
               </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
+                  </a>
+                </span>
+            </span>
 
           <br>
             <span class="post-meta-item" title="Symbols count in article">
@@ -381,20 +385,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">categories</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>

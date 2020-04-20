@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>链表相关算法题总结</title>
+    <url>/2020/04/20/%E9%93%BE%E8%A1%A8%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+  </entry>
+  <entry>
     <title>Babel如何编译class</title>
     <url>/2020/04/16/Babel%E5%A6%82%E4%BD%95%E7%BC%96%E8%AF%91class/</url>
     <content><![CDATA[<p>ES6的class只是ES5的构造函数的语法糖，新的class写法只是让对象原型的写法更加清晰、更像面向对象编程的语法而已。</p>
@@ -84,6 +92,12 @@
 </li>
 </ol>
 ]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
+      <tags>
+        <tag>babel</tag>
+      </tags>
   </entry>
   <entry>
     <title>实现鼠标拖拽DOM</title>
@@ -141,6 +155,9 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;div id&#x3D;&quot;ball&quot;&gt;&lt;&#x2F;div&gt;</span><br><span class="line">#ball&#123;</span><br><span class="line">  background: red;</span><br><span class="line">  width: 40px;</span><br><span class="line">  height: 40px;</span><br><span class="line">  border-radius: 50%;</span><br><span class="line">  cursor: pointer; &#x2F;&#x2F;光标呈现为指示链接的指针（一只手）</span><br><span class="line">  position: absolute;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> ball = <span class="built_in">document</span>.getElementById(<span class="string">'ball'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> startDrag = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">ball.addEventListener(<span class="string">'mousedown'</span>, () =&gt; &#123;</span><br><span class="line">  startDrag = <span class="literal">true</span>;</span><br><span class="line">&#125;);</span><br><span class="line"><span class="comment">//将mousemove事件绑定到了元素本身，这意味着当鼠标移出元素所占据的范围的时候，元素会停止移动。这就是小球突然停顿的原因。</span></span><br><span class="line"><span class="built_in">document</span>.addEventListener(<span class="string">'mousemove'</span>, (e) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span>(!startDrag) <span class="keyword">return</span>;</span><br><span class="line">  <span class="keyword">let</span> x = e.pageX - ball.offsetWidth / <span class="number">2</span>;</span><br><span class="line">  <span class="keyword">let</span> y = e.pageY - ball.offsetHeight / <span class="number">2</span>;</span><br><span class="line">  ball.style.left = <span class="string">`<span class="subst">$&#123;x&#125;</span>px`</span>;</span><br><span class="line">  ball.style.top = <span class="string">`<span class="subst">$&#123;y&#125;</span>px`</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">ball.addEventListener(<span class="string">'mouseup'</span>, () =&gt; &#123;</span><br><span class="line">  startDrag = <span class="literal">false</span>;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
   </entry>
   <entry>
     <title>前端路由</title>
@@ -210,6 +227,12 @@
 <li>如果当前环境不是浏览器环境，会切换到<code>abstract</code>模式下。然后再根据不同模式来生成不同的history操作对象。</li>
 </ol>
 ]]></content>
+      <categories>
+        <category>框架</category>
+      </categories>
+      <tags>
+        <tag>路由</tag>
+      </tags>
   </entry>
   <entry>
     <title>双向绑定的简单实现</title>
@@ -353,6 +376,12 @@
 <p>Proxy作为新标准将受到浏览器厂商重点持续的性能优化，也就是传说中的新标准的性能红利。</p>
 <p>当然，Proxy的劣势就是兼容性问题，而且无法用polyfill磨平,因此Vue的作者才声明需要等到下个大版本(3.0)才能用Proxy重写。</p>
 ]]></content>
+      <categories>
+        <category>框架</category>
+      </categories>
+      <tags>
+        <tag>双向绑定</tag>
+      </tags>
   </entry>
   <entry>
     <title>v-dom与dom-diff的简单实现</title>
@@ -441,6 +470,9 @@
 </li>
 </ol>
 ]]></content>
+      <categories>
+        <category>框架</category>
+      </categories>
   </entry>
   <entry>
     <title>前端性能优化总结</title>
@@ -777,6 +809,12 @@
 </li>
 </ul>
 ]]></content>
+      <categories>
+        <category>engineering</category>
+      </categories>
+      <tags>
+        <tag>性能优化</tag>
+      </tags>
   </entry>
   <entry>
     <title>如何编写一个plugin</title>
@@ -800,6 +838,9 @@
 <h4 id="compiler"><a href="#compiler" class="headerlink" title="compiler"></a>compiler</h4><p>compiler对象是webpack的实例，compiler有很多<a href="https://www.webpackjs.com/api/compiler-hooks/#emit" target="_blank" rel="noopener">hooks（钩子）</a>，挑选合适的钩子（eg. <code>emit</code>）写要执行的操作即可。</p>
 <h4 id="compilation"><a href="#compilation" class="headerlink" title="compilation"></a>compilation</h4><p>compilation里存放的是这一次打包的所有内容，eg. 打包生成的内容是放在<code>compilation.assets</code>中。</p>
 ]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
   </entry>
   <entry>
     <title>如何编写一个loader</title>
@@ -826,6 +867,9 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.callback(</span><br><span class="line">  err: <span class="built_in">Error</span> | <span class="literal">null</span>,</span><br><span class="line">  content: string | Buffer,</span><br><span class="line">  sourceMap?: SourceMap,</span><br><span class="line">  meta?: any</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
 </blockquote>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">'loader-utils'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">const</span> callback = <span class="keyword">this</span>.async();</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = source.replace(<span class="string">'world'</span>, options.name);</span><br><span class="line">    callback(<span class="literal">null</span>, result);</span><br><span class="line">  &#125;, <span class="number">5000</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>webpack</category>
+      </categories>
   </entry>
   <entry>
     <title>webpack性能优化</title>
@@ -861,6 +905,13 @@
 </li>
 </ol>
 ]]></content>
+      <categories>
+        <category>engineering</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+        <tag>性能优化</tag>
+      </tags>
   </entry>
   <entry>
     <title>webpack整理</title>
@@ -1210,6 +1261,12 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> webpack.ProvidePlugin(&#123;</span><br><span class="line">    $: <span class="string">'jquery'</span>, <span class="comment">//相当于import $ from 'jquery</span></span><br><span class="line">    _: <span class="string">'lodash'</span>,</span><br><span class="line">    _join: [<span class="string">'lodash'</span>, <span class="string">'join'</span>],  <span class="comment">//相当于import &#123; join &#125; from 'lodash</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="comment">//通过imports-loader使项目中的this指向window</span></span><br><span class="line">&#123;</span><br><span class="line">    test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">    exclude: <span class="regexp">/node_modules/</span>, <span class="comment">//排除node_modules文件中的js文件</span></span><br><span class="line">    use: [</span><br><span class="line">        <span class="string">'babel-loader'</span>,</span><br><span class="line">        <span class="string">'imports-loader?this=&gt;window'</span></span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h2 id="9-环境变量的使用"><a href="#9-环境变量的使用" class="headerlink" title="9.环境变量的使用"></a>9.环境变量的使用</h2><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="number">1.</span> package.json文件传递</span><br><span class="line"><span class="string">"scripts"</span>: &#123;</span><br><span class="line">    <span class="string">"dev"</span>: <span class="string">"webpack --config ./build/webpack.common.js"</span>,</span><br><span class="line">    <span class="string">"start"</span>: <span class="string">"webpack-dev-server --config ./build/webpack.common.js"</span>,</span><br><span class="line">    <span class="string">"build"</span>: <span class="string">"webpack --env.production --config ./build/webpack.common.js"</span></span><br><span class="line">  &#125;,</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>webpack.common.js文件使用</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function">(<span class="params">env</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (env &amp;&amp; env.production) &#123;</span><br><span class="line">        <span class="keyword">return</span> merge(commonConfig, prodConfig)</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> merge(commonConfig, devConfig)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>engineering</category>
+      </categories>
+      <tags>
+        <tag>webpack</tag>
+      </tags>
   </entry>
   <entry>
     <title>从输入URL到页面加载发生了什么?</title>
@@ -2609,6 +2666,9 @@
 <li>域的支持范围不一样，比方说a.com的Cookie在a.com下都能用，而<a href="http://www.a.com的Session在api.a.com下都不能用" target="_blank" rel="noopener">www.a.com的Session在api.a.com下都不能用</a></li>
 </ul>
 ]]></content>
+      <categories>
+        <category>计算机基础</category>
+      </categories>
   </entry>
   <entry>
     <title>跨域解决方案</title>
@@ -2735,6 +2795,9 @@
 </li>
 </ol>
 ]]></content>
+      <categories>
+        <category>前后端交互</category>
+      </categories>
   </entry>
   <entry>
     <title>DOM事件机制</title>
@@ -3200,6 +3263,9 @@
 <li>每次Queue中都会穿插着微任务队列执行。</li>
 </ol>
 ]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
   </entry>
   <entry>
     <title>洗牌算法</title>
@@ -3268,6 +3334,9 @@
 <p>洗牌算法，或者说随机乱置算法的<strong>正确性衡量标准是：对于每种可能的结果出现的概率必须相等，也就是说要足够随机。</strong></p>
 <p>蒙特卡罗方法验证正确性：采样越多，越近似最优解。</p>
 ]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
   </entry>
   <entry>
     <title>设计模式</title>
@@ -3341,6 +3410,9 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Product</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(name) &#123;</span><br><span class="line">    <span class="keyword">this</span>.name = name;</span><br><span class="line">  &#125;</span><br><span class="line">  init() &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//将创建对象的过程封装起来</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Factory</span> </span>&#123;</span><br><span class="line">  create(name) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> Product(name);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> factory = <span class="keyword">new</span> Factory();</span><br><span class="line"><span class="keyword">let</span> p1 = factory.create(<span class="string">'p1'</span>),</span><br><span class="line">  	p2 = factory.create(<span class="string">'p2'</span>);</span><br><span class="line">p1.init();</span><br><span class="line">p2.init()</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>计算机基础</category>
+      </categories>
   </entry>
   <entry>
     <title>函数式编程</title>
@@ -3456,6 +3528,9 @@
 
 <p>我们会发现最后的总次数为 11 次，因为使用了函数记忆，调用次数从 453 次降低为了 12 次!</p>
 ]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
   </entry>
   <entry>
     <title>TS入门</title>
@@ -3837,6 +3912,9 @@
 
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> <span class="variable">word1</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;string&#125;</span> <span class="variable">word2</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;number&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> minDistance = <span class="function"><span class="keyword">function</span>(<span class="params">word1, word2</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> m=word1.length,</span><br><span class="line">        n=word2.length;</span><br><span class="line">    <span class="keyword">const</span> dp=<span class="built_in">Array</span>(m+<span class="number">1</span>).fill(<span class="number">0</span>).map(<span class="function"><span class="params">x</span>=&gt;</span><span class="built_in">Array</span>(n+<span class="number">1</span>).fill(<span class="number">0</span>));</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;m+<span class="number">1</span>;i++) &#123;</span><br><span class="line">        dp[i][<span class="number">0</span>]=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;n+<span class="number">1</span>;i++) &#123;</span><br><span class="line">        dp[<span class="number">0</span>][i]=i;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">1</span>;i&lt;=m;i++) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> j=<span class="number">1</span>;j&lt;=n;j++) &#123;</span><br><span class="line">            <span class="comment">//本来就相等，不需要任何操作</span></span><br><span class="line">            <span class="comment">//s1[0..i] 和 s2[0..j] 的最⼩编辑距离等于</span></span><br><span class="line">            <span class="comment">//s1[0..i-1] 和 s2[0..j-1] 的最⼩编辑距离</span></span><br><span class="line">            <span class="comment">//也就是说 dp(i, j) 等于 dp(i-1, j-1)</span></span><br><span class="line">            <span class="keyword">if</span>(word1[i<span class="number">-1</span>]===word2[j<span class="number">-1</span>]) dp[i][j]=dp[i<span class="number">-1</span>][j<span class="number">-1</span>];</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                dp[i][j]=<span class="built_in">Math</span>.min(</span><br><span class="line">                    <span class="comment">//我直接把 s[i] 这个字符删掉</span></span><br><span class="line">                    <span class="comment">//前移 i，继续跟 j 对⽐</span></span><br><span class="line">                    dp[i<span class="number">-1</span>][j]+<span class="number">1</span>, <span class="comment">//删除</span></span><br><span class="line">                    <span class="comment">//我直接在 s1[i] 插⼊⼀个和 s2[j] ⼀样的字符</span></span><br><span class="line">                    <span class="comment">//那么 s2[j] 就被匹配了，前移 j，继续跟 i 对⽐</span></span><br><span class="line">                    dp[i][j<span class="number">-1</span>]+<span class="number">1</span>, <span class="comment">//插入</span></span><br><span class="line">                    <span class="comment">//我直接把 s1[i] 替换成 s2[j]，这样它俩就匹配了</span></span><br><span class="line">                    <span class="comment">//同时前移 i，j 继续对⽐</span></span><br><span class="line">                    dp[i<span class="number">-1</span>][j<span class="number">-1</span>]+<span class="number">1</span> <span class="comment">//替换</span></span><br><span class="line">                )</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> dp[m][n];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
   </entry>
   <entry>
     <title>数据结构</title>
@@ -3925,6 +4003,9 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  3</span><br><span class="line"> &#x2F; \</span><br><span class="line">9  20</span><br><span class="line">  &#x2F;  \</span><br><span class="line"> 15   7</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * function TreeNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.left = this.right = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number[]&#125;</span> <span class="variable">inorder</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;number[]&#125;</span> <span class="variable">postorder</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;TreeNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> buildTree = <span class="function"><span class="keyword">function</span>(<span class="params">inorder, postorder</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> pLeft=<span class="number">0</span>,</span><br><span class="line">        pRight=postorder.length<span class="number">-1</span>,</span><br><span class="line">        iLeft=<span class="number">0</span>,</span><br><span class="line">        iRight=inorder.length<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">return</span> build(pLeft,pRight,iLeft,iRight);</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">build</span>(<span class="params">pLeft,pRight,iLeft,iRight</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(pLeft&gt;pRight||iLeft&gt;iRight) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">let</span> i=iLeft;</span><br><span class="line">        <span class="keyword">for</span>(;i&lt;=iRight;i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(inorder[i]===postorder[pRight]) <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> node=<span class="keyword">new</span> TreeNode(postorder[pRight]);</span><br><span class="line">        node.left=build(pLeft,pLeft+i-iLeft<span class="number">-1</span>,iLeft,i<span class="number">-1</span>);</span><br><span class="line">        node.right=build(pLeft+i-iLeft,pRight<span class="number">-1</span>,i+<span class="number">1</span>,iRight);</span><br><span class="line">        <span class="keyword">return</span> node;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
   </entry>
   <entry>
     <title>Backtracking算法</title>
@@ -5287,6 +5368,12 @@
 <li>子类<code>prototype</code>属性的<code>__proto__</code>属性，表示方法的继承，总是指向父类的<code>prototype</code>属性。</li>
 </ol>
 ]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
+      <tags>
+        <tag>es6</tag>
+      </tags>
   </entry>
   <entry>
     <title>JS部分API实现</title>
@@ -6057,6 +6144,9 @@
 
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">async</span> <span class="function"><span class="keyword">function</span> <span class="title">wait</span>(<span class="params">seconds</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line">        setTimeout(res, seconds);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">repeat</span>(<span class="params">func, times, s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">...args</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; times; i++) &#123;</span><br><span class="line">            func.apply(<span class="literal">null</span>, args);</span><br><span class="line">            <span class="keyword">await</span> wait(s);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> log = <span class="built_in">console</span>.log</span><br><span class="line"><span class="keyword">let</span> repeatFunc = repeat(log, <span class="number">4</span>, <span class="number">3000</span>)</span><br><span class="line">repeatFunc(<span class="string">'HelloWorld'</span>)</span><br><span class="line">repeatFunc(<span class="string">'WorldHello'</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>JS基础</category>
+      </categories>
   </entry>
   <entry>
     <title>剑指offer</title>
@@ -6187,6 +6277,9 @@
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * function TreeNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.left = this.right = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;TreeNode&#125;</span> <span class="variable">root</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;TreeNode&#125;</span> <span class="variable">p</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;TreeNode&#125;</span> <span class="variable">q</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;TreeNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> lowestCommonAncestor = <span class="function"><span class="keyword">function</span>(<span class="params">root, p, q</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root||root===p||root===q) <span class="keyword">return</span> root;</span><br><span class="line">    <span class="keyword">let</span> l=lowestCommonAncestor(root.left,p,q),</span><br><span class="line">        r=lowestCommonAncestor(root.right,p,q);</span><br><span class="line">    <span class="keyword">if</span>(!l) <span class="keyword">return</span> r;</span><br><span class="line">    <span class="keyword">if</span>(!r) <span class="keyword">return</span> l;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 ]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
   </entry>
   <entry>
     <title>leetcode</title>
@@ -6949,5 +7042,8 @@
 <p><strong>Example 1:</strong></p>
 <p><strong><img src="https://assets.leetcode.com/uploads/2019/05/02/tree.png" alt="img"></strong></p>
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * function TreeNode(val) &#123;</span></span><br><span class="line"><span class="comment"> *     this.val = val;</span></span><br><span class="line"><span class="comment"> *     this.left = this.right = null;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param <span class="type">&#123;TreeNode&#125;</span> <span class="variable">root</span></span></span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return <span class="type">&#123;TreeNode&#125;</span></span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">var</span> bstToGst = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> stack=[],</span><br><span class="line">        cur=root,</span><br><span class="line">        sum=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">while</span>(cur||stack.length) &#123;</span><br><span class="line">        <span class="keyword">while</span>(cur) &#123;</span><br><span class="line">            stack.push(cur);</span><br><span class="line">            cur=cur.right;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">let</span> node=stack.pop();</span><br><span class="line">        node.val+=sum;</span><br><span class="line">        sum=node.val;</span><br><span class="line">        cur=node.left;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
   </entry>
 </search>
