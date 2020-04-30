@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>66</title>
-    <url>/2020/04/30/66/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>数组相关算法题总结</title>
     <url>/2020/04/26/%E6%95%B0%E7%BB%84%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<p>关于数组算法题的总结</p>
@@ -124,6 +119,82 @@
 <h3 id="2-无重复字符的最长子串-3"><a href="#2-无重复字符的最长子串-3" class="headerlink" title="2.无重复字符的最长子串(3)"></a>2.无重复字符的最长子串(3)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: &quot;abcabcbb&quot;</span><br><span class="line">Output: 3 </span><br><span class="line">Explanation: The answer is &quot;abc&quot;, with the length of 3.</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight js"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>algorithm</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>树相关算法题总结</title>
+    <url>/2020/04/24/%E6%A0%91%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/</url>
+    <content><![CDATA[<p>关于树算法题的总结</p>
+<a id="more"></a>
+
+<h2 id="1-树的先、中、后序遍历以及构建"><a href="#1-树的先、中、后序遍历以及构建" class="headerlink" title="1.树的先、中、后序遍历以及构建"></a>1.树的先、中、后序遍历以及构建</h2><h2 id="2-常规题目"><a href="#2-常规题目" class="headerlink" title="2.常规题目"></a>2.常规题目</h2><h3 id="1-树的最高深度-104"><a href="#1-树的最高深度-104" class="headerlink" title="1.树的最高深度(104)"></a>1.树的最高深度(104)</h3><blockquote>
+<p>要明确你定义的函数的意义，比如说下面这道题意思是：</p>
+<p><strong>以root为根节点的最高深度</strong></p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> maxDepth = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Math</span>.max(maxDepth(root.left),maxDepth(root.right))+<span class="number">1</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="2-树的最低深度-111"><a href="#2-树的最低深度-111" class="headerlink" title="2.树的最低深度(111)"></a>2.树的最低深度(111)</h3><blockquote>
+<p>和上题相比，一开始我们可能认为简单的把max改成min就好了，但是这里有个坑，当左右子树有一个不存在时，那其实它的高度就不能用min了，而是存在高度的那个子树的高。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> minDepth = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">let</span> left=minDepth(root.left),</span><br><span class="line">        right=minDepth(root.right);</span><br><span class="line">    <span class="keyword">if</span>(!left||!right) <span class="keyword">return</span> left+right+<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">return</span> <span class="built_in">Math</span>.min(left,right)+<span class="number">1</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-反转一颗二叉树-226"><a href="#3-反转一颗二叉树-226" class="headerlink" title="3.反转一颗二叉树(226)"></a>3.反转一颗二叉树(226)</h3><p>递归</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> invertTree = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">let</span> left=root.left;</span><br><span class="line">    root.left=invertTree(root.right);</span><br><span class="line">    root.right=invertTree(left);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>迭代</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> invertTree = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> queue=[root];</span><br><span class="line">    <span class="keyword">while</span>(queue.length) &#123;</span><br><span class="line">        <span class="keyword">let</span> node=queue.shift();</span><br><span class="line">        <span class="keyword">if</span>(node) &#123;</span><br><span class="line">            [node.left,node.right]=[node.right,node.left];</span><br><span class="line">            queue.push(node.left,node.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-判断俩颗树是不是同一个树-100"><a href="#4-判断俩颗树是不是同一个树-100" class="headerlink" title="4.判断俩颗树是不是同一个树(100)"></a>4.判断俩颗树是不是同一个树(100)</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isSameTree = <span class="function"><span class="keyword">function</span>(<span class="params">p, q</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!p&amp;&amp;!q) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(!p||!q) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(p.val!==q.val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> isSameTree(p.left,q.left)&amp;&amp;isSameTree(p.right,q.right);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="5-判断一颗树是不是对称的-101"><a href="#5-判断一颗树是不是对称的-101" class="headerlink" title="5.判断一颗树是不是对称的(101)"></a>5.判断一颗树是不是对称的(101)</h3><figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isSymmetric = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">return</span> isSame(root.left,root.right);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isSame</span>(<span class="params">p,q</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!p&amp;&amp;!q) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    <span class="keyword">if</span>(!p||!q) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(p.val!==q.val) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> isSame(p.left,q.right)&amp;&amp;isSame(p.right,q.left);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="6-判断一颗树是不是平衡二叉树-110"><a href="#6-判断一颗树是不是平衡二叉树-110" class="headerlink" title="6.判断一颗树是不是平衡二叉树(110)"></a>6.判断一颗树是不是平衡二叉树(110)</h3><blockquote>
+<p>只要一颗树它的每一个节点的左右节点高度差&lt;=1，那么这个树就是平衡二叉树</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> isBalanced = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> balanced=<span class="literal">true</span>;</span><br><span class="line">    maxDepth(root);</span><br><span class="line">    <span class="keyword">return</span> balanced;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">maxDepth</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">let</span> left=maxDepth(root.left),</span><br><span class="line">            right=maxDepth(root.right);</span><br><span class="line">        <span class="keyword">if</span>(<span class="built_in">Math</span>.abs(left-right)&gt;<span class="number">1</span>) <span class="keyword">return</span> balanced=<span class="literal">false</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">Math</span>.max(left,right)+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-二叉树路径系列问题"><a href="#3-二叉树路径系列问题" class="headerlink" title="3.二叉树路径系列问题"></a>3.二叉树路径系列问题</h2><h3 id="1-从root-to-leaf是否有路径和等于指定sum值-112"><a href="#1-从root-to-leaf是否有路径和等于指定sum值-112" class="headerlink" title="1.从root-to-leaf是否有路径和等于指定sum值(112)"></a>1.从root-to-leaf是否有路径和等于指定sum值(112)</h3><blockquote>
+<p>注意此时的递归终止条件，是叶子节点的时候，才判断路径和是否等于sum</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> hasPathSum = <span class="function"><span class="keyword">function</span>(<span class="params">root, sum</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">if</span>(!root.left&amp;&amp;!root.right) <span class="keyword">return</span> sum===root.val;</span><br><span class="line">    <span class="keyword">return</span> hasPathSum(root.left,sum-root.val)||hasPathSum(root.right,sum-root.val);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-求出所有路径和为sum的路径-113"><a href="#2-求出所有路径和为sum的路径-113" class="headerlink" title="2.求出所有路径和为sum的路径(113)"></a>2.求出所有路径和为sum的路径(113)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[</span><br><span class="line">   [5,4,11,2],</span><br><span class="line">   [5,8,4,5]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> pathSum = <span class="function"><span class="keyword">function</span>(<span class="params">root, sum</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> res=[];</span><br><span class="line">    backtrack(res,[],root,sum);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">res,tempArr,root,sum</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span>(!root.left&amp;&amp;!root.right&amp;&amp;sum===root.val) <span class="keyword">return</span> res.push([...tempArr,root.val]);</span><br><span class="line">    tempArr.push(root.val);</span><br><span class="line">    backtrack(res,tempArr,root.left,sum-root.val);</span><br><span class="line">    backtrack(res,tempArr,root.right,sum-root.val);</span><br><span class="line">    tempArr.pop();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="3-求二叉树中所有左叶子的和-404"><a href="#3-求二叉树中所有左叶子的和-404" class="headerlink" title="3.求二叉树中所有左叶子的和(404)"></a>3.求二叉树中所有左叶子的和(404)</h3><blockquote>
+<p>对于一个节点的左节点要单独判断，如果左节点是叶子节点，那么此时只需要递归调用右节点再加上左节点的值。</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> sumOfLeftLeaves = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(isLeaf(root.left) <span class="keyword">return</span> root.left.val+sumOfLeftLeaves(root.right);</span><br><span class="line">    <span class="keyword">return</span> sumOfLeftLeaves(root.left)+sumOfLeftLeaves(root.right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isLeaf</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> !root.left&amp;&amp;!root.right;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="4-二叉树的所有路径-257"><a href="#4-二叉树的所有路径-257" class="headerlink" title="4.二叉树的所有路径(257)"></a>4.二叉树的所有路径(257)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Output: [&quot;1-&gt;2-&gt;5&quot;, &quot;1-&gt;3&quot;]</span><br><span class="line"></span><br><span class="line">Explanation: All root-to-leaf paths are: 1-&gt;2-&gt;5, 1-&gt;3</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> binaryTreePaths = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    backtrack(res,[],root)</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">res,tempArr,root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span>(!root.left&amp;&amp;!root.right) <span class="keyword">return</span> res.push([...tempArr,root.val].join(<span class="string">'-&gt;'</span>));</span><br><span class="line">    tempArr.push(root.val);</span><br><span class="line">    backtrack(res,tempArr,root.left);</span><br><span class="line">    backtrack(res,tempArr,root.right);</span><br><span class="line">    tempArr.pop();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-求根到叶子节点数字之和-129"><a href="#5-求根到叶子节点数字之和-129" class="headerlink" title="5.求根到叶子节点数字之和(129)"></a>5.求根到叶子节点数字之和(129)</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Input: [1,2,3]</span><br><span class="line">    1</span><br><span class="line">   &#x2F; \</span><br><span class="line">  2   3</span><br><span class="line">Output: 25</span><br><span class="line">Explanation:</span><br><span class="line">The root-to-leaf path 1-&gt;2 represents the number 12.</span><br><span class="line">The root-to-leaf path 1-&gt;3 represents the number 13.</span><br><span class="line">Therefore, sum &#x3D; 12 + 13 &#x3D; 25.</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> sumNumbers = <span class="function"><span class="keyword">function</span>(<span class="params">root</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> dfs(root,<span class="number">0</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">dfs</span>(<span class="params">root,cur</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    cur=cur*<span class="number">10</span>+root.val;</span><br><span class="line">    <span class="keyword">if</span>(!root.left&amp;&amp;!root.right) <span class="keyword">return</span> cur;</span><br><span class="line">    <span class="keyword">return</span> dfs(root.left,cur)+dfs(root.right,cur);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="4-二分搜索树系列问题"><a href="#4-二分搜索树系列问题" class="headerlink" title="4.二分搜索树系列问题"></a>4.二分搜索树系列问题</h2><h3 id="1-二叉搜索树的最近公共祖先-235"><a href="#1-二叉搜索树的最近公共祖先-235" class="headerlink" title="1.二叉搜索树的最近公共祖先(235)"></a>1.二叉搜索树的最近公共祖先(235)</h3><blockquote>
+<p>递归条件：p、q在root的同一侧的话，就要递归执行，否则说明在俩侧，那么root就是所要求得公共祖先</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> lowestCommonAncestor = <span class="function"><span class="keyword">function</span>(<span class="params">root, p, q</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!root) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    <span class="keyword">if</span>(p.val&lt;root.val&amp;&amp;q.val&lt;root.val) <span class="keyword">return</span> lowestCommonAncestor(root.left,p,q);</span><br><span class="line">    <span class="keyword">if</span>(p.val&gt;root.val&amp;&amp;q.val&gt;root.val) <span class="keyword">return</span> lowestCommonAncestor(root.right,p,q);</span><br><span class="line">    <span class="keyword">return</span> root;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>algorithm</category>
       </categories>
