@@ -22,19 +22,19 @@
     var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Gemini","version":"7.7.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="什么是loaderloader其实是一种打包方案，loader可以将所有类型的文件转换为webpack能够处理的有效模块，然后你就可以利用webpack的打包能力，对它们进行处理。">
+  <meta name="description" content="关于递归、回溯法算法题的总结">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何编写一个loader">
-<meta property="og:url" content="http://yoursite.com/2020/03/19/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAloader/index.html">
+<meta property="og:title" content="递归、回溯法相关算法题总结">
+<meta property="og:url" content="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="ZJ&#39;s BLOG">
-<meta property="og:description" content="什么是loaderloader其实是一种打包方案，loader可以将所有类型的文件转换为webpack能够处理的有效模块，然后你就可以利用webpack的打包能力，对它们进行处理。">
+<meta property="og:description" content="关于递归、回溯法算法题的总结">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2020-03-19T03:36:45.000Z">
-<meta property="article:modified_time" content="2020-03-19T03:36:45.000Z">
+<meta property="article:published_time" content="2020-05-01T09:08:10.000Z">
+<meta property="article:modified_time" content="2020-05-01T11:12:02.008Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://yoursite.com/2020/03/19/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAloader/">
+<link rel="canonical" href="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/">
 
 
 <script id="page-configurations">
@@ -46,7 +46,7 @@
   };
 </script>
 
-  <title>如何编写一个loader | ZJ's BLOG</title>
+  <title>递归、回溯法相关算法题总结 | ZJ's BLOG</title>
   
 
 
@@ -193,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="en">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/19/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAloader/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          如何编写一个loader<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAloader.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
+          递归、回溯法相关算法题总结<a href="https://github.com/user-name/repo-name/tree/branch-name/subdirectory-name_posts/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93.md" class="post-edit-link" title="Edit this post" rel="noopener" target="_blank"><i class="fa fa-pencil"></i></a>
         </h1>
 
         <div class="post-meta">
@@ -215,8 +215,9 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2020-03-19 11:36:45" itemprop="dateCreated datePublished" datetime="2020-03-19T11:36:45+08:00">2020-03-19</time>
+              <time title="Created: 2020-05-01 17:08:10 / Modified: 19:12:02" itemprop="dateCreated datePublished" datetime="2020-05-01T17:08:10+08:00">2020-05-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -224,8 +225,8 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/webpack/" itemprop="url" rel="index">
-                    <span itemprop="name">webpack</span>
+                  <a href="/categories/algorithm/" itemprop="url" rel="index">
+                    <span itemprop="name">algorithm</span>
                   </a>
                 </span>
             </span>
@@ -236,7 +237,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.7k</span>
+              <span>1.8k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -255,28 +256,18 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="什么是loader"><a href="#什么是loader" class="headerlink" title="什么是loader"></a>什么是loader</h3><p>loader其实是一种打包方案，loader可以将所有类型的文件转换为webpack能够处理的有效模块，然后你就可以利用webpack的打包能力，对它们进行处理。</p>
+        <p>关于递归、回溯法算法题的总结</p>
 <a id="more"></a>
 
-<h3 id="自己编写的loader的使用"><a href="#自己编写的loader的使用" class="headerlink" title="自己编写的loader的使用"></a>自己编写的loader的使用</h3><p>同普通loader一样，在webpack.config.js的<code>module</code>中写新的<code>rule</code>，还要在webpack.config.js新写一个配置项<code>resolveLoader</code>（代码如下所示），意思是按名称先在<code>node_modules</code>中找loader，找不到再去 ./loader 文件夹中找（自己写的loader放在该文件夹中，为replaceLoader.js）</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">resolveLoader: &#123;</span><br><span class="line">  modules: [<span class="string">'node_modules'</span>, <span class="string">'./loaders'</span>]</span><br><span class="line">&#125;,</span><br><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">  rules: [&#123;</span><br><span class="line">    test: <span class="regexp">/\.js$/</span>,</span><br><span class="line">    use: &#123;</span><br><span class="line">      loader: <span class="string">'replaceLoader'</span>,</span><br><span class="line">      options: &#123;</span><br><span class="line">        name: <span class="string">'zj'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="1-电话号码的字母组合-17"><a href="#1-电话号码的字母组合-17" class="headerlink" title="1.电话号码的字母组合(17)"></a>1.电话号码的字母组合(17)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> letterCombinations = <span class="function"><span class="keyword">function</span>(<span class="params">digits</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[],</span><br><span class="line">          map=&#123;</span><br><span class="line">              <span class="string">'2'</span>:<span class="string">"abc"</span>,</span><br><span class="line">              <span class="string">'3'</span>:<span class="string">"def"</span>,</span><br><span class="line">              <span class="string">'4'</span>:<span class="string">"ghi"</span>,</span><br><span class="line">              <span class="string">'5'</span>:<span class="string">"jkl"</span>,</span><br><span class="line">              <span class="string">'6'</span>:<span class="string">"mno"</span>,</span><br><span class="line">              <span class="string">'7'</span>:<span class="string">"prqs"</span>,</span><br><span class="line">              <span class="string">'8'</span>:<span class="string">"tuv"</span>,</span><br><span class="line">              <span class="string">'9'</span>:<span class="string">"wxyz"</span></span><br><span class="line">          &#125;</span><br><span class="line">    backtrack(<span class="string">''</span>,digits);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">temp,digits</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!digits) &#123;</span><br><span class="line">            <span class="keyword">if</span>(!temp) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">return</span> res.push(temp);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>,len=map[digits[<span class="number">0</span>]].length;i&lt;len;i++) &#123;</span><br><span class="line">            backtrack(temp+map[digits[<span class="number">0</span>]][i],digits.slice(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
-<h3 id="对loader传递数据"><a href="#对loader传递数据" class="headerlink" title="对loader传递数据"></a>对loader传递数据</h3><p>如上面的代码中，option即可用来传递参数，把想传递的参数写成option对象的属性。然后replaceLoader.js中用<code>this.query.属性</code>即可得到这个参数；也可以使用loader-util中的getOption方法来得到这个option对象。</p>
-<h3 id="loader的编写"><a href="#loader的编写" class="headerlink" title="loader的编写"></a>loader的编写</h3><p>在这里，我们假设入口文件index.js中的代码内容仅为<code>console.log(&#39;hello world&#39;);</code>，我们想编写一个loader对这个文件进行处理，实现把<code>world</code>改成<code>zj</code>。<br>loader其实是一个函数。在编写的时候，我们可以把loader放在一个单独的文件中，然后导出即可使用。注意在这里<code>module.exports = function() {}</code>的function不能写成箭头函数，因为在loader的编写中我们会常用到this，这里用箭头函数可能会造成this的使用出现麻烦。最终代码如下：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">'loader-utils'</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="keyword">this</span>)</span><br><span class="line">  <span class="keyword">return</span> source.replace(<span class="string">'world'</span>, options.name)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-复原IP地址-93"><a href="#2-复原IP地址-93" class="headerlink" title="2.复原IP地址(93)"></a>2.复原IP地址(93)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;25525511135&quot;</span><br><span class="line">Output: [&quot;255.255.11.135&quot;, &quot;255.255.111.35&quot;]</span><br></pre></td></tr></table></figure>
 
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> restoreIpAddresses = <span class="function"><span class="keyword">function</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    backtrack(<span class="number">0</span>,[],s);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">count,tempArr,s</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!s||count===<span class="number">4</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(count===<span class="number">4</span>&amp;&amp;!s) <span class="keyword">return</span> res.push(tempArr.join(<span class="string">'.'</span>));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>,len=s.length;i&lt;len;i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(isValid(s.slice(<span class="number">0</span>,i+<span class="number">1</span>))) &#123;</span><br><span class="line">                tempArr.push(s.slice(<span class="number">0</span>,i+<span class="number">1</span>));</span><br><span class="line">                backtrack(count+<span class="number">1</span>,tempArr,s.slice(i+<span class="number">1</span>));</span><br><span class="line">                tempArr.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isValid</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(s.length&gt;<span class="number">3</span>||(s.length===<span class="number">3</span>&amp;&amp;<span class="built_in">parseInt</span>(s)&gt;<span class="number">255</span>)||(s.length&gt;<span class="number">1</span>&amp;&amp;s[<span class="number">0</span>]===<span class="string">'0'</span>)) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h3 id="3-分割回文串-131"><a href="#3-分割回文串-131" class="headerlink" title="3.分割回文串(131)"></a>3.分割回文串(131)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Input: &quot;aab&quot;</span><br><span class="line">Output:</span><br><span class="line">[</span><br><span class="line">  [&quot;aa&quot;,&quot;b&quot;],</span><br><span class="line">  [&quot;a&quot;,&quot;a&quot;,&quot;b&quot;]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
 
-<h3 id="异步loader编写"><a href="#异步loader编写" class="headerlink" title="异步loader编写"></a>异步loader编写</h3><p>this.async</p>
-<blockquote>
-<p>Tells the loader-runner that the loader intends to call back asynchronously. Returns  this.callback</p>
-</blockquote>
-<p>this.callback</p>
-<blockquote>
-<p>A function that can be called synchronously or asynchronously in order to return multiple results. The expected arguments are:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">this</span>.callback(</span><br><span class="line">  err: <span class="built_in">Error</span> | <span class="literal">null</span>,</span><br><span class="line">  content: string | Buffer,</span><br><span class="line">  sourceMap?: SourceMap,</span><br><span class="line">  meta?: any</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-</blockquote>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> loaderUtils = <span class="built_in">require</span>(<span class="string">'loader-utils'</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = <span class="function"><span class="keyword">function</span> (<span class="params">source</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> options = loaderUtils.getOptions(<span class="keyword">this</span>);</span><br><span class="line">  <span class="keyword">const</span> callback = <span class="keyword">this</span>.async();</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> result = source.replace(<span class="string">'world'</span>, options.name);</span><br><span class="line">    callback(<span class="literal">null</span>, result);</span><br><span class="line">  &#125;, <span class="number">5000</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> partition = <span class="function"><span class="keyword">function</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    backtrack([],s);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">backtrack</span>(<span class="params">tempArr,s</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!s) <span class="keyword">return</span> res.push([...tempArr]);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">let</span> i=<span class="number">0</span>,len=s.length;i&lt;len;i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(isPalindrome(s.slice(<span class="number">0</span>,i+<span class="number">1</span>))) &#123;</span><br><span class="line">                tempArr.push(s.slice(<span class="number">0</span>,i+<span class="number">1</span>));</span><br><span class="line">                backtrack(tempArr,s.slice(i+<span class="number">1</span>));</span><br><span class="line">                tempArr.pop();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isPalindrome</span>(<span class="params">s</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> l=<span class="number">0</span>,</span><br><span class="line">        r=s.length<span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">while</span>(l&lt;r) &#123;</span><br><span class="line">        <span class="keyword">if</span>(s[l]!==s[r]) <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        l++;</span><br><span class="line">        r--;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
     </div>
     <div>
       
@@ -299,13 +290,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/19/webpack%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" rel="prev" title="webpack性能优化">
-      <i class="fa fa-chevron-left"></i> webpack性能优化
+    <a href="/2020/05/01/%E6%A0%88%E3%80%81%E9%98%9F%E5%88%97%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/" rel="prev" title="栈、队列相关算法题总结">
+      <i class="fa fa-chevron-left"></i> 栈、队列相关算法题总结
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/03/19/%E5%A6%82%E4%BD%95%E7%BC%96%E5%86%99%E4%B8%80%E4%B8%AAplugin/" rel="next" title="如何编写一个plugin">
-      如何编写一个plugin <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -365,7 +353,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是loader"><span class="nav-text">什么是loader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自己编写的loader的使用"><span class="nav-text">自己编写的loader的使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对loader传递数据"><span class="nav-text">对loader传递数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#loader的编写"><span class="nav-text">loader的编写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#异步loader编写"><span class="nav-text">异步loader编写</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-电话号码的字母组合-17"><span class="nav-text">1.电话号码的字母组合(17)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-复原IP地址-93"><span class="nav-text">2.复原IP地址(93)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-分割回文串-131"><span class="nav-text">3.分割回文串(131)</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
