@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/3.png">
 <meta property="og:image" content="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/1.png">
 <meta property="article:published_time" content="2020-05-01T09:08:10.000Z">
-<meta property="article:modified_time" content="2020-05-11T00:29:57.080Z">
+<meta property="article:modified_time" content="2020-05-25T07:03:48.439Z">
 <meta property="article:author" content="Zhou Jun">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://yoursite.com/2020/05/01/%E9%80%92%E5%BD%92%E3%80%81%E5%9B%9E%E6%BA%AF%E6%B3%95%E7%9B%B8%E5%85%B3%E7%AE%97%E6%B3%95%E9%A2%98%E6%80%BB%E7%BB%93/3.png">
@@ -226,7 +226,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2020-05-11 08:29:57" itemprop="dateModified" datetime="2020-05-11T08:29:57+08:00">2020-05-11</time>
+                <time title="Modified: 2020-05-25 15:03:48" itemprop="dateModified" datetime="2020-05-25T15:03:48+08:00">2020-05-25</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,14 +246,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>12k</span>
+              <span>13k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>11 mins.</span>
+              <span>12 mins.</span>
             </span>
 
         </div>
@@ -291,9 +291,13 @@
 </blockquote>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对乘法的结果求模，等价于先对每个因子都求模，然后对因子相乘的结果再求模</span></span><br><span class="line"><span class="keyword">let</span> base=<span class="number">1337</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> superPow = <span class="function"><span class="keyword">function</span>(<span class="params">a, b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(!b.length) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">let</span> last=b.pop(),</span><br><span class="line">        part1=Pow(superPow(a,b),<span class="number">10</span>),</span><br><span class="line">        part2=Pow(a,last);</span><br><span class="line">    <span class="keyword">return</span> (part1*part2)%base;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Pow</span>(<span class="params">a,b</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(b===<span class="number">0</span>) <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    a%=base;</span><br><span class="line">    <span class="keyword">return</span> (b&amp;<span class="number">1</span>)===<span class="number">0</span>?(Pow(a*a,b&gt;&gt;&gt;<span class="number">1</span>))%base:(a%base)*(Pow(a*a,(b<span class="number">-1</span>)&gt;&gt;&gt;<span class="number">1</span>)%base);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+<h3 id="5-括号生成-22"><a href="#5-括号生成-22" class="headerlink" title="5.括号生成(22)"></a>5.括号生成(22)</h3><p>数字 <em>n</em> 代表生成括号的对数，请你设计一个函数，用于能够生成所有可能的并且 <strong>有效的</strong> 括号组合。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">输入：n &#x3D; 3</span><br><span class="line">输出：[</span><br><span class="line">       &quot;((()))&quot;,</span><br><span class="line">       &quot;(()())&quot;,</span><br><span class="line">       &quot;(())()&quot;,</span><br><span class="line">       &quot;()(())&quot;,</span><br><span class="line">       &quot;()()()&quot;</span><br><span class="line">     ]</span><br></pre></td></tr></table></figure>
 
-
-
+<blockquote>
+<p>回溯，过程中一定要满足左边括号数大于等于右边括号数</p>
+</blockquote>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> generateParenthesis = <span class="function"><span class="keyword">function</span>(<span class="params">n</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> res=[];</span><br><span class="line">    generate(n,n,<span class="string">''</span>);</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">generate</span>(<span class="params">l,r,s</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(l&gt;r) <span class="keyword">return</span>;</span><br><span class="line">        <span class="keyword">if</span>(!l&amp;&amp;!r) <span class="keyword">return</span> res.push(s);</span><br><span class="line">        <span class="keyword">if</span>(l) generate(l<span class="number">-1</span>,r,s+<span class="string">'('</span>);</span><br><span class="line">        <span class="keyword">if</span>(r) generate(l,r<span class="number">-1</span>,s+<span class="string">')'</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
 
 
@@ -494,7 +498,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基本问题"><span class="nav-text">1.基本问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-电话号码的字母组合-17"><span class="nav-text">1.电话号码的字母组合(17)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-复原IP地址-93"><span class="nav-text">2.复原IP地址(93)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-分割回文串-131"><span class="nav-text">3.分割回文串(131)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-超级次方-372"><span class="nav-text">4.超级次方(372)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-全排列系列问题"><span class="nav-text">2.全排列系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-全排列-46"><span class="nav-text">1.全排列(46)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-全排列2-47"><span class="nav-text">2.全排列2(47)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-组合系列问题"><span class="nav-text">3.组合系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-组合-77"><span class="nav-text">1.组合(77)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-组合总和-39"><span class="nav-text">2.组合总和(39)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-组合总和2-40"><span class="nav-text">3.组合总和2(40)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-组合总和3-216"><span class="nav-text">4.组合总和3(216)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-组合总和4-377"><span class="nav-text">5.组合总和4(377)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-零钱兑换2-518"><span class="nav-text">6.零钱兑换2(518)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-子集-78"><span class="nav-text">7.子集(78)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-子集2-90"><span class="nav-text">8.子集2(90)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-二维平面上的回溯系列问题"><span class="nav-text">4.二维平面上的回溯系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-单词搜索-79"><span class="nav-text">1.单词搜索(79)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-单词搜索2-212"><span class="nav-text">2.单词搜索2(212)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-岛屿的个数-200"><span class="nav-text">3.岛屿的个数(200)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-岛屿的最大面积-695"><span class="nav-text">4.岛屿的最大面积(695)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-被围绕的区域-130"><span class="nav-text">5.被围绕的区域(130)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-朋友圈-547"><span class="nav-text">6.朋友圈(547)</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-基本问题"><span class="nav-text">1.基本问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-电话号码的字母组合-17"><span class="nav-text">1.电话号码的字母组合(17)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-复原IP地址-93"><span class="nav-text">2.复原IP地址(93)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-分割回文串-131"><span class="nav-text">3.分割回文串(131)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-超级次方-372"><span class="nav-text">4.超级次方(372)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-括号生成-22"><span class="nav-text">5.括号生成(22)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-全排列系列问题"><span class="nav-text">2.全排列系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-全排列-46"><span class="nav-text">1.全排列(46)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-全排列2-47"><span class="nav-text">2.全排列2(47)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-组合系列问题"><span class="nav-text">3.组合系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-组合-77"><span class="nav-text">1.组合(77)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-组合总和-39"><span class="nav-text">2.组合总和(39)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-组合总和2-40"><span class="nav-text">3.组合总和2(40)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-组合总和3-216"><span class="nav-text">4.组合总和3(216)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-组合总和4-377"><span class="nav-text">5.组合总和4(377)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-零钱兑换2-518"><span class="nav-text">6.零钱兑换2(518)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-子集-78"><span class="nav-text">7.子集(78)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-子集2-90"><span class="nav-text">8.子集2(90)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-二维平面上的回溯系列问题"><span class="nav-text">4.二维平面上的回溯系列问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-单词搜索-79"><span class="nav-text">1.单词搜索(79)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-单词搜索2-212"><span class="nav-text">2.单词搜索2(212)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-岛屿的个数-200"><span class="nav-text">3.岛屿的个数(200)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-岛屿的最大面积-695"><span class="nav-text">4.岛屿的最大面积(695)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-被围绕的区域-130"><span class="nav-text">5.被围绕的区域(130)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-朋友圈-547"><span class="nav-text">6.朋友圈(547)</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -574,13 +578,13 @@
       <i class="fa fa-area-chart"></i>
     </span>
       <span class="post-meta-item-text">Symbols count total: </span>
-    <span title="Symbols count total">547k</span>
+    <span title="Symbols count total">551k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
       <span class="post-meta-item-text">Reading time total &asymp;</span>
-    <span title="Reading time total">8:18</span>
+    <span title="Reading time total">8:21</span>
 </div>
 
 <!--
